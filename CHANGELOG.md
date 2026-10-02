@@ -1,5 +1,146 @@
 # skuba
 
+## 16.4.0
+
+### Minor Changes
+
+- **deps:** Replace `@inquirer/prompts` with `@clack/prompts` ([#2564](https://github.com/seek-oss/skuba/pull/2564) [`c887c8d`](https://github.com/seek-oss/skuba/commit/c887c8d437ba8c266581b1584b9120136cbbd8ba))
+
+  This internal change only affects the `skuba init` interactive prompts.
+
+- **lint:** Replace Prettier with Oxfmt ([#2557](https://github.com/seek-oss/skuba/pull/2557) [`438204c`](https://github.com/seek-oss/skuba/commit/438204c41e65c7390032f3dfc556e9256dad8cdc))
+
+  `skuba lint` and `skuba format` now use Oxfmt instead of Prettier. Benchmarks show Oxfmt to be up to 30x faster.
+
+  Oxfmt may format some code differently from Prettier, so you may see diffs in existing files particularly in `package.json` files.
+
+  skuba will attempt to auto-migrate your Prettier configuration to Oxfmt. Any manual calls to `prettier` in any scripts will need to be manually replaced with `oxfmt`.
+
+  Prettier `overrides` are not automatically migrated. If your configuration applies different options to certain files, port them across to Oxfmt's [`overrides`](https://oxc.rs/docs/guide/usage/formatter/config-file-reference.html) yourself.
+
+  Update your VS Code settings to use the [Oxc](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) extension instead of Prettier:
+
+  ```diff
+   {
+     "[typescript]": {
+       "editor.codeActionsOnSave": {
+         "source.fixAll.eslint": "explicit"
+       },
+  -    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  +    "editor.defaultFormatter": "oxc.oxc-vscode",
+  +    "editor.formatOnSave": true
+     }
+   }
+  ```
+
+  You may need to reload the IDE for formatting to work after the migration is complete.
+
+  `oxfmt` and `oxc-config-seek` are now hoisted in place of `prettier`.
+
+- **lint:** Disable `import-x/order` ([#2557](https://github.com/seek-oss/skuba/pull/2557) [`438204c`](https://github.com/seek-oss/skuba/commit/438204c41e65c7390032f3dfc556e9256dad8cdc))
+
+  As part of our transition to Oxfmt and Oxlint, import order is now handled by Oxfmt. Keeping `import-x/order` enabled conflicts with Oxfmt's `sortImports` setting.
+
+  `skuba format` rewrites `eslint-disable` comments for `import-x/order` (and legacy `import/order`) to `oxfmt-ignore`, so intentional import order is preserved. Oxfmt only honours a comment whose body is exactly `oxfmt-ignore`, so any `-- reason` is moved to a separate comment above it:
+
+  ```diff
+  - // eslint-disable-next-line import-x/order -- Mock import must be at top for jest.mock() hoisting
+  + // Mock import must be at top for jest.mock() hoisting
+  + // oxfmt-ignore
+    import { mocked } from './mocked.js';
+  ```
+
+  To restore the previous behavior, you can add the following rule to your ESLint config:
+
+  ```javascript
+  {
+    'import-x/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+        }
+        'newlines-between': 'always'
+        pathGroups: [
+          {
+            group: 'external',
+            pattern: 'src',
+            position: 'after',
+          },
+          {
+            group: 'external',
+            pattern: 'src/**',
+            position: 'after',
+          },
+        ]
+        pathGroupsExcludedImportTypes: ['builtin'],
+      },
+    ],
+  }
+  ```
+
+- **Rolldown:** Add `Rolldown.lambdaAsset` plugin ([#2543](https://github.com/seek-oss/skuba/pull/2543) [`dcffd07`](https://github.com/seek-oss/skuba/commit/dcffd078b42feec6938572ba9e97d1ab91776bfa))
+
+  A new rolldown plugin that prepares a bundle output directory for deployment as a Lambda function, so CDK can pick it up with a plain `aws_lambda.Code.fromAsset`.
+
+  ```ts
+  // rolldown.config.ts
+  import { defineConfig } from 'rolldown';
+  import { Rolldown } from 'skuba';
+
+  export default defineConfig({
+    input: { index: 'src/lambda.ts' },
+    output: { dir: 'lib' },
+    external: ['sharp'],
+    plugins: [Rolldown.lambdaAsset({ nodeModules: ['sharp'] })],
+  });
+  ```
+
+  The plugin writes an ESM `package.json`, and installs any `nodeModules` into the output directory with pnpm, copying across your workspace config and patches. The generated `package.json` forwards your package manager pin by copying across the `packageManager` and `devEngines` fields of your workspace root `package.json`, so the install runs on the same pnpm version as your project. Install-only files, including `.npmrc`, are stripped from the output afterwards. It can also copy extra `assets` into the output directory alongside your bundle.
+
+  It supports ESM output and pnpm only. It leaves the rest of your rolldown config alone, and does not wrap CDK.
+
+  `skuba build` also forwards a `--config`/`-c` flag through to rolldown, so a package can ship multiple bundles from separate config files, e.g. `skuba build --config rolldown.worker1.config.ts`.
+
+- **deps:** @changesets/cli ^3.0.0 ([#2562](https://github.com/seek-oss/skuba/pull/2562) [`8375293`](https://github.com/seek-oss/skuba/commit/837529382e899f1145d651ebb1588273fec3245b))
+
+- **deps:** tsdown ~0.23.0 ([#2574](https://github.com/seek-oss/skuba/pull/2574) [`8d3c9a7`](https://github.com/seek-oss/skuba/commit/8d3c9a77467c8ffb5fb0c8302dc81a4f873583fc))
+
+  This release contains breaking changes, please see the [release notes](https://github.com/rolldown/tsdown/releases/tag/v0.23.0) for details.
+
+  `skuba format` rewrites `attw: true` to `attw: { profile: 'node16' }` so packages keep node16-compatible attw checks instead of picking up tsdown's new `esm-only` default.
+
+- **lint:** Migrate default `createLogger` imports from `@seek/logger` to named imports ([#2585](https://github.com/seek-oss/skuba/pull/2585) [`55aa6cd`](https://github.com/seek-oss/skuba/commit/55aa6cd0317c1d59487b1eea4a0bee38c686f33c))
+
+  `skuba format` now rewrites default imports of `createLogger` from `@seek/logger` to named imports, including mixed named imports:
+
+  ```diff
+  - import createLogger from '@seek/logger';
+  + import { createLogger } from '@seek/logger';
+
+  - import createLogger, { type Logger } from '@seek/logger';
+  + import { createLogger, type Logger } from '@seek/logger';
+  ```
+
+### Patch Changes
+
+- **template/\*:** Switch to repoName for custom conditions templating ([#2565](https://github.com/seek-oss/skuba/pull/2565) [`f9f0911`](https://github.com/seek-oss/skuba/commit/f9f09115aa7e5d7171a9bc826f4b1a89ad3f4781))
+
+- **deps:** @octokit/types ^17.0.0 ([#2548](https://github.com/seek-oss/skuba/pull/2548) [`222af24`](https://github.com/seek-oss/skuba/commit/222af245efc4e843e5297c088122464bd10b4609))
+
+- **deps:** @octokit/types ^18.0.0 ([#2579](https://github.com/seek-oss/skuba/pull/2579) [`dd96c23`](https://github.com/seek-oss/skuba/commit/dd96c234af4f1da44d8c10a7a10bb94e57cb352c))
+
+- **deps:** simple-git ^4.0.0 ([#2586](https://github.com/seek-oss/skuba/pull/2586) [`93a6207`](https://github.com/seek-oss/skuba/commit/93a620721970b6ed537d5183ffc150e71b022c26))
+
+- **template/oss-npm-package:** Pin tsdown `attw` to `{ profile: 'node16' }` so new packages keep node16-compatible checks instead of tsdown's `esm-only` default. ([#2574](https://github.com/seek-oss/skuba/pull/2574) [`8d3c9a7`](https://github.com/seek-oss/skuba/commit/8d3c9a77467c8ffb5fb0c8302dc81a4f873583fc))
+
+- **template/oss-npm-package:** Migrate to changesets/action action v2 ([#2580](https://github.com/seek-oss/skuba/pull/2580) [`f35cea0`](https://github.com/seek-oss/skuba/commit/f35cea056795337e703cf6f78317c9aa051b5888))
+- Updated dependencies:
+  - @skuba-lib/changesets-changelog@2.0.0
+  - eslint-config-skuba@10.0.0
+  - @skuba-lib/api@2.3.1
+  - pnpm-plugin-skuba@3.2.0
+
 ## 16.3.0
 
 ### Minor Changes
