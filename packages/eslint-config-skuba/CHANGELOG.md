@@ -1,5 +1,57 @@
 # eslint-config-skuba
 
+## 10.0.0
+
+### Major Changes
+
+- **lint:** Disable `import-x/order` ([#2557](https://github.com/seek-oss/skuba/pull/2557) [`438204c`](https://github.com/seek-oss/skuba/commit/438204c41e65c7390032f3dfc556e9256dad8cdc))
+
+  As part of our transition to Oxfmt and Oxlint, import order is now handled by Oxfmt. Keeping `import-x/order` enabled conflicts with Oxfmt's `sortImports` setting.
+
+  `skuba format` rewrites `eslint-disable` comments for `import-x/order` (and legacy `import/order`) to `oxfmt-ignore`, so intentional import order is preserved. Oxfmt only honours a comment whose body is exactly `oxfmt-ignore`, so any `-- reason` is moved to a separate comment above it:
+
+  ```diff
+  - // eslint-disable-next-line import-x/order -- Mock import must be at top for jest.mock() hoisting
+  + // Mock import must be at top for jest.mock() hoisting
+  + // oxfmt-ignore
+    import { mocked } from './mocked.js';
+  ```
+
+  To restore the previous behavior, you can add the following rule to your ESLint config:
+
+  ```javascript
+  {
+    'import-x/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+        }
+        'newlines-between': 'always'
+        pathGroups: [
+          {
+            group: 'external',
+            pattern: 'src',
+            position: 'after',
+          },
+          {
+            group: 'external',
+            pattern: 'src/**',
+            position: 'after',
+          },
+        ]
+        pathGroupsExcludedImportTypes: ['builtin'],
+      },
+    ],
+  }
+  ```
+
+### Minor Changes
+
+- **lint:** Ignore generated `*.vocab/index.ts` files ([#2589](https://github.com/seek-oss/skuba/pull/2589) [`7e5ffda`](https://github.com/seek-oss/skuba/commit/7e5ffda6bbd47c02436e1998c6e218297b37a331))
+
+  Vocab `index.ts` files are generated and are not meant to be linted. `eslint-config-skuba` now ignores `**/*.vocab/index.ts`.
+
 ## 9.3.0
 
 ### Minor Changes
