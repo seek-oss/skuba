@@ -101,7 +101,7 @@
     "build": "pnpm skuba build-package && ./scripts/fix-types.sh",
     "skuba": "node ../../lib/skuba",
     "test": "pnpm skuba test",
-    "test:ci": "pnpm skuba test --coverage"
+    "test:ci": "pnpm skuba test --run --coverage"
   },
   "dependencies": {
     "@octokit/graphql": "^9.0.0",

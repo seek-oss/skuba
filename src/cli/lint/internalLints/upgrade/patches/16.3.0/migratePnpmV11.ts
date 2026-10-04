@@ -7,6 +7,7 @@ import fs from 'fs-extra';
 
 import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
+import { detectPnpmMajorVersion } from '../../../../../../utils/pnpmVersion.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type {
   PatchConfig,
@@ -59,6 +60,15 @@ export const migratePnpmV11 = async ({
     return {
       result: 'skip',
       reason: 'not a pnpm project',
+    };
+  }
+
+  const major = await detectPnpmMajorVersion(dir);
+
+  if (major !== undefined && major >= 11) {
+    return {
+      result: 'skip',
+      reason: `already on pnpm v${major}`,
     };
   }
 

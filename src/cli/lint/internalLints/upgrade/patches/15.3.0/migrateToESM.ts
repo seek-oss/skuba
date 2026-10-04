@@ -17,12 +17,7 @@ const migrate: PatchFunction = async (config) => {
 
   if (config.mode !== 'lint' && config.packageManager.command === 'pnpm') {
     try {
-      await exec(
-        'pnpm',
-        'install',
-        '--frozen-lockfile=false',
-        '--prefer-offline',
-      );
+      await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
     } catch (error) {
       log.warn('Failed to install dependencies after patching pnpm workspace');
       log.subtle(inspect(error));

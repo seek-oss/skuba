@@ -47,7 +47,7 @@
     "prepack": "pnpm build",
     "skuba": "node ../../lib/skuba",
     "test": "pnpm skuba test",
-    "test:ci": "pnpm skuba test --coverage"
+    "test:ci": "pnpm skuba test --run --coverage"
   },
   "dependencies": {
     "@ast-grep/napi": "~0.45.0",

@@ -165,7 +165,7 @@ Unlike those settings, it is a map of package name patterns to booleans rather t
 See [Security controls](#security-controls) for how to grant exemptions.
 
 **skuba** picks the managed settings to write based on the pnpm major version your project pins through `packageManager` or `devEngines.packageManager`,
-so a project that stays on pnpm v10 keeps its v10 settings.
+so a project that stays on pnpm v10 keeps its v10 settings while v11 and v12 projects get the current ones.
 A project that pins no pnpm version at all is left alone.
 
 ### `.npmrc` is auth and registry only
@@ -239,7 +239,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 2. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@10.34.5",
+   "packageManager": "pnpm@12.8.1",
    ```
 
 3. Install pnpm

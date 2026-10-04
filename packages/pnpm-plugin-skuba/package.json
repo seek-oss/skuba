@@ -17,7 +17,8 @@
     "config.mjs",
     "pnpmfile.mjs",
     "pnpmfile.v10.mjs",
-    "pnpmfile.v11.mjs"
+    "pnpmfile.v11.mjs",
+    "pnpmfile.v12.mjs"
   ],
   "type": "module",
   "sideEffects": false,

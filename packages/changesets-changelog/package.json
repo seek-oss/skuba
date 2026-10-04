@@ -48,7 +48,7 @@
     "prepack": "pnpm build",
     "skuba": "node ../../lib/skuba",
     "test": "pnpm skuba test",
-    "test:ci": "pnpm skuba test --coverage"
+    "test:ci": "pnpm skuba test --run --coverage"
   },
   "dependencies": {
     "@changesets/get-github-info": "^1.0.0",

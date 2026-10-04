@@ -247,7 +247,7 @@ describe('migratePrettierToOxfmt', () => {
     expect(exec).toHaveBeenCalledWith(
       'pnpm',
       'install',
-      '--frozen-lockfile=false',
+      '--no-frozen-lockfile',
       '--prefer-offline',
     );
 

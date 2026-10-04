@@ -45,7 +45,7 @@
     "prepack": "pnpm build",
     "skuba": "node ../../lib/skuba",
     "test": "pnpm skuba test",
-    "test:ci": "pnpm skuba test --coverage"
+    "test:ci": "pnpm skuba test --run --coverage"
   },
   "engines": {
     "node": ">=22.14.0"

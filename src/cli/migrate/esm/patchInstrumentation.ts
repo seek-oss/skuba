@@ -217,9 +217,7 @@ export const patchInstrumentation: PatchFunction = async ({
       await rootExec(
         packageManager.command,
         'install',
-        ...(packageManager.command === 'pnpm'
-          ? ['--frozen-lockfile=false']
-          : []),
+        ...(packageManager.command === 'pnpm' ? ['--no-frozen-lockfile'] : []),
         '--prefer-offline',
         '--ignore-scripts',
       );

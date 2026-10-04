@@ -614,6 +614,20 @@ somelistSection:
     expect(workspace).not.toContain('pmOnFail');
   });
 
+  it('should apply the same defaults on pnpm v12 as on v11', async () => {
+    vol.fromJSON({ 'pnpm-workspace.yaml': '' }, process.cwd());
+    await patchPnpmWorkspace('format');
+    const v11Workspace = volToJson()['pnpm-workspace.yaml'];
+
+    vol.reset();
+    detectPnpmMajorVersionMock.mockResolvedValue(12);
+
+    vol.fromJSON({ 'pnpm-workspace.yaml': '' }, process.cwd());
+    await patchPnpmWorkspace('format');
+
+    expect(volToJson()['pnpm-workspace.yaml']).toBe(v11Workspace);
+  });
+
   it('should migrate a pnpm v10 workspace to the v11 defaults', async () => {
     vol.fromJSON(
       {

@@ -2,11 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { exec } from '../../../../../../utils/exec.js';
+import { detectPnpmMajorVersion } from '../../../../../../utils/pnpmVersion.js';
 import type { PatchReturnType } from '../../index.js';
 
 import { migratePnpmV11 } from './migratePnpmV11.js';
 
 vi.mock('../../../../../../utils/exec.js');
+vi.mock('../../../../../../utils/pnpmVersion.js');
 vi.mock('fs-extra', () => ({
   default: memfs,
   ...memfs,
@@ -29,6 +31,7 @@ vi.mock('../../../patchPnpmWorkspace.js');
 
 const findRoot = vi.mocked(Git.findRoot);
 const execMock = vi.mocked(exec);
+const detectPnpmMajorVersionMock = vi.mocked(detectPnpmMajorVersion);
 
 const NODEJS_FUNCTION_SKIP_REASON =
   'aws-cdk-lib NodejsFunction cannot bundle its dependencies under pnpm v11; see https://seek-oss.github.io/skuba/deep-dives/pnpm.html#lambdas-and-nodejsfunction';
@@ -42,6 +45,23 @@ describe('migratePnpmV11', () => {
   beforeEach(async () => {
     await vol.promises.mkdir(process.cwd(), { recursive: true });
     findRoot.mockResolvedValue(process.cwd());
+    detectPnpmMajorVersionMock.mockResolvedValue(10);
+  });
+
+  it.each([11, 12])('should skip if already on pnpm v%i', async (major) => {
+    detectPnpmMajorVersionMock.mockResolvedValue(major);
+
+    await expect(
+      migratePnpmV11({
+        mode: 'format',
+        packageManager: { command: 'pnpm' },
+      }),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason: `already on pnpm v${major}`,
+    } satisfies PatchReturnType);
+
+    expect(execMock).not.toHaveBeenCalled();
   });
 
   it('should skip if not a pnpm project', async () => {

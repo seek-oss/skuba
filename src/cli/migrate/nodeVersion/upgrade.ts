@@ -206,7 +206,7 @@ export const upgradeInfraPackages = async (
     await exec(
       packageManager.command,
       'install',
-      ...(packageManager.command === 'pnpm' ? ['--frozen-lockfile=false'] : []),
+      ...(packageManager.command === 'pnpm' ? ['--no-frozen-lockfile'] : []),
       '--prefer-offline',
     );
   } catch (error) {
