@@ -1,5 +1,7 @@
 import { inspect } from 'util';
 
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 import type {
   Reporter,
   SerializedError,
@@ -15,9 +17,6 @@ import {
   type AnnotationEntry,
   generateAnnotationEntries,
 } from './annotations.js';
-
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
 
 /**
  * Reports Vitest results to GitHub as a check run per project.

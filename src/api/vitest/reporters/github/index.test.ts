@@ -1,3 +1,5 @@
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type {
   Logger,
@@ -10,9 +12,6 @@ import type {
 import { log } from '../../../../utils/logging.js';
 
 import { GitHubReporter } from './index.js';
-
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
 
 vi.mock('@skuba-lib/api/git');
 vi.mock('../../../../utils/logging');
