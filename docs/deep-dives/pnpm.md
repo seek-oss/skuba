@@ -137,7 +137,6 @@ which rewrites the mechanical configuration changes,
 then reapplies the **skuba**-managed settings in `pnpm-workspace.yaml`.
 
 The rest of this section covers the changes that the codemod cannot make for you.
-SEEKers can work through those with the [pnpm v11 migration skill].
 
 ### Node.js 22 or newer is required
 
@@ -227,6 +226,9 @@ bundle your Lambdas yourself with [`Rolldown.lambdaAsset`] and hand the output d
 The plugin stages your real `pnpm-workspace.yaml`, `.npmrc`, pnpmfile, `patches` directory and lockfile into the output directory before installing,
 so pnpm v11's defaults are satisfied.
 It also decouples bundling from `cdk synth`: your Lambda is built once by `skuba build`.
+
+SEEKers can hand this migration off to the [CDK Lambda bundling migration skill],
+which replaces `NodejsFunction` with `Rolldown.lambdaAsset` and is also available via the [seek-ai-toolkit].
 
 ---
 
@@ -495,9 +497,10 @@ This page may be [edited on GitHub].
 [`Rolldown.lambdaAsset`]: ../development-api/rolldown.md#lambdaasset
 [aws/aws-cdk#37898]: https://github.com/aws/aws-cdk/issues/37898
 [bind mount]: https://docs.docker.com/engine/reference/builder/#run---mounttypebind
-[pnpm v11 migration skill]: TODO
+[CDK Lambda bundling migration skill]: https://github.com/SEEK-Jobs/skuba-templates/blob/main/.agents/skills/migrate-cdk-lambda-bundling-to-rolldown/SKILL.md
 [pnpm v11]: https://pnpm.io/blog/releases/11.0
 [pnpm/pnpm#10988]: https://github.com/pnpm/pnpm/issues/10988
+[seek-ai-toolkit]: https://github.com/SEEK-Jobs/seek-ai-toolkit
 [upgrade patch]: ../cli/lint.md#patches
 [contribute a change]: https://seek-oss.github.io/skuba/CONTRIBUTING.html#i-want-to-contribute-a-change
 [edited on GitHub]: https://github.com/seek-oss/skuba/edit/main/docs/deep-dives/pnpm.md
