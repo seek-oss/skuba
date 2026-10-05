@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': patch
 ---
 
 lint: Sort skuba-managed entries in `pnpm-workspace.yaml`
