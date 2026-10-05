@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`'fixable' 1`] = `
+exports[`fixable 1`] = `
 "
 ESLint │ Processed 4 files in <random>s.
 Oxfmt  │ Checking formatting...
@@ -23,7 +23,7 @@ Try running pnpm exec skuba format to fix them.
 "
 `;
 
-exports[`'fixable' 2`] = `
+exports[`fixable 2`] = `
 [
   "
 Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
@@ -44,7 +44,7 @@ d.js Oxfmt found formatting issues in this file.
 ]
 `;
 
-exports[`'needs patches' 1`] = `
+exports[`needs patches 1`] = `
 "
 ESLint │ Processed 2 files in <random>s.
 Oxfmt  │ Checking formatting...
@@ -61,7 +61,7 @@ Try running pnpm exec skuba format to fix them.
 "
 `;
 
-exports[`'needs patches' 2`] = `
+exports[`needs patches 2`] = `
 [
   "
 Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
@@ -77,7 +77,7 @@ Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 ]
 `;
 
-exports[`'ok --debug' 1`] = `
+exports[`ok --debug 1`] = `
 "
 ESLint │ Initialising ESLint...
 ESLint │ Processing files...
@@ -121,9 +121,9 @@ skuba  │ Processed skuba lints in <random>s.
 "
 `;
 
-exports[`'ok --debug' 2`] = `[]`;
+exports[`ok --debug 2`] = `[]`;
 
-exports[`'ok' 1`] = `
+exports[`ok 1`] = `
 "
 ESLint │ Processed 2 files in <random>s.
 Oxfmt  │ Checking formatting...
@@ -136,9 +136,9 @@ skuba  │ Processed skuba lints in <random>s.
 "
 `;
 
-exports[`'ok' 2`] = `[]`;
+exports[`ok 2`] = `[]`;
 
-exports[`'unfixable' 1`] = `
+exports[`unfixable 1`] = `
 "
 ESLint │ Processed 2 files in <random>s.
 ESLint │ 
@@ -176,7 +176,7 @@ Try running pnpm exec skuba format to fix them.
 "
 `;
 
-exports[`'unfixable' 2`] = `
+exports[`unfixable 2`] = `
 [
   "
 Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }

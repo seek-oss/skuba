@@ -29,7 +29,7 @@ export const createGitHubAnnotations = async (isOk: boolean) => {
   });
 };
 
-const createBuildkiteAnnotations = async (isOk: boolean) => {
+export const createBuildkiteAnnotations = async (isOk: boolean) => {
   if (isOk) {
     return;
   }
@@ -45,9 +45,12 @@ const createBuildkiteAnnotations = async (isOk: boolean) => {
   });
 };
 
+/**
+ * Annotates test results on supported CI providers.
+ *
+ * GitHub check runs are reported from within Vitest by our `GitHubReporter`,
+ * which has access to individual test failures.
+ */
 export const createAnnotations = async (isOk: boolean) => {
-  await Promise.all([
-    createGitHubAnnotations(isOk),
-    createBuildkiteAnnotations(isOk),
-  ]);
+  await createBuildkiteAnnotations(isOk);
 };
