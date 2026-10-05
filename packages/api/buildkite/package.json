@@ -1,6 +1,0 @@
-{
-  "type": "module",
-  "main": "../lib/buildkite/index.cjs",
-  "module": "../lib/buildkite/index.mjs",
-  "types": "../lib/buildkite/index.d.cts"
-}

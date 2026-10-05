@@ -56,9 +56,6 @@ type ConfigDiff =
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const isEnabledWithDefaults = (value: unknown): boolean =>
-  value === true || (isPlainObject(value) && Object.keys(value).length === 0);
-
 const isIdentifier = (key: string): boolean => /^[A-Za-z_$][\w$]*$/.test(key);
 
 const serializeTsValue = (value: unknown, indentLevel: number): string => {
@@ -118,19 +115,15 @@ const diffMigratedOxfmtConfig = (
   const diffs: ConfigDiff[] = [];
 
   for (const [key, migratedValue] of Object.entries(migrated)) {
-    if (key === '$schema' || migratedValue === undefined) {
+    if (
+      key === '$schema' ||
+      key === 'sortPackageJson' ||
+      migratedValue === undefined
+    ) {
       continue;
     }
 
     const seekValue = seek[key];
-
-    if (
-      key === 'sortPackageJson' &&
-      isEnabledWithDefaults(migratedValue) &&
-      Boolean(seekValue)
-    ) {
-      continue;
-    }
 
     if (Array.isArray(migratedValue) && Array.isArray(seekValue)) {
       const extras = getArrayExtras(migratedValue, seekValue);
@@ -357,6 +350,6 @@ export const tryMigratePrettierToOxfmt: PatchFunction = async (config) => {
   } catch (err) {
     log.warn('Failed to migrate Prettier to Oxfmt');
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    throw err;
   }
 };

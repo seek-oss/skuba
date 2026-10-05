@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`'fixable' 1`] = `
+exports[`fixable 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
@@ -87,6 +87,8 @@ Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda
 
 Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 
+Patch skipped: Upgrade aws-sdk-client-mock-vitest to 8.0.0 - no package.json or pnpm-workspace.yaml files to patch upgrade-skuba
+
 Patch skipped: Update tsdown attw: true to the node16 profile - no tsdown.config files found upgrade-skuba
 
 Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found upgrade-skuba
@@ -109,7 +111,7 @@ Finished in <ms>ms on 8 files using <n> threads.
 "
 `;
 
-exports[`'fixable' 2`] = `
+exports[`fixable 2`] = `
 "
 a/a/a.ts
 --------
@@ -144,7 +146,7 @@ d.js
 "
 `;
 
-exports[`'ok --debug' 1`] = `
+exports[`ok --debug 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
@@ -230,6 +232,8 @@ Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no packa
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
 Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
+
+Patch skipped: Upgrade aws-sdk-client-mock-vitest to 8.0.0 - no package.json or pnpm-workspace.yaml files to patch upgrade-skuba
 
 Patch skipped: Update tsdown attw: true to the node16 profile - no tsdown.config files found upgrade-skuba
 
@@ -257,12 +261,12 @@ Finished in <ms>ms on 6 files using <n> threads.
 "
 `;
 
-exports[`'ok --debug' 2`] = `
+exports[`ok --debug 2`] = `
 "
 "
 `;
 
-exports[`'ok' 1`] = `
+exports[`ok 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
@@ -349,6 +353,8 @@ Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda
 
 Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 
+Patch skipped: Upgrade aws-sdk-client-mock-vitest to 8.0.0 - no package.json or pnpm-workspace.yaml files to patch upgrade-skuba
+
 Patch skipped: Update tsdown attw: true to the node16 profile - no tsdown.config files found upgrade-skuba
 
 Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found upgrade-skuba
@@ -371,12 +377,12 @@ Finished in <ms>ms on 6 files using <n> threads.
 "
 `;
 
-exports[`'ok' 2`] = `
+exports[`ok 2`] = `
 "
 "
 `;
 
-exports[`'unfixable' 1`] = `
+exports[`unfixable 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
@@ -461,6 +467,8 @@ Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no packa
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
 Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
+
+Patch skipped: Upgrade aws-sdk-client-mock-vitest to 8.0.0 - no package.json or pnpm-workspace.yaml files to patch upgrade-skuba
 
 Patch skipped: Update tsdown attw: true to the node16 profile - no tsdown.config files found upgrade-skuba
 
@@ -501,7 +509,7 @@ ESLint, Oxfmt found issues that require triage.
 "
 `;
 
-exports[`'unfixable' 2`] = `
+exports[`unfixable 2`] = `
 "
 a/a/a.ts
 --------

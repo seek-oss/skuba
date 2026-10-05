@@ -2,7 +2,7 @@ declare const config: {
   singleQuote: boolean;
   tabWidth: number;
   trailingComma: 'all';
-  plugins: ['prettier-plugin-packagejson'];
+  plugins: [];
 };
 
 export default config;
