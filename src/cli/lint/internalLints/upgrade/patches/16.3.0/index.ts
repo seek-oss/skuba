@@ -4,6 +4,7 @@ import { tryMigrateImportOrderEslintDisables } from './migrateImportOrderEslintD
 import { tryMigratePrettierToOxfmt } from './migratePrettierToOxfmt.js';
 import { tryMigrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.js';
 import { tryPatchAttwNode16 } from './patchAttwNode16.js';
+import { tryPatchAutomatSigtermHandler } from './patchAutomatSigtermHandler.js';
 import { tryPatchSeekLoggerCreateLogger } from './patchSeekLoggerCreateLogger.js';
 import { tryUpgradeAwsSdkClientMockVitest } from './upgradeAwsSdkClientMockVitest.js';
 
@@ -33,5 +34,10 @@ export const patches: Patches = [
     apply: tryPatchSeekLoggerCreateLogger,
     description:
       'Migrate default imports from @seek/logger to named createLogger imports',
+  },
+  {
+    apply: tryPatchAutomatSigtermHandler,
+    description:
+      'Add a graceful SIGTERM handler to the koa-rest-api src/listen.ts',
   },
 ];
