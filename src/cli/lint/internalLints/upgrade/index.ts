@@ -15,6 +15,10 @@ import type { ReadResult } from '../../../configure/types.js';
 import type { SkubaPackageJson } from '../../../init/writePackageJson.js';
 import type { InternalLintResult } from '../../internal.js';
 
+export type UpgradeSkubaResult = InternalLintResult & {
+  upgraded?: boolean;
+};
+
 export type Patches = Patch[];
 export type Patch = {
   apply: PatchFunction;
@@ -77,7 +81,7 @@ export const upgradeSkuba = async (
   mode: 'lint' | 'format',
   logger: Logger,
   additionalFlags: string[] = [],
-): Promise<InternalLintResult> => {
+): Promise<UpgradeSkubaResult> => {
   const [currentVersion, manifest, packageManager] = await Promise.all([
     getSkubaVersion(),
     getConsumerManifest(),
@@ -181,5 +185,6 @@ export const upgradeSkuba = async (
   return {
     ok: true,
     fixable: false,
+    upgraded: true,
   };
 };

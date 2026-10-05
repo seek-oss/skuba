@@ -16,6 +16,7 @@ export const lint = async (
   args = process.argv.slice(2),
   tscWriteable: Writable | undefined = undefined,
   workerThreads = true,
+  options: { pendingChanges?: boolean } = {},
 ) => {
   const opts: Input = {
     debug: hasDebugFlag(args),
@@ -65,5 +66,8 @@ export const lint = async (
     eslint: eslint.fixable,
     oxfmt: !oxfmt.ok,
     internal: internal.fixable,
+    // An upgrade may already have written patches. Push them even when this
+    // lint run is clean, which is when autofix would otherwise return early.
+    pendingChanges: options.pendingChanges,
   });
 };
