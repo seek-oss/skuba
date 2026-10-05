@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { inspect } from 'node:util';
 
 import { Git } from '@skuba-lib/api';
@@ -84,8 +85,8 @@ type PackageInfo = {
 export const upgradeInfraPackages = async (
   mode: 'lint' | 'format',
   packages: PackageInfo[],
+  dir: string = process.cwd(),
 ): Promise<PatchReturnType> => {
-  const dir = process.cwd();
   const gitRoot = await Git.findRoot({ dir });
   const root = gitRoot ?? dir;
 
@@ -110,20 +111,22 @@ export const upgradeInfraPackages = async (
   const [packageJsons, pnpmWorkspaces] = await Promise.all([
     Promise.all(
       packageJsonPaths.map(async (file) => {
-        const contents = await fs.promises.readFile(file, 'utf8');
+        const fullPath = path.join(root, file);
+        const contents = await fs.promises.readFile(fullPath, 'utf8');
 
         return {
-          file,
+          file: fullPath,
           contents,
         };
       }),
     ),
     Promise.all(
       pnpmWorkspacePaths.map(async (file) => {
-        const contents = await fs.promises.readFile(file, 'utf8');
+        const fullPath = path.join(root, file);
+        const contents = await fs.promises.readFile(fullPath, 'utf8');
 
         return {
-          file,
+          file: fullPath,
           contents,
         };
       }),
