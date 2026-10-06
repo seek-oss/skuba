@@ -4,7 +4,7 @@ import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 import { gte, sort } from 'semver';
 
-import type { Logger } from '../../../../utils/logging.js';
+import { type Logger, log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
 import {
   type PackageManagerConfig,
@@ -64,11 +64,10 @@ const changedWorktreeFiles = async (
   }
 };
 
-const batchFormatChangedFiles = async (
-  logger: Logger,
-  files: string[],
-  cwd: string,
-) => {
+const batchFormatChangedFiles = async (files: string[], cwd: string) => {
+  // Oxfmt's own summary is noise next to the patch log.
+  const logger: Logger = { ...log, plain: () => undefined };
+
   for (let index = 0; index < files.length; index += OXFMT_PATH_BATCH) {
     await runOxfmt(
       'format',
@@ -223,7 +222,7 @@ export const upgradeSkuba = async (
 
   const changed = await changedWorktreeFiles(process.cwd());
   if (changed && changed.files.length > 0) {
-    await batchFormatChangedFiles(logger, changed.files, changed.root);
+    await batchFormatChangedFiles(changed.files, changed.root);
   }
 
   logger.newline();
