@@ -117,6 +117,10 @@ process.on('SIGTERM', () => {
   // eslint-disable-next-line no-process-exit
   setTimeout(() => process.exit(1), 25_000).unref();
 
+  // Disconnect keep-alive clients as they fall idle, or they will hold the
+  // server open until \`keepAliveTimeout\`.
+  setInterval(() => listener.closeIdleConnections(), 100).unref();
+
   // Stop accepting connections, drain in-flight requests, and flush spans.
   promisify(listener.close.bind(listener))()
     .then(() => sdk?.shutdown())
@@ -387,6 +391,10 @@ process.on('SIGTERM', () => {
   // eslint-disable-next-line no-process-exit
   setTimeout(() => process.exit(1), 25_000).unref();
 
+  // Disconnect keep-alive clients as they fall idle, or they will hold the
+  // server open until \`keepAliveTimeout\`.
+  setInterval(() => listener.closeIdleConnections(), 100).unref();
+
   // Stop accepting connections and drain in-flight requests.
   listener.close((err) => {
     if (err) {
@@ -395,8 +403,8 @@ process.on('SIGTERM', () => {
 
     // Let the process exit on its own so dd-trace flushes spans on \`beforeExit\`,
     // which \`process.exit()\` skips. If another handle keeps the process alive,
-    // exit once dd-trace's periodic flush (every 2 seconds by default) has sent
-    // the remaining spans.
+    // exit once dd-trace has sent the remaining spans, which it does within
+    // \`DD_TRACE_FLUSH_INTERVAL\` (2 seconds by default) of a trace completing.
     // eslint-disable-next-line no-process-exit
     setTimeout(() => process.exit(0), 5_000).unref();
   });
@@ -460,6 +468,92 @@ const ddTraceFiles = (prefix = '') => ({
   [`${prefix}src/app.ts`]: 'export default new Koa();\n',
 });
 
+// A consumer's copy with no tracer and an `info` port log
+const UNTRACED_LISTEN = `/* istanbul ignore file */
+import app from './app.js';
+import { config } from './config.js';
+import { rootLogger } from './framework/logging.js';
+
+const listener = app.listen(config.port, () => {
+  const address = listener.address();
+
+  if (typeof address === 'object' && address) {
+    rootLogger.info(\`listening on port \${address.port}\`);
+  }
+});
+
+// Gantry ALB default idle timeout is 30 seconds
+listener.keepAliveTimeout = 31000;
+
+// Report unhandled rejections instead of crashing the process
+process.on('unhandledRejection', (err) =>
+  rootLogger.error(err, 'Unhandled promise rejection'),
+);
+`;
+
+const NEW_UNTRACED_LISTEN = `/* istanbul ignore file */
+import app from './app.js';
+import { config } from './config.js';
+import { rootLogger } from './framework/logging.js';
+
+const listener = app.listen(config.port, () => {
+  const address = listener.address();
+
+  if (typeof address === 'object' && address) {
+    rootLogger.info(\`listening on port \${address.port}\`);
+  }
+});
+
+// Gantry ALB default idle timeout is 30 seconds
+listener.keepAliveTimeout = 31000;
+
+// We have 30 seconds after receiving our SIGTERM before we will be SIGKILLed.
+// Node.js runs as PID 1 in the distroless runtime image and would otherwise
+// ignore SIGTERM entirely, causing the shutdown to stall for 30 seconds.
+process.on('SIGTERM', () => {
+  rootLogger.info('received SIGTERM, draining connections');
+
+  // Fall back to a hard exit just before the SIGKILL if draining stalls.
+  // eslint-disable-next-line no-process-exit
+  setTimeout(() => process.exit(1), 25_000).unref();
+
+  // Disconnect keep-alive clients as they fall idle, or they will hold the
+  // server open until \`keepAliveTimeout\`.
+  setInterval(() => listener.closeIdleConnections(), 100).unref();
+
+  // Stop accepting connections and drain in-flight requests.
+  listener.close((err) => {
+    if (err) {
+      rootLogger.error(err, 'failed to drain cleanly');
+    }
+
+    process.exit(0); // eslint-disable-line no-process-exit
+  });
+});
+
+// Report unhandled rejections instead of crashing the process
+process.on('unhandledRejection', (err) =>
+  rootLogger.error(err, 'Unhandled promise rejection'),
+);
+`;
+
+const UNTRACED_PACKAGE_JSON = `${JSON.stringify(
+  {
+    name: '@seek/service',
+    type: 'module',
+    dependencies: { 'hot-shots': '^14.3.1', 'seek-koala': '^7.0.0' },
+  },
+  null,
+  2,
+)}\n`;
+
+const untracedFiles = (prefix = '') => ({
+  [`${prefix}Dockerfile`]: 'CMD ["./lib/listen.js"]\n',
+  [`${prefix}package.json`]: UNTRACED_PACKAGE_JSON,
+  [`${prefix}src/listen.ts`]: UNTRACED_LISTEN,
+  [`${prefix}src/app.ts`]: 'export default new Koa();\n',
+});
+
 describe('patchListen', () => {
   it('should add the dd-trace SIGTERM handler', async () => {
     await expect(patchListen(DD_TRACE_LISTEN, 'dd-trace')).resolves.toBe(
@@ -467,8 +561,11 @@ describe('patchListen', () => {
     );
   });
 
-  it('should bail on dd-trace if src/register.ts is not imported', async () => {
-    await expect(patchListen(OLD_LISTEN, 'dd-trace')).resolves.toBeUndefined();
+  // dd-trace may be preloaded by the Dockerfile rather than imported
+  it('should add the dd-trace SIGTERM handler without a register import', async () => {
+    await expect(patchListen(OLD_LISTEN, 'dd-trace')).resolves.toContain(
+      'so dd-trace flushes spans on `beforeExit`',
+    );
   });
 
   it('should bail on dd-trace if the file is already migrated', async () => {
@@ -512,6 +609,10 @@ process.on('SIGTERM', () => {
   // eslint-disable-next-line no-process-exit
   setTimeout(() => process.exit(1), 25_000).unref();
 
+  // Disconnect keep-alive clients as they fall idle, or they will hold the
+  // server open until \`keepAliveTimeout\`.
+  setInterval(() => listener.closeIdleConnections(), 100).unref();
+
   // Stop accepting connections, drain in-flight requests, and flush spans.
   promisify(listener.close.bind(listener))()
     .then(() => sdk?.shutdown())
@@ -523,6 +624,43 @@ process.on('unhandledRejection', (err) =>
   rootLogger.error(err, 'Unhandled promise rejection'),
 );
 `);
+  });
+
+  it.each([
+    [
+      'a logger module of another name and a structured port log',
+      `import app from './app.js';
+import { rootLogger } from './framework/logger.js';
+
+const listener = app.listen(app.port, () => {
+  const address = listener.address();
+
+  if (typeof address === 'object' && address) {
+    rootLogger.debug({ port: address.port }, 'ServerReady');
+  }
+});
+`,
+      "    rootLogger.debug({ port: address.port }, 'ServerReady');",
+      'rootLogger',
+    ],
+    [
+      'a concise listen callback',
+      `import app from './app.js';
+import { config } from './config.js';
+import { logger } from './framework/logging.js';
+
+const listener = app.listen(config.port, () =>
+  logger.debug(\`Listening on port \${config.port}\`),
+);
+`,
+      '  logger.debug(`Listening on port ${config.port}`),',
+      'logger',
+    ],
+  ])('should match %s', async (_, contents, portLog, logger) => {
+    const patched = await patchListen(contents, 'none');
+
+    expect(patched).toContain(portLog);
+    expect(patched).toContain(`  ${logger}.info('received SIGTERM`);
   });
 
   it('should match extensionless imports from the oldest template', async () => {
@@ -853,9 +991,11 @@ describe('patchAutomatSigtermHandler', () => {
     const { 'src/tracing.ts': _, ...files } = templateFiles();
     vol.fromJSON(files, process.cwd());
 
+    // Without `src/tracing.ts` the service looks untraced, so the dependency
+    // is what stops it from being given a handler that skips the span flush
     await expect(patchAutomatSigtermHandler(baseArgs)).resolves.toEqual({
       result: 'skip',
-      reason: 'src/tracing.ts not found',
+      reason: 'package.json uses OpenTelemetry',
     } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual(files);
@@ -1084,6 +1224,23 @@ describe('patchAutomatSigtermHandler', () => {
       });
     });
 
+    it('should allow an unrelated tracing module', async () => {
+      vol.fromJSON(
+        {
+          ...ddTraceFiles(),
+          'src/framework/tracing.ts':
+            'export const overwriteDataTags = () => undefined;\n',
+          'src/app.ts':
+            "import { overwriteDataTags } from './framework/tracing.js';\n\nexport default new Koa();\n",
+        },
+        process.cwd(),
+      );
+
+      await expect(patchAutomatSigtermHandler(baseArgs)).resolves.toEqual({
+        result: 'apply',
+      } satisfies PatchReturnType);
+    });
+
     it('should allow dd-trace references elsewhere', async () => {
       vol.fromJSON(
         {
@@ -1157,33 +1314,112 @@ describe('patchAutomatSigtermHandler', () => {
         `${DD_TRACE_REGISTER}\ntracer.init();\n`,
       ],
     ])(
-      'should fall back to OpenTelemetry if src/register.ts %s',
+      'should fall back to the dependency if src/register.ts %s',
       async (_, register) => {
         const files = { ...ddTraceFiles(), 'src/register.ts': register };
         vol.fromJSON(files, process.cwd());
 
         await expect(patchAutomatSigtermHandler(baseArgs)).resolves.toEqual({
-          result: 'skip',
-          reason: 'src/tracing.ts not found',
+          result: 'apply',
         } satisfies PatchReturnType);
 
-        expect(volToJson()).toEqual(files);
+        expect(volToJson()['src/listen.ts']).toBe(NEW_DD_TRACE_LISTEN);
       },
     );
 
-    it('should skip a monorepo that mixes dd-trace and OpenTelemetry', async () => {
+    it('should resolve a register module outside of src', async () => {
+      const { 'src/register.ts': _, ...rest } = ddTraceFiles();
       const files = {
-        ...templateFiles('apps/a/'),
-        ...ddTraceFiles('apps/b/'),
+        ...rest,
+        'src/framework/register.ts': DD_TRACE_REGISTER,
+        'src/listen.ts': DD_TRACE_LISTEN.replace(
+          "'./register.js'",
+          "'./framework/register.js'",
+        ),
       };
       vol.fromJSON(files, process.cwd());
 
       await expect(patchAutomatSigtermHandler(baseArgs)).resolves.toEqual({
-        result: 'skip',
-        reason: 'apps/b/package.json uses dd-trace',
+        result: 'apply',
       } satisfies PatchReturnType);
 
-      expect(volToJson()).toEqual(files);
+      expect(volToJson()['src/listen.ts']).toBe(
+        NEW_DD_TRACE_LISTEN.replace(
+          "'./register.js'",
+          "'./framework/register.js'",
+        ),
+      );
+    });
+
+    it('should patch each package of a monorepo for its own tracer', async () => {
+      vol.fromJSON(
+        { ...templateFiles('apps/a/'), ...ddTraceFiles('apps/b/') },
+        process.cwd(),
+      );
+
+      await expect(patchAutomatSigtermHandler(baseArgs)).resolves.toEqual({
+        result: 'apply',
+      } satisfies PatchReturnType);
+
+      const files = volToJson();
+
+      expect(files['apps/a/src/listen.ts']).toBe(NEW_LISTEN);
+      expect(files['apps/a/src/tracing.ts']).toBe(NEW_TRACING);
+      expect(files['apps/b/src/listen.ts']).toBe(NEW_DD_TRACE_LISTEN);
+    });
+
+    it('should detect a shared Dockerfile that preloads dd-trace', async () => {
+      vol.fromJSON(
+        {
+          ...ddTraceFiles('apps/a/'),
+          ...untracedFiles('apps/b/'),
+          Dockerfile:
+            'CMD ["--import", "dd-trace/register.js", "./lib/listen.js"]\n',
+        },
+        process.cwd(),
+      );
+
+      await expect(patchAutomatSigtermHandler(baseArgs)).resolves.toEqual({
+        result: 'apply',
+      } satisfies PatchReturnType);
+
+      // `apps/b` has no tracer of its own, but the image preloads one into it
+      expect(volToJson()['apps/b/src/listen.ts']).toContain(
+        'so dd-trace flushes spans on `beforeExit`',
+      );
+    });
+  });
+
+  describe('no tracer', () => {
+    it('should patch src/listen.ts with a plain handler', async () => {
+      const files = untracedFiles();
+      vol.fromJSON(files, process.cwd());
+
+      await expect(patchAutomatSigtermHandler(baseArgs)).resolves.toEqual({
+        result: 'apply',
+      } satisfies PatchReturnType);
+
+      expect(volToJson()).toEqual({
+        ...files,
+        'src/listen.ts': NEW_UNTRACED_LISTEN,
+      });
+    });
+
+    it('should ignore a tracer in a sibling package', async () => {
+      vol.fromJSON(
+        {
+          ...untracedFiles('apps/api/'),
+          'apps/worker/package.json': DD_TRACE_PACKAGE_JSON,
+          'apps/worker/src/index.ts': "import 'dd-trace/init';\n",
+        },
+        process.cwd(),
+      );
+
+      await expect(patchAutomatSigtermHandler(baseArgs)).resolves.toEqual({
+        result: 'apply',
+      } satisfies PatchReturnType);
+
+      expect(volToJson()['apps/api/src/listen.ts']).toBe(NEW_UNTRACED_LISTEN);
     });
   });
 });

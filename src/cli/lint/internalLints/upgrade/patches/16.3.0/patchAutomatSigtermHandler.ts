@@ -12,9 +12,11 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 const GLOB_IGNORE = [
   '**/.git',
   '**/node_modules',
-  // Lockfiles list transitive dependencies that the service may never load
+  // Lockfiles list transitive dependencies that the service may never load,
+  // and `pnpm-workspace.yaml` catalogues versions for the whole workspace
   '**/package-lock.json',
   '**/pnpm-lock.yaml',
+  '**/pnpm-workspace.yaml',
 ];
 
 /**
@@ -34,28 +36,33 @@ const SCANNED_FILE_GLOBS = [
  *
  * - `opentelemetry`: `src/tracing.ts` starts the OpenTelemetry `NodeSDK` and is
  *   preloaded by the Dockerfile.
- * - `dd-trace`: `src/register.ts` initialises `dd-trace` and is the first
- *   import of `src/listen.ts`.
+ * - `dd-trace`: the first import of `src/listen.ts` initialises `dd-trace`.
+ * - `none`: the service has no tracer, so its handler only drains connections.
  */
-type Variant = 'opentelemetry' | 'dd-trace';
+type Variant = 'opentelemetry' | 'dd-trace' | 'none';
 
 /**
- * Markers of anything the patch does not account for. Any match anywhere in
- * the repository skips the patch so the consumer can align their shutdown
- * handling manually.
+ * Markers of anything the patch does not account for. Any match skips the
+ * patch so the consumer can align their shutdown handling manually.
  */
 const BLOCKING_MARKERS: Array<{
   pattern: RegExp;
   reason: string;
   allowedInTracing?: true;
-  /** Ignore this marker when every service uses this variant. */
+  /** Ignore this marker for services that use this variant. */
   allowedFor?: Variant;
-  /** Only apply this marker when any service uses this variant. */
+  /** Only apply this marker to services that use this variant. */
   onlyFor?: Variant;
+  /**
+   * Only match files that the service itself loads, rather than anywhere in
+   * the repository. A sibling package in a monorepo is a separate process.
+   */
+  package?: true;
 }> = [
   {
     // A second handler would race with ours. The template's `src/tracing.ts`
-    // handler is the one we replace.
+    // handler is the one we replace. This stays repository-wide because a
+    // sibling package may install a handler for a shared entry point.
     pattern: /SIGTERM/,
     reason: 'may already handle SIGTERM',
     allowedInTracing: true,
@@ -64,6 +71,15 @@ const BLOCKING_MARKERS: Array<{
     // Registered its own SIGTERM handler before 0.4.0
     pattern: /@seek\/otel-tracing/,
     reason: 'uses @seek/otel-tracing',
+    package: true,
+  },
+  {
+    // Only the `opentelemetry` variant's handler shuts the SDK down; the
+    // others exit before the SDK has flushed its spans.
+    pattern: /@opentelemetry\/sdk-node/,
+    reason: 'uses OpenTelemetry',
+    allowedFor: 'opentelemetry',
+    package: true,
   },
   {
     // Only flushes buffered spans on `beforeExit`, which `process.exit()` skips.
@@ -71,24 +87,29 @@ const BLOCKING_MARKERS: Array<{
     pattern: /dd-trace/,
     reason: 'uses dd-trace',
     allowedFor: 'dd-trace',
+    package: true,
   },
   {
     // The `dd-trace` variant's handler waits out the default flush interval
     pattern: /\b(?:flushInterval|DD_TRACE_FLUSH_INTERVAL)\b/,
     reason: 'may customise the dd-trace flush interval',
     onlyFor: 'dd-trace',
+    package: true,
   },
   {
     pattern: /launchdarkly/i,
     reason: 'uses LaunchDarkly',
+    package: true,
   },
   {
     pattern: /\bdatadog-metrics\b/,
     reason: 'uses datadog-metrics',
+    package: true,
   },
   {
     pattern: /\b(?:maxBufferSize|bufferFlushInterval)\b/,
     reason: 'may buffer StatsD metrics',
+    package: true,
   },
 ];
 
@@ -99,27 +120,45 @@ const BLOCKING_MARKERS: Array<{
 const TRACING_REFERENCE = /\/tracing(?:\.[cm]?[jt]s)?(?=['"`\s,\]]|$)/gm;
 
 /**
+ * A call that only logs, such as ``logger.debug(`listening on port ${port}`)``
+ * or `logger.debug({ port }, 'ServerReady')`.
+ */
+const LOG_CALL = String.raw`\k<logger>\.(?:debug|info)\([^;]*\)`;
+
+/**
  * The code of `src/listen.ts` from any version of the `koa-rest-api` template,
  * after comments are removed and the code is normalised by `normaliseCode`.
  *
- * Only identifiers and import styles that varied between template versions are
- * allowed to vary here; any other change skips the patch.
+ * Identifiers, module paths and the port log vary between template versions
+ * and across consumers, so they are allowed to vary here. Any other statement
+ * skips the patch, as it may depend on the process staying alive.
  */
 const TEMPLATE_LISTEN_CODE = new RegExp(
   [
-    String.raw`^(?<register>import'\./register(?:\.js)?';)?`,
+    // A side-effect import that must stay first, e.g. `./register.js`
+    String.raw`^(?:import'(?<register>\.[\w./-]+)';)?`,
     String.raw`import(?: app |\{app\})from'\./app(?<ext>\.js)?';`,
     String.raw`(?:import\{config\}from'\./config\k<ext>';)?`,
-    String.raw`import\{(?<logger>[A-Za-z_$][\w$]*)\}from'\./framework/logging\k<ext>';`,
-    String.raw`const listener=app\.listen\((?:app|config)\.port,\(\)=>\{`,
-    String.raw`const address=listener\.address\(\);`,
-    String.raw`if\(typeof address==='object'&&address\)\{`,
-    String.raw`\k<logger>\.debug\(\`listening on port \$\{address\.port\}\`\);`,
-    String.raw`\}\}\);`,
+    // The logger module has moved around between template versions
+    String.raw`import(?: |\{)(?<logger>[A-Za-z_$][\w$]*)(?: |\})from'\.[\w./-]+';`,
+    String.raw`const listener=app\.listen\((?:app|config)\.port,\(\)=>(?:`,
+    String.raw`\{const address=listener\.address\(\);`,
+    String.raw`if\(typeof address==='object'&&address\)\{${LOG_CALL};\}\}`,
+    String.raw`|${LOG_CALL}`,
+    String.raw`)\);`,
     String.raw`(?:listener\.keepAliveTimeout=31000;)?`,
     String.raw`(?:process\.on\('unhandledRejection',\(err\)=>\k<logger>\.error\(err,'Unhandled promise rejection'\)\);)?$`,
   ].join(''),
 );
+
+/**
+ * `close` stops the server accepting connections and disconnects the clients
+ * that are idle at that moment, but a client that goes idle as its in-flight
+ * request completes is left to sit out `keepAliveTimeout`. That outlasts the
+ * hard exit below, so reap those clients as they fall idle.
+ */
+const REAP_IDLE_CONNECTIONS =
+  '  setInterval(() => listener.closeIdleConnections(), 100).unref();';
 
 const sigtermHandler = (logger: string) => `
 // We have 30 seconds after receiving our SIGTERM before we will be SIGKILLed.
@@ -131,6 +170,10 @@ process.on('SIGTERM', () => {
   // Fall back to a hard exit just before the SIGKILL if draining stalls.
   // eslint-disable-next-line no-process-exit
   setTimeout(() => process.exit(1), 25_000).unref();
+
+  // Disconnect keep-alive clients as they fall idle, or they will hold the
+  // server open until \`keepAliveTimeout\`.
+${REAP_IDLE_CONNECTIONS}
 
   // Stop accepting connections, drain in-flight requests, and flush spans.
   promisify(listener.close.bind(listener))()
@@ -155,6 +198,10 @@ process.on('SIGTERM', () => {
   // eslint-disable-next-line no-process-exit
   setTimeout(() => process.exit(1), 25_000).unref();
 
+  // Disconnect keep-alive clients as they fall idle, or they will hold the
+  // server open until \`keepAliveTimeout\`.
+${REAP_IDLE_CONNECTIONS}
+
   // Stop accepting connections and drain in-flight requests.
   listener.close((err) => {
     if (err) {
@@ -163,10 +210,39 @@ process.on('SIGTERM', () => {
 
     // Let the process exit on its own so dd-trace flushes spans on \`beforeExit\`,
     // which \`process.exit()\` skips. If another handle keeps the process alive,
-    // exit once dd-trace's periodic flush (every 2 seconds by default) has sent
-    // the remaining spans.
+    // exit once dd-trace has sent the remaining spans, which it does within
+    // \`DD_TRACE_FLUSH_INTERVAL\` (2 seconds by default) of a trace completing.
     // eslint-disable-next-line no-process-exit
     setTimeout(() => process.exit(0), 5_000).unref();
+  });
+});`;
+
+/**
+ * Without a tracer there is nothing to flush, so this handler exits as soon as
+ * the server has drained.
+ */
+const plainSigtermHandler = (logger: string) => `
+// We have 30 seconds after receiving our SIGTERM before we will be SIGKILLed.
+// Node.js runs as PID 1 in the distroless runtime image and would otherwise
+// ignore SIGTERM entirely, causing the shutdown to stall for 30 seconds.
+process.on('SIGTERM', () => {
+  ${logger}.info('received SIGTERM, draining connections');
+
+  // Fall back to a hard exit just before the SIGKILL if draining stalls.
+  // eslint-disable-next-line no-process-exit
+  setTimeout(() => process.exit(1), 25_000).unref();
+
+  // Disconnect keep-alive clients as they fall idle, or they will hold the
+  // server open until \`keepAliveTimeout\`.
+${REAP_IDLE_CONNECTIONS}
+
+  // Stop accepting connections and drain in-flight requests.
+  listener.close((err) => {
+    if (err) {
+      ${logger}.error(err, 'failed to drain cleanly');
+    }
+
+    process.exit(0); // eslint-disable-line no-process-exit
   });
 });`;
 
@@ -281,8 +357,8 @@ const replaceOnce = (
     : undefined;
 
 /**
- * `src/register.ts` imports `dd-trace` by its default export and initialises
- * it exactly once.
+ * The module that `src/listen.ts` imports for its side effects imports
+ * `dd-trace` by its default export and initialises it exactly once.
  */
 const isDdTraceRegister = (contents: string | undefined): boolean => {
   if (contents === undefined) {
@@ -331,7 +407,7 @@ const matchListen = async (contents: string) => {
     ast,
     logger,
     ext: match.groups?.ext ?? '',
-    importsRegister: match.groups?.register !== undefined,
+    registerSpecifier: match.groups?.register,
   };
 };
 
@@ -343,8 +419,7 @@ export const patchListen = async (
 
   const match = await matchListen(contents);
 
-  // dd-trace must be initialised by `src/register.ts` before anything else
-  if (!match || (variant === 'dd-trace' && !match.importsRegister)) {
+  if (!match) {
     return undefined;
   }
 
@@ -381,16 +456,17 @@ export const patchListen = async (
     return undefined;
   }
 
+  const handler = {
+    opentelemetry: sigtermHandler,
+    'dd-trace': ddTraceSigtermHandler,
+    none: plainSigtermHandler,
+  }[variant];
+
   // Each insertion goes before this 0-based line index
-  const insertions: Array<{ line: number; lines: string[] }> =
-    variant === 'dd-trace'
+  const insertions: Array<{ line: number; lines: string[] }> = [
+    // Only the OpenTelemetry handler awaits the drain to shut the SDK down
+    ...(variant === 'opentelemetry'
       ? [
-          {
-            line: handlerAnchor.range().end.line + 1,
-            lines: ddTraceSigtermHandler(logger).split('\n'),
-          },
-        ]
-      : [
           {
             line: firstBindingImport.range().start.line,
             lines: ["import { promisify } from 'node:util';", ''],
@@ -399,11 +475,13 @@ export const patchListen = async (
             line: lastImport.range().end.line + 1,
             lines: [`import { sdk } from './tracing${ext}';`],
           },
-          {
-            line: handlerAnchor.range().end.line + 1,
-            lines: sigtermHandler(logger).split('\n'),
-          },
-        ];
+        ]
+      : []),
+    {
+      line: handlerAnchor.range().end.line + 1,
+      lines: handler(logger).split('\n'),
+    },
+  ];
 
   const comments = ast.findAll({ rule: { kind: 'comment' } });
 
@@ -497,20 +575,14 @@ export const patchTracing = async (
 
 type FileUpdate = { file: string; contents: string };
 
-type Candidate =
-  | {
-      variant: 'opentelemetry';
-      listenFile: string;
-      patchedListen: string;
-      tracingFile: string;
-      packageDir: string;
-      dockerfile: string;
-    }
-  | {
-      variant: 'dd-trace';
-      listenFile: string;
-      patchedListen: string;
-    };
+type Candidate = {
+  listenFile: string;
+  patchedListen: string;
+  packageDir: string;
+} & (
+  | { variant: 'opentelemetry'; tracingFile: string; dockerfile: string }
+  | { variant: 'dd-trace' | 'none' }
+);
 
 const isModulePackage = async (
   packageJson: string,
@@ -534,9 +606,9 @@ const evaluateCandidate = async (
 ): Promise<
   { ok: true; updates: FileUpdate[] } | { ok: false; reason: string }
 > => {
-  if (candidate.variant === 'dd-trace') {
-    // `src/register.ts` was checked when the candidate was found and needs no
-    // changes. The repository-wide scan accounts for anything else.
+  if (candidate.variant !== 'opentelemetry') {
+    // The tracer was checked when the candidate was found and needs no
+    // changes. The blocking scan accounts for anything else.
     return {
       ok: true,
       updates: [
@@ -548,14 +620,9 @@ const evaluateCandidate = async (
   const { listenFile, patchedListen, tracingFile, packageDir, dockerfile } =
     candidate;
 
-  const tracingContents = await readFileIfExists(tracingFile);
-
-  if (tracingContents === undefined) {
-    return {
-      ok: false,
-      reason: `${path.relative(root, tracingFile)} not found`,
-    };
-  }
+  // Checked when the candidate was found, which is how it was classified as
+  // the OpenTelemetry variant
+  const tracingContents = (await readFileIfExists(tracingFile)) ?? '';
 
   const patchedTracing = await patchTracing(tracingContents);
 
@@ -630,12 +697,31 @@ const findBlockingFile = async ({
     openTelemetryCandidates.map(({ dockerfile }) => dockerfile),
   );
 
-  const markers = BLOCKING_MARKERS.filter(
-    ({ allowedFor, onlyFor }) =>
-      (!allowedFor ||
-        candidates.some(({ variant }) => variant !== allowedFor)) &&
-      (!onlyFor || candidates.some(({ variant }) => variant === onlyFor)),
-  );
+  // A monorepo builds each package into its own process, so a package-scoped
+  // marker only applies to files that the package itself loads. Files at the
+  // repository root configure every package, so they are always in scope.
+  const packages = candidates.map(({ variant, packageDir }) => ({
+    variant,
+    prefix: path
+      .relative(root, packageDir)
+      .split(path.sep)
+      .filter(Boolean)
+      .join('/'),
+  }));
+
+  const appliesTo = (
+    { allowedFor, onlyFor, package: perPackage }: (typeof BLOCKING_MARKERS)[0],
+    relativePath: string,
+  ) =>
+    packages.some(
+      ({ variant, prefix }) =>
+        (!allowedFor || variant !== allowedFor) &&
+        (!onlyFor || variant === onlyFor) &&
+        (!perPackage ||
+          prefix === '' ||
+          !relativePath.includes('/') ||
+          relativePath.startsWith(`${prefix}/`)),
+    );
 
   const files = await fg(SCANNED_FILE_GLOBS, {
     cwd: root,
@@ -649,18 +735,23 @@ const findBlockingFile = async ({
 
     const isTracingFile = tracingFiles.has(file);
 
-    const marker = markers.find(
-      ({ pattern, allowedInTracing }) =>
-        !(isTracingFile && allowedInTracing) && pattern.test(contents),
+    const marker = BLOCKING_MARKERS.find(
+      (candidateMarker) =>
+        !(isTracingFile && candidateMarker.allowedInTracing) &&
+        candidateMarker.pattern.test(contents) &&
+        appliesTo(candidateMarker, relativePath),
     );
 
     // Each candidate's Dockerfile CMD is expected to preload `tracing.js`.
     // Any other reference may be another entry point that relies on the
-    // SIGTERM handler we are moving out of `src/tracing.ts`.
-    const unexpectedTracingReferences = isTracingFile
-      ? 0
-      : (contents.match(TRACING_REFERENCE)?.length ?? 0) -
-        (dockerfiles.has(file) ? 1 : 0);
+    // SIGTERM handler we are moving out of `src/tracing.ts`. Services without
+    // an OpenTelemetry `src/tracing.ts` may have an unrelated module of that
+    // name.
+    const unexpectedTracingReferences =
+      isTracingFile || !openTelemetryCandidates.length
+        ? 0
+        : (contents.match(TRACING_REFERENCE)?.length ?? 0) -
+          (dockerfiles.has(file) ? 1 : 0);
 
     const reason =
       marker?.reason ??
@@ -682,6 +773,69 @@ const findBlockingFile = async ({
   }
 
   return undefined;
+};
+
+/**
+ * Files that record a dependency on `dd-trace` or preload it into the Node
+ * process, such as `CMD ["--import", "dd-trace/register.js", ...]`.
+ */
+const DD_TRACE_HOST_GLOBS = ['package.json', 'Dockerfile*', '*.Dockerfile'];
+
+/**
+ * Whether the service may load `dd-trace` without initialising it in a module
+ * that `src/listen.ts` imports: as a dependency of the package, or as a Node
+ * preload in the Dockerfile that launches it.
+ */
+const mayLoadDdTrace = async (
+  root: string,
+  packageDir: string,
+): Promise<boolean> => {
+  // A monorepo often builds its packages from one Dockerfile at the root
+  const dirs = packageDir === root ? [root] : [packageDir, root];
+
+  for (const dir of dirs) {
+    const files = await fg(DD_TRACE_HOST_GLOBS, { cwd: dir });
+
+    for (const file of files.sort()) {
+      const contents = await readFileIfExists(path.join(dir, file));
+
+      if (contents?.includes('dd-trace')) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+/**
+ * Which tracer the service initialises, based on the module that
+ * `src/listen.ts` imports for its side effects and whether the template's
+ * `src/tracing.ts` sits alongside it.
+ */
+const tracerVariant = async (
+  root: string,
+  srcDir: string,
+  packageDir: string,
+  registerSpecifier: string | undefined,
+): Promise<Variant> => {
+  if (registerSpecifier !== undefined) {
+    const registerFile = `${path.join(srcDir, registerSpecifier.replace(/\.[cm]?js$/, ''))}.ts`;
+
+    if (isDdTraceRegister(await readFileIfExists(registerFile))) {
+      return 'dd-trace';
+    }
+  }
+
+  if ((await readFileIfExists(path.join(srcDir, 'tracing.ts'))) !== undefined) {
+    return 'opentelemetry';
+  }
+
+  // The service may still load dd-trace somewhere this patch cannot resolve.
+  // Its handler only lets the process exit on its own rather than flushing
+  // anything itself, so it is also correct for a service with no tracer, just
+  // slower to exit if another handle outlives the drain.
+  return (await mayLoadDdTrace(root, packageDir)) ? 'dd-trace' : 'none';
 };
 
 export const patchAutomatSigtermHandler: PatchFunction = async ({
@@ -711,13 +865,14 @@ export const patchAutomatSigtermHandler: PatchFunction = async ({
     const srcDir = path.dirname(listenFile);
     const packageDir = path.dirname(srcDir);
 
-    const variant: Variant =
-      match.importsRegister &&
-      isDdTraceRegister(
-        await readFileIfExists(path.join(srcDir, 'register.ts')),
-      )
-        ? 'dd-trace'
-        : 'opentelemetry';
+    const tracingFile = path.join(srcDir, 'tracing.ts');
+
+    const variant = await tracerVariant(
+      root,
+      srcDir,
+      packageDir,
+      match.registerSpecifier,
+    );
 
     const patchedListen = await patchListen(contents, variant);
 
@@ -725,23 +880,22 @@ export const patchAutomatSigtermHandler: PatchFunction = async ({
       continue;
     }
 
-    if (variant === 'dd-trace') {
-      candidates.push({
-        variant,
-        listenFile,
-        patchedListen: restoreLineEndings(contents, patchedListen),
-      });
-      continue;
-    }
-
-    candidates.push({
-      variant,
+    const common = {
       listenFile,
       patchedListen: restoreLineEndings(contents, patchedListen),
-      tracingFile: path.join(srcDir, 'tracing.ts'),
       packageDir,
-      dockerfile: path.join(packageDir, 'Dockerfile'),
-    });
+    };
+
+    candidates.push(
+      variant === 'opentelemetry'
+        ? {
+            ...common,
+            variant,
+            tracingFile,
+            dockerfile: path.join(packageDir, 'Dockerfile'),
+          }
+        : { ...common, variant },
+    );
   }
 
   if (candidates.length === 0) {
