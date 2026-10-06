@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -8,16 +8,16 @@ import { migrateToPnpmConfig } from './migrateToPnpmConfig.js';
 
 vi.mock('../../../../../../utils/exec.js');
 vi.mock('node:fs', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('node:fs/promises', () => ({
-  default: memfs.fs.promises,
-  ...memfs.fs.promises,
+  default: memfs.promises,
+  ...memfs.promises,
 }));
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -50,7 +50,7 @@ const baseArgs: PatchConfig = {
 
 describe('migrateToPnpmConfig', () => {
   it('should skip if no pnpm-workspace.yaml is found', async () => {
-    vol.fromJSON({});
+    vol.fromJSON({}, process.cwd());
 
     await expect(
       migrateToPnpmConfig({
@@ -64,13 +64,16 @@ describe('migrateToPnpmConfig', () => {
   });
 
   it('should skip if pnpm-workspace.yaml has no managed by skuba block', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -84,13 +87,14 @@ packages:
   });
 
   it('should not write changes if the mode is lint', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
@@ -99,7 +103,9 @@ packages:
   something
 # end managed by skuba
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -129,13 +135,14 @@ packages:
   });
 
   it('should remove a managed by skuba block', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
@@ -143,7 +150,9 @@ packages:
   something
 # end managed by skuba
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -169,13 +178,14 @@ packages:
   });
 
   it('should add publicHoistPattern if orphan dash items are found', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
@@ -185,7 +195,9 @@ publicHoistPattern:
 # end managed by skuba
   - orphan
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -213,13 +225,14 @@ publicHoistPattern:
   });
 
   it('should add publicHoistPattern if orphan dash items are found after comments', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
@@ -230,7 +243,9 @@ publicHoistPattern:
   # some comment describing why
   - orphan
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -259,13 +274,14 @@ publicHoistPattern:
   });
 
   it('should add publicHoistPattern if orphan dash items are found after empty paragraphs', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
@@ -276,7 +292,9 @@ publicHoistPattern:
 
   - orphan
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -305,13 +323,14 @@ publicHoistPattern:
   });
 
   it('should not add publicHoistPattern if the next section has its own key', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `# managed by skuba
+        'pnpm-workspace.yaml': `# managed by skuba
 ignorePatchFailures: false
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
@@ -342,7 +361,9 @@ injectWorkspacePackages: true
 
 nodeOptions: '\${NODE_OPTIONS:- } --max-old-space-size=8192'
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -370,13 +391,14 @@ nodeOptions: '\${NODE_OPTIONS:- } --max-old-space-size=8192'
   });
 
   it('should migrate minimumReleaseAgeExcludeOverload from package.json to pnpm-workspace.yaml', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
@@ -384,7 +406,7 @@ packages:
   something
 # end managed by skuba
 `,
-      'package.json': `{
+        'package.json': `{
   "name": "test",
   "version": "1.0.0",
   "minimumReleaseAgeExcludeOverload": [
@@ -393,7 +415,9 @@ packages:
   ]
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -428,13 +452,14 @@ minimumReleaseAgeExclude:
   });
 
   it('should upgrade packageManager version if less than 10.26.2', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
@@ -442,13 +467,15 @@ packages:
   something
 # end managed by skuba
 `,
-      'package.json': `{
+        'package.json': `{
   "name": "test",
   "version": "1.0.0",
   "packageManager": "pnpm@10.7.0+sha123456"
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({
@@ -480,13 +507,14 @@ packages:
   });
 
   it('should not upgrade packageManager version if already at 10.26.2 or above', async () => {
-    vol.fromJSON({
-      'src/utils/package.json': `{
+    vol.fromJSON(
+      {
+        'src/utils/package.json': `{
       "devDependencies": {
         "pnpm-plugin-skuba": "1.0.0"
       }
     }`,
-      'pnpm-workspace.yaml': `
+        'pnpm-workspace.yaml': `
 packages:
   - packages/*
   - template/*
@@ -494,13 +522,15 @@ packages:
   something
 # end managed by skuba
 `,
-      'package.json': `{
+        'package.json': `{
   "name": "test",
   "version": "1.0.0",
   "packageManager": "pnpm@10.26.2"
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToPnpmConfig({

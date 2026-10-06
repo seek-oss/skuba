@@ -49,14 +49,7 @@ const getNpmPackage = async (packageName: string) => {
   }
 };
 
-export const getNpmVersions = async (
-  packageName: string,
-): Promise<NpmVersions | null> => {
-  const response = await getNpmPackage(packageName);
-  return response?.versions ?? null;
-};
-
-export const getLatestNpmVersion = async (
+const getLatestNpmVersion = async (
   packageName: string,
 ): Promise<string | null> => {
   const response = await getNpmPackage(packageName);

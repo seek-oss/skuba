@@ -1,6 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
+import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
 import { SemVer, coerce, lt, valid } from 'semver';
 
@@ -11,8 +12,6 @@ import {
 } from '../../../../../../utils/manifest.js';
 import { installPnpmPlugin } from '../../../../../init/installPnpmPlugin.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
-
-import { Git } from '@skuba-lib/api';
 
 export const migrateToPnpmConfig: PatchFunction = async ({
   mode,

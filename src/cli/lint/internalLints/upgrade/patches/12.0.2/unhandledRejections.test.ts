@@ -1,11 +1,12 @@
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
+
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -70,7 +71,7 @@ export default createLogger();
 
 const consoleLog = vi.spyOn(console, 'log');
 
-const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
+const writeFile = vi.spyOn(memfs.promises, 'writeFile');
 
 afterEach(() => vi.clearAllMocks());
 
@@ -184,7 +185,7 @@ describe('NAMED_EXPORT_REGEX', () => {
 
 describe('unhandledRejections', () => {
   it('patches a listener with a callback', async () => {
-    vol.fromJSON({ 'src/listen.ts': LISTENER_WITH_CALLBACK });
+    vol.fromJSON({ 'src/listen.ts': LISTENER_WITH_CALLBACK }, process.cwd());
 
     await expect(
       tryPatchUnhandledRejections({ mode: 'format' } as PatchConfig),
@@ -194,7 +195,8 @@ describe('unhandledRejections', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "src/listen.ts": "import { app } from 'src/app.js';
+        "src/listen.ts": "
+      import { app } from 'src/app.js';
       import { config } from 'src/config.js';
       import { logger } from 'src/framework/logging.js';
 
@@ -206,21 +208,26 @@ describe('unhandledRejections', () => {
         }
       });
 
+
+
+
       // Report unhandled rejections instead of crashing the process
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         logger.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
       }
     `);
   });
 
   it('patches a listener with an export const logger', async () => {
-    vol.fromJSON({
-      'src/listen.ts': LISTENER_WITHOUT_CALLBACK,
-      'src/framework/logging.ts': LOGGER_WITH_EXPORT_CONST,
-    });
+    vol.fromJSON(
+      {
+        'src/listen.ts': LISTENER_WITHOUT_CALLBACK,
+        'src/framework/logging.ts': LOGGER_WITH_EXPORT_CONST,
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryPatchUnhandledRejections({ mode: 'format' } as PatchConfig),
@@ -235,10 +242,12 @@ describe('unhandledRejections', () => {
 
       export const logger = createLogger();
       ",
-        "src/listen.ts": "import { app } from 'src/app';
+        "src/listen.ts": "
+      import { app } from 'src/app';
       import { config } from 'src/config';
 
       app.listen(config.port);
+
 
       import { logger } from 'src/framework/logging';
 
@@ -246,17 +255,19 @@ describe('unhandledRejections', () => {
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         logger.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
       }
     `);
   });
 
   it('patches a listener with an export {} logger', async () => {
-    vol.fromJSON({
-      'src/listen.ts': LISTENER_WITHOUT_CALLBACK,
-      'src/logger.ts': LOGGER_WITH_EXPORT,
-    });
+    vol.fromJSON(
+      {
+        'src/listen.ts': LISTENER_WITHOUT_CALLBACK,
+        'src/logger.ts': LOGGER_WITH_EXPORT,
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryPatchUnhandledRejections({ mode: 'format' } as PatchConfig),
@@ -266,10 +277,12 @@ describe('unhandledRejections', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "src/listen.ts": "import { app } from 'src/app';
+        "src/listen.ts": "
+      import { app } from 'src/app';
       import { config } from 'src/config';
 
       app.listen(config.port);
+
 
       import { rootLogger } from 'src/logger';
 
@@ -277,8 +290,7 @@ describe('unhandledRejections', () => {
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         rootLogger.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
         "src/logger.ts": "
       import { createLogger } from '@seek/logger';
 
@@ -291,10 +303,13 @@ describe('unhandledRejections', () => {
   });
 
   it('patches a listener with a default export logger', async () => {
-    vol.fromJSON({
-      'src/listen.ts': LISTENER_WITHOUT_CALLBACK,
-      'src/logger.ts': LOGGER_WITH_DEFAULT_EXPORT,
-    });
+    vol.fromJSON(
+      {
+        'src/listen.ts': LISTENER_WITHOUT_CALLBACK,
+        'src/logger.ts': LOGGER_WITH_DEFAULT_EXPORT,
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryPatchUnhandledRejections({ mode: 'format' } as PatchConfig),
@@ -304,10 +319,12 @@ describe('unhandledRejections', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "src/listen.ts": "import { app } from 'src/app';
+        "src/listen.ts": "
+      import { app } from 'src/app';
       import { config } from 'src/config';
 
       app.listen(config.port);
+
 
       import logger from 'src/logger';
 
@@ -315,8 +332,7 @@ describe('unhandledRejections', () => {
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         logger.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
         "src/logger.ts": "
       import { createLogger } from '@seek/logger';
 
@@ -327,10 +343,13 @@ describe('unhandledRejections', () => {
   });
 
   it('falls back to console.error if no logger is located', async () => {
-    vol.fromJSON({
-      'src/listen.ts': LISTENER_WITHOUT_CALLBACK,
-      'src/utils/aiGeneratedThisFilename.ts': LOGGER_WITH_DEFAULT_EXPORT,
-    });
+    vol.fromJSON(
+      {
+        'src/listen.ts': LISTENER_WITHOUT_CALLBACK,
+        'src/utils/aiGeneratedThisFilename.ts': LOGGER_WITH_DEFAULT_EXPORT,
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryPatchUnhandledRejections({ mode: 'format' } as PatchConfig),
@@ -340,17 +359,20 @@ describe('unhandledRejections', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "src/listen.ts": "import { app } from 'src/app';
+        "src/listen.ts": "
+      import { app } from 'src/app';
       import { config } from 'src/config';
 
       app.listen(config.port);
+
+
+
 
       // Report unhandled rejections instead of crashing the process
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         console.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
         "src/utils/aiGeneratedThisFilename.ts": "
       import { createLogger } from '@seek/logger';
 
@@ -378,7 +400,7 @@ describe('unhandledRejections', () => {
 
     const files = { 'src/listen.ts': LISTENER_WITH_CALLBACK };
 
-    vol.fromJSON(files);
+    vol.fromJSON(files, process.cwd());
 
     await expect(
       tryPatchUnhandledRejections({ mode: 'format' } as PatchConfig),
@@ -414,7 +436,7 @@ app.listen(config.port);
 `,
     };
 
-    vol.fromJSON(files);
+    vol.fromJSON(files, process.cwd());
 
     await expect(
       tryPatchUnhandledRejections({ mode: 'format' } as PatchConfig),

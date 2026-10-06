@@ -9,7 +9,7 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 const pnpmInstallTestRegex = /^RUN pnpm install.*--prod/m;
 const pnpmInstallReplaceRegex = /^RUN pnpm install.*--prod/gm;
 
-export const patchDockerfileCIVariable = async (
+const patchDockerfileCIVariable = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
   const dockerfilePaths = await fg(['**/Dockerfile*'], {

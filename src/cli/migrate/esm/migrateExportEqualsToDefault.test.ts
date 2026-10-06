@@ -1,8 +1,8 @@
 import path from 'path';
 
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';
 
@@ -11,8 +11,8 @@ import { tryMigrateExportEqualsToDefault } from './migrateExportEqualsToDefault.
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 
 vi.mock('fast-glob', () => ({
@@ -38,10 +38,13 @@ describe('tryMigrateExportEqualsToDefault', () => {
 
   describe.each(['lint', 'format'] as const)('%s', (mode) => {
     it('should skip when no export = is present', async () => {
-      vol.fromJSON({
-        'package.json': '{}',
-        'src/index.ts': 'export const x = 1;\n',
-      });
+      vol.fromJSON(
+        {
+          'package.json': '{}',
+          'src/index.ts': 'export const x = 1;\n',
+        },
+        process.cwd(),
+      );
 
       await expect(
         tryMigrateExportEqualsToDefault({
@@ -63,10 +66,13 @@ describe('tryMigrateExportEqualsToDefault', () => {
       const input = "import foo from 'foo';\n\nexport = foo;\n";
       const expected = "import foo from 'foo';\n\nexport default foo;\n";
 
-      vol.fromJSON({
-        'package.json': '{}',
-        'src/legacy.ts': input,
-      });
+      vol.fromJSON(
+        {
+          'package.json': '{}',
+          'src/legacy.ts': input,
+        },
+        process.cwd(),
+      );
 
       await expect(
         tryMigrateExportEqualsToDefault({
@@ -94,10 +100,13 @@ describe('tryMigrateExportEqualsToDefault', () => {
       const input = 'export = function bar() {\n  return 1;\n};\n';
       const expected = 'export default function bar() {\n  return 1;\n};\n';
 
-      vol.fromJSON({
-        'package.json': '{}',
-        'src/fn.ts': input,
-      });
+      vol.fromJSON(
+        {
+          'package.json': '{}',
+          'src/fn.ts': input,
+        },
+        process.cwd(),
+      );
 
       await expect(
         tryMigrateExportEqualsToDefault({

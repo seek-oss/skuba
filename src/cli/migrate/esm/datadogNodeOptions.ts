@@ -2,7 +2,7 @@ import type { Edit, SgNode } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-export const DD_TRACE_INITIALIZE = '--import dd-trace/initialize.mjs';
+const DD_TRACE_INITIALIZE = '--import dd-trace/initialize.mjs';
 
 const isQuotedScalar = (text: string): boolean =>
   (text.startsWith("'") && text.endsWith("'")) ||

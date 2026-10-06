@@ -14,12 +14,9 @@ import type {
   PatchReturnType,
 } from '../../lint/internalLints/upgrade/index.js';
 
-export const hasDirNameRegex = /__dirname\b/;
-export const hasFileNameRegex = /__filename\b/;
-
 const PACKAGES_EXCLUDED_FROM_TYPE_MODULE = ['eslint-config-skuba'];
 
-export const addTypeModule = async (originalContent: string) => {
+const addTypeModule = async (originalContent: string) => {
   const packageJson = parsePackage(originalContent);
 
   if (packageJson === undefined) {

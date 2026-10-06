@@ -4,6 +4,7 @@ import readline from 'readline';
 import { inspect } from 'util';
 
 import { log as clackLog, note, outro, taskLog } from '@clack/prompts';
+import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
 import {
@@ -27,7 +28,7 @@ import {
   TEMPLATE_CONFIG_FILENAME,
   ensureTemplateConfigDeletion,
 } from '../../utils/template.js';
-import { runPrettier } from '../adapter/prettier.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
 import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
 import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
 
@@ -42,8 +43,6 @@ import {
   registerWorkspaceProject,
 } from './workspace.js';
 import { writePackageJson } from './writePackageJson.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 // In an existing repo these are inherited from the workspace root, so avoid
 // scaffolding duplicate copies into the new package.
@@ -160,7 +159,7 @@ const formatProject = async ({
   // Templating can initially leave certain files in an unformatted state;
   // consider a Markdown table with columns sized based on content length.
   if (!process.stdout.isTTY) {
-    await runPrettier('format', createLogger({ debug }), destinationDir);
+    await runOxfmt('format', createLogger({ debug }), [destinationDir]);
     return;
   }
 
@@ -171,10 +170,10 @@ const formatProject = async ({
   });
 
   try {
-    await runPrettier(
+    await runOxfmt(
       'format',
       createTaskLogLogger((line) => output.message(line), debug),
-      destinationDir,
+      [destinationDir],
     );
     output.success('Formatted project');
   } catch (err) {
