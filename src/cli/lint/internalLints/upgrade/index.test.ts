@@ -182,7 +182,7 @@ describe('upgradeSkuba in format mode', () => {
     expect(runOxfmt).toHaveBeenCalledTimes(1);
     expect(runOxfmt).toHaveBeenCalledWith(
       'format',
-      expect.objectContaining({ plain: expect.any(Function) }),
+      undefined,
       ['dirty.ts', 'src/listen.ts'],
       '/repo',
     );

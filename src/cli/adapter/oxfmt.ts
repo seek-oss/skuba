@@ -32,16 +32,20 @@ const createOxfmtExec = (cwd?: string) =>
     ...(cwd === undefined ? {} : { cwd }),
   });
 
-const runOxfmtCli = async (logger: Logger, args: string[], cwd?: string) => {
+const runOxfmtCli = async (
+  logger: Logger | undefined,
+  args: string[],
+  cwd?: string,
+) => {
   const subprocess = createOxfmtExec(cwd)('oxfmt', ...args);
   for await (const line of subprocess.iterable({ from: 'all' })) {
-    logger.plain(line);
+    logger?.plain(line);
   }
 };
 
 export const runOxfmt = async (
   mode: 'format' | 'lint',
-  logger: Logger,
+  logger?: Logger,
   filePaths: string[] = [],
   cwd?: string,
 ): Promise<OxfmtResult> => {
@@ -80,7 +84,7 @@ export const runOxfmt = async (
       };
     } catch (error) {
       if (!(error instanceof ExecaError)) {
-        logger.err(error);
+        logger?.err(error);
         return {
           ok: false,
           execError: error instanceof Error ? error.message : 'Unknown error',
