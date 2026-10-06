@@ -25,10 +25,12 @@ export type OxfmtResult =
       errors?: OxfmtError[];
     };
 
-const oxfmtExec = createExec({
-  all: true,
-  stdio: 'pipe',
-});
+const createOxfmtExec = (cwd?: string) =>
+  createExec({
+    all: true,
+    stdio: 'pipe',
+    ...(cwd === undefined ? {} : { cwd }),
+  });
 
 const logOxfmtOutput = (logger: Logger, output: unknown) => {
   if (typeof output !== 'string' || output.length === 0) {
@@ -41,9 +43,9 @@ const logOxfmtOutput = (logger: Logger, output: unknown) => {
   }
 };
 
-const runOxfmtCli = async (logger: Logger, ...args: string[]) => {
+const runOxfmtCli = async (logger: Logger, args: string[], cwd?: string) => {
   try {
-    const result = await oxfmtExec('oxfmt', ...args);
+    const result = await createOxfmtExec(cwd)('oxfmt', ...args);
     logOxfmtOutput(logger, result.all);
   } catch (error) {
     if (error instanceof ExecaError) {
@@ -57,10 +59,11 @@ export const runOxfmt = async (
   mode: 'format' | 'lint',
   logger: Logger,
   filePaths: string[] = [],
+  cwd?: string,
 ): Promise<OxfmtResult> => {
   if (mode === 'format') {
     try {
-      await runOxfmtCli(logger, ...filePaths);
+      await runOxfmtCli(logger, filePaths, cwd);
       return {
         ok: true,
       };
@@ -72,7 +75,7 @@ export const runOxfmt = async (
   }
 
   try {
-    await runOxfmtCli(logger, '--check', ...filePaths);
+    await runOxfmtCli(logger, ['--check', ...filePaths], cwd);
     return {
       ok: true,
     };
@@ -87,7 +90,7 @@ export const runOxfmt = async (
     const invalidPaths: OxfmtError[] = [];
 
     try {
-      await oxfmtExec('oxfmt', '--list-different', ...filePaths);
+      await createOxfmtExec(cwd)('oxfmt', '--list-different', ...filePaths);
       return {
         ok: true,
       };
