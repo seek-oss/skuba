@@ -138,17 +138,19 @@ it('should handle a working directory below the Git root', async () => {
   vol.reset();
   vol.fromJSON(newGit, gitRoot);
 
-  await fs.promises.mkdir('my-package', { recursive: true });
+  const packageDir = path.resolve('my-package');
+
+  await fs.promises.mkdir(packageDir, { recursive: true });
 
   await Promise.all([
-    fs.promises.writeFile(path.join('my-package', newFileName), ''),
+    fs.promises.writeFile(path.join(packageDir, newFileName), ''),
     // Not in our `my-package`!
-    fs.promises.writeFile(newFileName2, ''),
+    fs.promises.writeFile(path.resolve(newFileName2), ''),
   ]);
 
   await expect(
     commitAllChanges({
-      dir: path.resolve('my-package'),
+      dir: packageDir,
       message: 'initial commit',
       author,
     }),
