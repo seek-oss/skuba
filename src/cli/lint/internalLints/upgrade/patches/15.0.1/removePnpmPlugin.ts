@@ -69,12 +69,16 @@ export const removePnpmPlugin: PatchFunction = async ({
     );
 
     if (pnpmPluginSkubaNode) {
+      const sectionEnd = node.range().end.index;
       const edits: Edit[] =
         mappingItems.length === 1
           ? [
               {
                 startPos: node.range().start.index,
-                endPos: node.range().end.index,
+                endPos:
+                  pnpmWorkspaceFile.at(sectionEnd) === '\n'
+                    ? sectionEnd + 1
+                    : sectionEnd,
                 insertedText: '',
               },
             ]

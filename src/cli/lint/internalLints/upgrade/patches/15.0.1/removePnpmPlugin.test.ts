@@ -190,7 +190,9 @@ configDependencies:
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "pnpm-workspace.yaml": "allowBuilds:
+        "pnpm-workspace.yaml": "packages:
+        - .
+      allowBuilds:
         '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
@@ -240,8 +242,6 @@ configDependencies:
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
-      packages:
-        - .
       ",
       }
     `);
