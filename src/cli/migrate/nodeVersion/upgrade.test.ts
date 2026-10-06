@@ -1,9 +1,26 @@
+import path from 'node:path';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../testing/memfs.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
 
 import { upgradeInfraPackages } from './upgrade.js';
+
+vi.mock('@skuba-lib/api', async () => {
+  const actual =
+    await vi.importActual<typeof import('@skuba-lib/api')>('@skuba-lib/api');
+
+  return {
+    ...actual,
+    Git: {
+      ...actual.Git,
+      findRoot: vi.fn(({ dir }: { dir: string }) => Promise.resolve(dir)),
+    },
+  };
+});
+
+import { Git } from '@skuba-lib/api';
 
 vi.mock('fs-extra', () => ({
   ...memfs,
@@ -684,4 +701,55 @@ catalogs:
       });
     },
   );
+
+  it('should read manifests from the git root when cwd is a workspace package', async () => {
+    const repoRoot = path.join(process.cwd(), 'repo');
+    const packageDir = path.join(repoRoot, 'packages/api');
+
+    vi.mocked(Git.findRoot).mockResolvedValueOnce(repoRoot);
+
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify({
+          dependencies: {
+            serverless: '4.0.0',
+          },
+        }),
+        'packages/api/package.json': JSON.stringify({
+          dependencies: {
+            serverless: '4.0.0',
+          },
+        }),
+      },
+      repoRoot,
+    );
+
+    await expect(
+      upgradeInfraPackages(
+        'format',
+        [
+          {
+            name: 'serverless',
+            version: '4.25.0',
+          },
+        ],
+        packageDir,
+      ),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(vol.toJSON(repoRoot, undefined, true)).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          serverless: '4.25.0',
+        },
+      }),
+      'packages/api/package.json': JSON.stringify({
+        dependencies: {
+          serverless: '4.25.0',
+        },
+      }),
+    });
+  });
 });
