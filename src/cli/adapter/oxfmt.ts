@@ -32,26 +32,10 @@ const createOxfmtExec = (cwd?: string) =>
     ...(cwd === undefined ? {} : { cwd }),
   });
 
-const logOxfmtOutput = (logger: Logger, output: unknown) => {
-  if (typeof output !== 'string' || output.length === 0) {
-    return;
-  }
-
-  // `logger.plain` prefixes each call, so split to keep `Oxfmt  │` on every line.
-  for (const line of output.trimEnd().split('\n')) {
-    logger.plain(line);
-  }
-};
-
 const runOxfmtCli = async (logger: Logger, args: string[], cwd?: string) => {
-  try {
-    const result = await createOxfmtExec(cwd)('oxfmt', ...args);
-    logOxfmtOutput(logger, result.all);
-  } catch (error) {
-    if (error instanceof ExecaError) {
-      logOxfmtOutput(logger, error.all);
-    }
-    throw error;
+  const subprocess = createOxfmtExec(cwd)('oxfmt', ...args);
+  for await (const line of subprocess.iterable({ from: 'all' })) {
+    logger.plain(line);
   }
 };
 
