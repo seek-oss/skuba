@@ -172,8 +172,8 @@ export const upgradeSkuba = async (
     throw new Error('Could not find a package json for this project');
   }
 
-  (updatedManifest.packageJson.skuba as SkubaPackageJson).version =
-    currentVersion;
+  updatedManifest.packageJson.skuba ??= { version: currentVersion };
+  updatedManifest.packageJson.skuba.version = currentVersion;
 
   const updatedPackageJson = await formatPackage(updatedManifest.packageJson);
 
