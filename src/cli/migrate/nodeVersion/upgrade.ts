@@ -2,11 +2,11 @@ import path from 'node:path';
 import { inspect } from 'node:util';
 
 import { Git } from '@skuba-lib/api';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
 
 import { exec } from '../../../utils/exec.js';
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
@@ -91,12 +91,12 @@ export const upgradeInfraPackages = async (
   const root = gitRoot ?? dir;
 
   const [packageJsonPaths, pnpmWorkspacePaths] = await Promise.all([
-    fg(['**/package.json'], {
-      ignore: ['**/.git', '**/node_modules'],
+    globFiles(['**/package.json'], {
+      exclude: ['**/.git', '**/node_modules'],
       cwd: root,
     }),
-    fg('**/pnpm-workspace.yaml', {
-      ignore: ['**/.git', '**/node_modules'],
+    globFiles('**/pnpm-workspace.yaml', {
+      exclude: ['**/.git', '**/node_modules'],
       cwd: root,
     }),
   ]);

@@ -1,9 +1,9 @@
 import { inspect } from 'util';
 
 import { parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
@@ -74,8 +74,8 @@ const applyPruneDevDepsPatch = async (
 const tryPruneDevDeps = async (config: {
   mode: 'lint' | 'format';
 }): Promise<PatchReturnType> => {
-  const dockerfilePaths = await fg(['**/Dockerfile*'], {
-    ignore: ['**/.git', '**/node_modules'],
+  const dockerfilePaths = await globFiles(['**/Dockerfile*'], {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (dockerfilePaths.length === 0) {

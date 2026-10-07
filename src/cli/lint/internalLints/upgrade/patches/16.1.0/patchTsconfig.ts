@@ -1,9 +1,9 @@
 import { inspect } from 'util';
 
 import { parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
@@ -11,9 +11,12 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 export const patchTsconfig: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsconfigPaths = await fg(['**/tsconfig.json', '**/tsconfig.*.json'], {
-    ignore: ['**/.git', '**/node_modules'],
-  });
+  const tsconfigPaths = await globFiles(
+    ['**/tsconfig.json', '**/tsconfig.*.json'],
+    {
+      exclude: ['**/.git', '**/node_modules'],
+    },
+  );
 
   if (tsconfigPaths.length === 0) {
     return {

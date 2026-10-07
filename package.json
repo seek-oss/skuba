@@ -73,7 +73,6 @@
     "eslint": "^9.39.1",
     "eslint-config-skuba": "workspace:*",
     "execa": "^9.6.1",
-    "fast-glob": "^3.3.2",
     "find-up": "^8.0.0",
     "fs-extra": "^11.0.0",
     "function-arguments": "^1.0.9",

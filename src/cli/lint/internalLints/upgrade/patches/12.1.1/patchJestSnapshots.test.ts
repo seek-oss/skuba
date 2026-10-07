@@ -1,19 +1,19 @@
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryPatchJestSnapshots } from './patchJestSnapshots.js';
 
-vi.mock('fast-glob');
 vi.mock('fs-extra');
+vi.mock('../../../../../../utils/glob.js');
 
 describe('patchJestSnapshots', () => {
   afterEach(() => vi.resetAllMocks());
 
   it('should skip if no test files found', async () => {
-    vi.mocked(fg).mockResolvedValueOnce([]);
+    vi.mocked(globFiles).mockResolvedValueOnce([]);
     await expect(
       tryPatchJestSnapshots({
         mode: 'format',
@@ -25,7 +25,7 @@ describe('patchJestSnapshots', () => {
   });
 
   it('should skip if test files do not contain the old URL', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['test1.test.ts']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'No snapshot URL here',
     );
@@ -40,7 +40,7 @@ describe('patchJestSnapshots', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['test1.test.ts']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'Some content with https://goo.gl/fbAQLP',
     );
@@ -57,7 +57,7 @@ describe('patchJestSnapshots', () => {
   });
 
   it('should patch test files', async () => {
-    vi.mocked(fg).mockResolvedValueOnce([
+    vi.mocked(globFiles).mockResolvedValueOnce([
       'test1.test.ts',
       'test2.test.ts',
       'test3.test.ts.snap',

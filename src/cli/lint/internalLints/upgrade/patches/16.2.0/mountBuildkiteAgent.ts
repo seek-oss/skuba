@@ -3,9 +3,9 @@ import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import * as Git from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
@@ -215,13 +215,13 @@ export const mountBuildkiteAgent: PatchFunction = async ({
   const root = gitRoot ?? dir;
 
   const [dockerComposePaths, pipelinePaths] = await Promise.all([
-    fg(['**/docker-compose*.{yml,yaml}'], {
+    globFiles(['**/docker-compose*.{yml,yaml}'], {
       cwd: root,
-      ignore: ['**/node_modules'],
+      exclude: ['**/node_modules'],
     }),
-    fg(['**/.buildkite/**/*.{yml,yaml}'], {
+    globFiles(['**/.buildkite/**/*.{yml,yaml}'], {
       cwd: root,
-      ignore: ['**/node_modules'],
+      exclude: ['**/node_modules'],
     }),
   ]);
 

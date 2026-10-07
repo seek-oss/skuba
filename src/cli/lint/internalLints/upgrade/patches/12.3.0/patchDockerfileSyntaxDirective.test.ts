@@ -1,19 +1,19 @@
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryPatchDockerfileSyntaxDirective } from './patchDockerfileSyntaxDirective.js';
 
-vi.mock('fast-glob');
 vi.mock('fs-extra');
+vi.mock('../../../../../../utils/glob.js');
 
 describe('patchDockerfileSyntaxDirective', () => {
   afterEach(() => vi.resetAllMocks());
 
   it('should skip if no dockerfiles found', async () => {
-    vi.mocked(fg).mockResolvedValueOnce([]);
+    vi.mocked(globFiles).mockResolvedValueOnce([]);
     await expect(
       tryPatchDockerfileSyntaxDirective({
         mode: 'format',
@@ -25,7 +25,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   });
 
   it('should skip if dockerfiles do not contain the Dockerfile syntax directive', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'No Dockerfile syntax directive here',
     );
@@ -40,7 +40,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       '# syntax=docker/dockerfile:1.18\n',
     );
@@ -57,7 +57,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   });
 
   it('should patch dockerfiles if mode is format', async () => {
-    vi.mocked(fg).mockResolvedValueOnce([
+    vi.mocked(globFiles).mockResolvedValueOnce([
       'Dockerfile',
       'Dockerfile.dev-deps',
       'Dockerfile.build',

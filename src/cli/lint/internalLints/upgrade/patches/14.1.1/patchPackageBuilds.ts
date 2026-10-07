@@ -3,10 +3,10 @@ import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import { getOwnerAndRepo } from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { createExec, exec } from '../../../../../../utils/exec.js';
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import { detectPackageManager } from '../../../../../../utils/packageManager.js';
 import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
@@ -387,9 +387,9 @@ const addCustomConditionsToTsConfig = async (
 };
 
 const projectContainsReferences = async (): Promise<boolean> => {
-  const allTsconfigBuildPaths = await fg(['**/tsconfig.build.json'], {
+  const allTsconfigBuildPaths = await globFiles(['**/tsconfig.build.json'], {
     cwd: process.cwd(),
-    ignore: ['**/node_modules/**', '**/.git/**'],
+    exclude: ['**/node_modules/**', '**/.git/**'],
   });
 
   const allTsconfigBuildFiles = await Promise.all(
@@ -414,8 +414,8 @@ export const patchPackageBuilds: PatchFunction = async ({
 }): Promise<PatchReturnType> => {
   let packageJsonPaths: string[];
   try {
-    packageJsonPaths = await fg(['**/package.json'], {
-      ignore: ['**/.git', '**/node_modules'],
+    packageJsonPaths = await globFiles(['**/package.json'], {
+      exclude: ['**/.git', '**/node_modules'],
     });
   } catch {
     return {

@@ -2,12 +2,12 @@ import path from 'path';
 import { inspect, isDeepStrictEqual } from 'util';
 
 import * as Git from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { defaults as seekOxfmtConfig } from 'oxc-config-seek/oxfmt';
 
 import { isErrorWithCode } from '../../../../../../utils/error.js';
 import { createExec, exec } from '../../../../../../utils/exec.js';
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
@@ -208,14 +208,13 @@ const findPrettierConfigDirectories = async (
   root: string,
 ): Promise<string[]> => {
   const [configFiles, packageJsonFiles] = await Promise.all([
-    fg(PRETTIER_CONFIG_GLOBS, {
+    globFiles(PRETTIER_CONFIG_GLOBS, {
       cwd: root,
-      dot: true,
-      ignore: GLOB_IGNORE,
+      exclude: GLOB_IGNORE,
     }),
-    fg('**/package.json', {
+    globFiles('**/package.json', {
       cwd: root,
-      ignore: GLOB_IGNORE,
+      exclude: GLOB_IGNORE,
     }),
   ]);
 
