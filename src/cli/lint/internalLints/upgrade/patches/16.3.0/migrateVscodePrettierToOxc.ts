@@ -2,9 +2,9 @@ import path from 'path';
 import { inspect } from 'util';
 
 import * as Git from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -17,10 +17,9 @@ export const migrateVscodePrettierToOxc: PatchFunction = async ({
 }): Promise<PatchReturnType> => {
   const root = (await Git.findRoot({ dir })) ?? dir;
 
-  const extensionsJsonPaths = await fg(['**/.vscode/extensions.json'], {
+  const extensionsJsonPaths = await globFiles(['**/.vscode/extensions.json'], {
     cwd: root,
-    dot: true,
-    ignore: ['**/.git', '**/node_modules'],
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   const patchedFiles = (

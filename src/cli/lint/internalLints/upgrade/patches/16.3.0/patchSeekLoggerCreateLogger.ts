@@ -3,9 +3,9 @@ import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import * as Git from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -118,9 +118,9 @@ export const patchSeekLoggerCreateLogger: PatchFunction = async ({
   const gitRoot = await Git.findRoot({ dir });
   const root = gitRoot ?? dir;
 
-  const sourceFiles = await fg('**/*.{ts,tsx,mts,cts}', {
+  const sourceFiles = await globFiles('**/*.{ts,tsx,mts,cts}', {
     cwd: root,
-    ignore: ['**/.git', '**/node_modules'],
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (sourceFiles.length === 0) {

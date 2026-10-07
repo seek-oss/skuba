@@ -2,11 +2,11 @@ import { dirname } from 'path';
 import { inspect } from 'util';
 
 import { Git } from '@skuba-lib/api';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
 import { createExec } from '../../../utils/exec.js';
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
@@ -16,11 +16,11 @@ export const patchInstrumentation: PatchFunction = async ({
   packageManager,
 }) => {
   const [dockerfilePaths, tsPaths] = await Promise.all([
-    fg(['**/Dockerfile*'], {
-      ignore: ['**/.git', '**/node_modules'],
+    globFiles(['**/Dockerfile*'], {
+      exclude: ['**/.git', '**/node_modules'],
     }),
-    fg(['**/*.ts'], {
-      ignore: ['**/.git', '**/node_modules'],
+    globFiles(['**/*.ts'], {
+      exclude: ['**/.git', '**/node_modules'],
     }),
   ]);
 

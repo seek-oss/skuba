@@ -2,9 +2,9 @@ import path from 'path';
 import { inspect } from 'util';
 
 import * as Git from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -30,9 +30,9 @@ export const addSeekPackageRegistry: PatchFunction = async ({
     };
   }
 
-  const npmrcPaths = await fg(['**/.npmrc'], {
+  const npmrcPaths = await globFiles(['**/.npmrc'], {
     cwd: gitRoot,
-    ignore: ['**/.git', '**/node_modules'],
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (npmrcPaths.length === 0) {

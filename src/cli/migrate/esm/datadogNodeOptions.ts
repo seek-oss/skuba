@@ -1,6 +1,7 @@
 import type { Edit, SgNode } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
+
+import { globFiles } from '../../../utils/glob.js';
 
 const DD_TRACE_INITIALIZE = '--import dd-trace/initialize.mjs';
 
@@ -145,11 +146,11 @@ export interface LambdaFiles {
 
 export const collectLambdaFiles = async (): Promise<LambdaFiles> => {
   const [tsFilePaths, serverlessFilePaths] = await Promise.all([
-    fg(['**/*.ts'], {
-      ignore: ['**/.git', '**/node_modules'],
+    globFiles(['**/*.ts'], {
+      exclude: ['**/.git', '**/node_modules'],
     }),
-    fg(['**/serverless*.{yml,yaml}'], {
-      ignore: ['**/.git', '**/node_modules'],
+    globFiles(['**/serverless*.{yml,yaml}'], {
+      exclude: ['**/.git', '**/node_modules'],
     }),
   ]);
 

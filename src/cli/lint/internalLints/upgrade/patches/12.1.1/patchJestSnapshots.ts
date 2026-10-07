@@ -1,8 +1,8 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -12,8 +12,8 @@ const JEST_SNAPSHOT_NEW_URL = 'https://jestjs.io/docs/snapshot-testing';
 const patchJestSnapshots = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
-  const testFilePaths = await fg(['**/*.test.ts', '**/*.test.ts.snap'], {
-    ignore: [
+  const testFilePaths = await globFiles(['**/*.test.ts', '**/*.test.ts.snap'], {
+    exclude: [
       '**/.git',
       '**/node_modules',
       'src/cli/lint/internalLints/upgrade/patches/12.1.1/patchJestSnapshots.test.ts',
