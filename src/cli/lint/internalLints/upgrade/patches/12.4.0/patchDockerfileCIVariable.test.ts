@@ -79,7 +79,11 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should patch multiple dockerfiles containing pnpm install --prod commands', async () => {
-    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.dev', 'Dockerfile.prod']);
+    vi.mocked(globFiles).mockResolvedValueOnce([
+      'Dockerfile',
+      'Dockerfile.dev',
+      'Dockerfile.prod',
+    ]);
 
     // First dockerfile has the target command
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
@@ -210,7 +214,10 @@ CMD ["npm", "start"]`;
   });
 
   it('should handle mixed variants in multiple dockerfiles', async () => {
-    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
+    vi.mocked(globFiles).mockResolvedValueOnce([
+      'Dockerfile',
+      'Dockerfile.prod',
+    ]);
 
     // First dockerfile has basic pnpm install --prod
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
