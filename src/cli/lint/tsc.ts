@@ -1,4 +1,6 @@
-import { execConcurrently } from '../../utils/exec.js';
+import { styleText } from 'node:util';
+
+import { createExec } from '../../utils/exec.js';
 
 import type { Input } from './types.js';
 
@@ -6,33 +8,30 @@ export const runTscInNewProcess = async ({
   debug,
   tscOutputStream,
 }: Input): Promise<boolean> => {
-  const command = [
-    'tsc',
-    ...(debug ? ['--extendedDiagnostics'] : []),
-    '--noEmit',
-  ].join(' ');
+  const args = [...(debug ? ['--extendedDiagnostics'] : []), '--noEmit'];
+  const outputStream = tscOutputStream ?? process.stdout;
+  const prefix = styleText('blue', `${'tsc'.padEnd('ESLint'.length)} │`);
+
+  function* prefixOutput(line: unknown) {
+    yield `${prefix} ${String(line)}`;
+  }
 
   try {
-    // Misappropriate `concurrently` as a stdio prefixer.
-    // We can use our regular console logger once we decide on an approach for
-    // compiling in-process, whether by interacting with the TypeScript Compiler
-    // API directly or using a higher-level tool like esbuild.
-    await execConcurrently(
-      [
-        {
-          command,
-          name: 'tsc',
-          prefixColor: 'blue',
-        },
-      ],
-      {
-        maxProcesses: 1,
-        nameLength: 'ESLint'.length,
-        outputStream: tscOutputStream,
-      },
+    const exec = createExec({
+      all: true,
+      buffer: false,
+      reject: false,
+      stdio: ['inherit', prefixOutput, prefixOutput],
+    });
+    const subprocess = exec('tsc', ...args);
+    subprocess.all?.pipe(outputStream, { end: false });
+
+    const result = await subprocess;
+    outputStream.write(
+      `${prefix} tsc ${args.join(' ')} exited with code ${result.exitCode ?? result.signal ?? 1}\n`,
     );
 
-    return true;
+    return !result.failed;
   } catch {
     return false;
   }
