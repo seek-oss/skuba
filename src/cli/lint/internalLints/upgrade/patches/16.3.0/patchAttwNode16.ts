@@ -3,9 +3,9 @@ import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import * as Git from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -46,9 +46,9 @@ export const patchAttwNode16: PatchFunction = async ({
   const gitRoot = await Git.findRoot({ dir });
   const root = gitRoot ?? dir;
 
-  const tsdownFiles = await fg('**/tsdown.config.{mts,ts}', {
+  const tsdownFiles = await globFiles('**/tsdown.config.{mts,ts}', {
     cwd: root,
-    ignore: ['**/.git', '**/node_modules'],
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (tsdownFiles.length === 0) {

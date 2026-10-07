@@ -3,9 +3,9 @@ import { inspect } from 'util';
 
 import { type Edit, parseAsync } from '@ast-grep/napi';
 import * as Git from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -250,9 +250,9 @@ export const migrateImportOrderEslintDisables: PatchFunction = async ({
 }): Promise<PatchReturnType> => {
   const root = (await Git.findRoot({ dir })) ?? dir;
 
-  const sourceFilePaths = await fg([SOURCE_FILE_GLOB], {
+  const sourceFilePaths = await globFiles([SOURCE_FILE_GLOB], {
     cwd: root,
-    ignore: GLOB_IGNORE,
+    exclude: GLOB_IGNORE,
   });
 
   if (sourceFilePaths.length === 0) {

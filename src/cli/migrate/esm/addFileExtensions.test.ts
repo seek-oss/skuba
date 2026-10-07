@@ -21,13 +21,6 @@ vi.mock('node:fs/promises', () => ({
   default: memfs.promises,
   ...memfs.promises,
 }));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
-}));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

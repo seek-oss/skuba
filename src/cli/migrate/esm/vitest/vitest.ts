@@ -2,11 +2,11 @@ import path from 'node:path';
 import { inspect } from 'node:util';
 
 import { Git } from '@skuba-lib/api';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
 import { createExec, exec } from '../../../../utils/exec.js';
+import { globFiles } from '../../../../utils/glob.js';
 import { log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
 import {
@@ -135,9 +135,12 @@ export const migrateToVitest = async (opts: {
     };
   }
 
-  const vitestConfigFiles = await fg(['**/vitest.config.{ts,js,mjs,mts,cts}'], {
-    ignore: ['**/.git', '**/node_modules'],
-  });
+  const vitestConfigFiles = await globFiles(
+    ['**/vitest.config.{ts,js,mjs,mts,cts}'],
+    {
+      exclude: ['**/.git', '**/node_modules'],
+    },
+  );
 
   if (
     vitestConfigFiles.length > 0 &&
@@ -152,14 +155,14 @@ export const migrateToVitest = async (opts: {
 
   const [packageJsonFiles, pnpmWorkspaceFiles, buildkiteFiles] =
     await Promise.all([
-      fg(['**/package.json'], {
-        ignore: ['**/.git', '**/node_modules'],
+      globFiles(['**/package.json'], {
+        exclude: ['**/.git', '**/node_modules'],
       }),
-      fg(['**/pnpm-workspace.yaml'], {
-        ignore: ['**/.git', '**/node_modules'],
+      globFiles(['**/pnpm-workspace.yaml'], {
+        exclude: ['**/.git', '**/node_modules'],
       }),
-      fg(['**/.buildkite/**/*.{yml,yaml}'], {
-        ignore: ['**/.git', '**/node_modules'],
+      globFiles(['**/.buildkite/**/*.{yml,yaml}'], {
+        exclude: ['**/.git', '**/node_modules'],
       }),
     ]);
 
@@ -237,8 +240,8 @@ export const migrateToVitest = async (opts: {
   }
 
   // The sku migration doesn't handle async hooks nicely so we have to go back and re-patch them
-  const tsFilePaths = await fg(['**/*.ts', '**/*.tsx'], {
-    ignore: ['**/.git', '**/node_modules'],
+  const tsFilePaths = await globFiles(['**/*.ts', '**/*.tsx'], {
+    exclude: ['**/.git', '**/node_modules'],
   });
   const tsFiles = await readFiles(tsFilePaths);
   const lifeCyclesToCheck: string[] = [];

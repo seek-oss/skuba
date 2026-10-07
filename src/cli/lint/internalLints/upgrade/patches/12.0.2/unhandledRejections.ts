@@ -1,10 +1,10 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { isErrorWithCode } from '../../../../../../utils/error.js';
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import { runOxfmt } from '../../../../../adapter/oxfmt.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
@@ -62,9 +62,9 @@ const findLogger = async ({
     }
   }
 
-  const loggerPaths = await fg('**/{logger,logging}.ts', {
+  const loggerPaths = await globFiles('**/{logger,logging}.ts', {
     cwd: root,
-    ignore: ['**/.git', '**/node_modules'],
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   const loggingModule = await tryReadFilesSequentially(loggerPaths);
@@ -101,8 +101,8 @@ const findLogger = async ({
 const patchUnhandledRejections = async (
   mode: 'format' | 'lint',
 ): Promise<PatchReturnType> => {
-  const filepaths = await fg('**/src/listen.ts', {
-    ignore: ['**/.git', '**/node_modules'],
+  const filepaths = await globFiles('**/src/listen.ts', {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   let hasPatched = false;

@@ -12,13 +12,6 @@ vi.mock('fs-extra', () => ({
   ...memfs,
   default: memfs,
 }));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
-}));
 vi.mock('@skuba-lib/api/git');
 import { getOwnerAndRepo } from '@skuba-lib/api/git';
 
