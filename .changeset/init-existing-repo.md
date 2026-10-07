@@ -12,7 +12,7 @@ location-based, it asks you to confirm before switching modes.
 
 In this mode it skips `git init`, remote and push setup, leaves root-owned config
 (`.gitignore`, `.prettierignore`, `.prettierrc.js`, `eslint.config.js`,
-`.dockerignore`, Renovate) to the workspace root, registers the project in the
+`.dockerignore`, `.npmrc`, `.nvmrc`, Renovate, `.github`, `.vscode`) to the workspace root, registers the project in the
 root `pnpm-workspace.yaml` when it isn't already covered, and installs against
 the root lockfile. The `pnpm-workspace.yaml` edit is applied through the file's
 syntax tree so surrounding keys, comments and formatting are preserved. Only pnpm

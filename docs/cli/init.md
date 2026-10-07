@@ -116,7 +116,8 @@ In this mode `skuba init`:
   guidance; the existing repository is reused.
 - Leaves configuration that the workspace root owns in place rather than
   duplicating it into the project: `.gitignore`, `.prettierignore`,
-  `.prettierrc.js`, `eslint.config.js`, `.dockerignore` and Renovate config.
+  `.prettierrc.js`, `eslint.config.js`, `.dockerignore`, `.npmrc`, `.nvmrc`,
+  Renovate config, and the `.github` and `.vscode` directories.
 - Registers the project in the root `pnpm-workspace.yaml` when it isn't already
   matched by an existing glob, and installs dependencies against the root
   lockfile. The edit is applied through the file's syntax tree, so surrounding

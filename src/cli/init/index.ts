@@ -45,16 +45,21 @@ import {
 } from './workspace.js';
 import { writePackageJson } from './writePackageJson.js';
 
-// In an existing repo these are inherited from the workspace root, so avoid
-// scaffolding duplicate copies into the new package.
 const ROOT_OWNED_FILES = new Set([
+  '.dockerignore',
   '.gitignore',
+  '.npmrc',
+  '.nvmrc',
   '.prettierignore',
   '.prettierrc.js',
   'eslint.config.js',
-  '.dockerignore',
   'renovate.json5',
 ]);
+
+const ROOT_OWNED_DIRECTORIES = ['.github', '.vscode'];
+
+const isInRootOwnedDirectory = (pathname: string) =>
+  ROOT_OWNED_DIRECTORIES.includes(pathname.split(path.sep)[0] ?? '');
 
 const feedLines = (
   readable: NodeJS.ReadableStream | null | undefined,
@@ -245,6 +250,15 @@ export const init = async (args = process.argv.slice(2)) => {
 
   await ensureCommands(packageManager);
 
+  if (existingRepo) {
+    // The selected template may have shipped its own copies.
+    await Promise.all(
+      [...ROOT_OWNED_DIRECTORIES, ...ROOT_OWNED_FILES].map(async (name) => {
+        await fs.remove(path.join(destinationDir, name));
+      }),
+    );
+  }
+
   const include = await createInclusionFilter([
     path.join(destinationDir, '.gitignore'),
     path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
@@ -254,7 +268,11 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const includeBaseFile = (pathname: string) =>
     include(pathname) &&
-    !(existingRepo && ROOT_OWNED_FILES.has(path.basename(pathname)));
+    !(
+      existingRepo &&
+      (ROOT_OWNED_FILES.has(path.basename(pathname)) ||
+        isInRootOwnedDirectory(pathname))
+    );
 
   await copyFiles({
     sourceRoot: BASE_TEMPLATE_DIR,
