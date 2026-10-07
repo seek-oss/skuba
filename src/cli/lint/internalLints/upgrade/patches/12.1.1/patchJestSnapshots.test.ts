@@ -57,7 +57,11 @@ describe('patchJestSnapshots', () => {
   });
 
   it('should patch test files', async () => {
-    vi.mocked(globFiles).mockResolvedValueOnce(['test1.test.ts', 'test2.test.ts', 'test3.test.ts.snap']);
+    vi.mocked(globFiles).mockResolvedValueOnce([
+      'test1.test.ts',
+      'test2.test.ts',
+      'test3.test.ts.snap',
+    ]);
     vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce('Some content with https://goo.gl/fbAQLP')
       .mockResolvedValueOnce('No snapshot URL here')

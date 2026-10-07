@@ -57,7 +57,11 @@ describe('patchDockerfileSyntaxDirective', () => {
   });
 
   it('should patch dockerfiles if mode is format', async () => {
-    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.dev-deps', 'Dockerfile.build']);
+    vi.mocked(globFiles).mockResolvedValueOnce([
+      'Dockerfile',
+      'Dockerfile.dev-deps',
+      'Dockerfile.build',
+    ]);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       '# syntax=docker/dockerfile:1.18\nFROM node:22',
     );
