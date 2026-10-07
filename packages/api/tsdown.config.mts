@@ -2,7 +2,7 @@ import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   deps: {
-    onlyBundle: false,
+    onlyBundle: [],
   },
   failOnWarn: true,
   entry: ['src/index.ts', 'src/*/index.ts'],
