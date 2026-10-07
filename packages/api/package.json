@@ -113,7 +113,6 @@
     "fs-extra": "^11.0.0",
     "ignore": "^7.0.0",
     "isomorphic-git": "^1.37.6",
-    "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
     "yaml": "^2.9.1",
     "zod": "^4.3.5"
