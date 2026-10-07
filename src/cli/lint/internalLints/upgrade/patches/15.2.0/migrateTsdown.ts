@@ -2,10 +2,10 @@ import { dirname } from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { createExec } from '../../../../../../utils/exec.js';
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import { detectPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
@@ -148,8 +148,8 @@ const migrateDepsFields = (ast: SgNode): Edit[] => {
 export const migrateTsdown: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsdownFiles = await fg('**/tsdown.config.{mts,ts}', {
-    ignore: ['**/.git', '**/node_modules'],
+  const tsdownFiles = await globFiles('**/tsdown.config.{mts,ts}', {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (tsdownFiles.length === 0) {

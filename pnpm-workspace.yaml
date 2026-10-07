@@ -37,12 +37,12 @@ overrides:
 
 pmOnFail: error # Managed by skuba
 publicHoistPattern:
-  - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
   - '@changesets/cli' # Managed by skuba
   - '@eslint/*' # Managed by skuba
   - '@skuba-lib/*' # Managed by skuba
   - '@types*' # Managed by skuba
+  - '@vitest/*' # Managed by skuba
   - esbuild # Managed by skuba
   - eslint # Managed by skuba
   - eslint-config-skuba # Managed by skuba
@@ -53,12 +53,12 @@ publicHoistPattern:
   - tsconfig-seek # Managed by skuba
   - tsdown # Managed by skuba
   - typescript # Managed by skuba
-  - '@vitest/*' # Managed by skuba
   - vitest # Managed by skuba
+  - remark-lint-*
 
 trustPolicyExclude:
-  - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13
   - semver@6.3.1 # Managed by skuba
+  - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13
 
 strictDepBuilds: true # Managed by skuba
 trustPolicy: no-downgrade # Managed by skuba

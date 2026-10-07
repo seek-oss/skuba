@@ -68,13 +68,11 @@
     "@vitest/coverage-v8": "^5.0.3",
     "@vitest/ui": "^5.0.3",
     "@vitest/utils": "^5.0.3",
-    "concurrently": "^10.0.0",
     "ejs": "^6.0.0",
     "esbuild": "~0.28.0",
     "eslint": "^9.39.1",
     "eslint-config-skuba": "workspace:*",
     "execa": "^9.6.1",
-    "fast-glob": "^3.3.2",
     "find-up": "^8.0.0",
     "fs-extra": "^11.0.0",
     "function-arguments": "^1.0.9",
@@ -88,8 +86,6 @@
     "lodash.mergewith": "^4.6.2",
     "minimist": "^1.2.6",
     "normalize-package-data": "^9.0.0",
-    "npm-registry-fetch": "^19.1.1",
-    "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
     "oxc-config-seek": "^1.0.0",
     "oxfmt": "~0.71.0",
@@ -108,6 +104,7 @@
     "tsx": "^4.21.0",
     "typescript": "~6.0.0",
     "vitest": "^5.0.3",
+    "yaml": "^2.9.1",
     "zod": "^4.3.5"
   },
   "devDependencies": {
@@ -120,7 +117,6 @@
     "@types/koa": "3.0.3",
     "@types/lodash.mergewith": "4.6.9",
     "@types/minimist": "1.2.5",
-    "@types/npm-registry-fetch": "8.0.9",
     "@types/npm-which": "3.0.4",
     "@types/picomatch": "4.0.3",
     "@types/semver": "7.8.0",
@@ -131,7 +127,7 @@
     "memfs": "4.80.0",
     "remark-cli": "12.0.1",
     "remark-preset-lint-recommended": "7.0.1",
-    "supertest": "7.3.0",
+    "supertest": "7.3.1",
     "type-fest": "5.10.0"
   },
   "remarkConfig": {

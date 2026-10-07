@@ -2,11 +2,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { inspect } from 'util';
 
 import { type Edit, parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { resolve } from 'import-meta-resolve';
 import { ModuleResolutionKind } from 'typescript';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import { readTsConfig } from '../../build/tsc.js';
 import type {
@@ -51,8 +51,8 @@ export const addFileExtensions = async ({
     };
   }
 
-  const tsFilePaths = await fg(['**/*.ts'], {
-    ignore: ['**/.git', '**/node_modules'],
+  const tsFilePaths = await globFiles(['**/*.ts'], {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (!tsFilePaths.length) {

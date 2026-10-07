@@ -1,23 +1,9 @@
 import { inspect } from 'util';
 
 import type { ExecaError } from 'execa';
-import * as z from 'zod/v4';
 
 import { log } from './logging.js';
 import { hasNumberProp, hasProp } from './validation.js';
-
-export type ConcurrentlyErrors = z.infer<typeof concurrentlyErrorsSchema>;
-
-export const concurrentlyErrorsSchema = z.array(
-  z.object({
-    command: z.object({
-      command: z.string(),
-      name: z.string(),
-    }),
-    index: z.number(),
-    exitCode: z.number(),
-  }),
-);
 
 /**
  * Creates an error that returns its plain `message` rather than a full stack

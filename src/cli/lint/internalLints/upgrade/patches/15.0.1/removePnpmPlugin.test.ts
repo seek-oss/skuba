@@ -16,13 +16,6 @@ vi.mock('fs-extra', () => ({
   default: memfs,
   ...memfs,
 }));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
-}));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -189,7 +182,9 @@ configDependencies:
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "pnpm-workspace.yaml": "allowBuilds:
+        "pnpm-workspace.yaml": "packages:
+        - .
+      allowBuilds:
         '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
@@ -238,8 +233,6 @@ configDependencies:
       trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
-      packages:
-        - .
       ",
       }
     `);

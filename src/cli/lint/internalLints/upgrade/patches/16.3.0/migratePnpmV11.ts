@@ -2,10 +2,10 @@ import path from 'path';
 import { inspect } from 'util';
 
 import * as Git from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { exec } from '../../../../../../utils/exec.js';
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type {
@@ -31,9 +31,9 @@ const findCdkNodejsFunction = async (dir: string): Promise<boolean> => {
   const gitRoot = await Git.findRoot({ dir });
   const root = gitRoot ?? dir;
 
-  const tsFiles = await fg('**/*.ts', {
+  const tsFiles = await globFiles(['**/*.ts'], {
     cwd: root,
-    ignore: ['**/.git', '**/node_modules'],
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   const matches = await Promise.all(

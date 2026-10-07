@@ -1,9 +1,9 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import * as z from 'zod';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -22,8 +22,8 @@ const pnpmConfigSchema = z.looseObject({
 export const removePnpmConfigPackageJson: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const packageJsonPaths = await fg(['**/package.json'], {
-    ignore: ['**/.git', '**/node_modules'],
+  const packageJsonPaths = await globFiles(['**/package.json'], {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (packageJsonPaths.length === 0) {

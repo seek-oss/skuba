@@ -2,9 +2,9 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
@@ -32,9 +32,9 @@ export const tryMigrateExportEqualsToDefault: PatchFunction = async (
   const { mode, manifest } = config;
   const cwd = path.dirname(manifest.path);
 
-  const fileNames = await fg(['**/*.ts', '**/*.tsx'], {
+  const fileNames = await globFiles(['**/*.ts', '**/*.tsx'], {
     cwd,
-    ignore: [
+    exclude: [
       '**/.git',
       '**/node_modules',
       '**/lib/**',
