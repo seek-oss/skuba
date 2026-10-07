@@ -224,7 +224,7 @@ importers:
         specifier: 4.80.0
         version: 4.80.0
       rumdl:
-        specifier: ^0.2.78
+        specifier: 0.2.78
         version: 0.2.78
       supertest:
         specifier: 7.3.1
