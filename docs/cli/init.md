@@ -107,9 +107,8 @@ Enter (or answer `No`) to create a standalone repository instead.
 Yarn/npm workspaces and plain Git repositories are not offered this mode and
 keep the standalone behaviour.
 
-`cd` to where you'd like the project to live (for example into a `packages`
-directory) before running the command; the new project is created in a
-`<repo>` subdirectory from there.
+This mode asks for a project name and a project directory relative to the
+workspace root. `repoName` keeps naming the repository that hosts the project.
 
 In this mode `skuba init`:
 
@@ -123,6 +122,11 @@ In this mode `skuba init`:
   lockfile. The edit is applied through the file's syntax tree, so surrounding
   keys, comments and formatting are preserved. Only pnpm workspaces are
   supported in this mode.
+- Answers the template field that names the project—`serviceName` for services
+  and `moduleName` for packages—from the project name instead of asking for it
+  twice. Where a template validates the field, such as `private-npm-package`
+  requiring an `@seek/` scope, the project name pre-fills the prompt rather than
+  replacing it.
 - Commits just the new project's files.
 
 Running `skuba init` outside of a repository (or answering `No` to the prompt)

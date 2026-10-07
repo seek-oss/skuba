@@ -19,3 +19,9 @@ syntax tree so surrounding keys, comments and formatting are preserved. Only pnp
 workspaces (detected via a root `pnpm-workspace.yaml`) are supported in this
 mode; yarn/npm workspaces and plain Git repositories keep the standalone
 behaviour. Running `skuba init` outside of a repository is unchanged.
+
+Workspace mode also prompts for a project name, which answers the template field
+that names the project—`serviceName` for services and `moduleName` for
+packages—rather than asking for the same thing twice. Where a template validates
+that field, the project name pre-fills the prompt instead of replacing it.
+Templates and standalone repositories are otherwise untouched.

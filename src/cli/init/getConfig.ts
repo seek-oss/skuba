@@ -35,6 +35,7 @@ import {
   shouldContinue,
 } from './prompts.js';
 import { readJSONFromStdIn } from './readJSONFromStdIn.js';
+import { seedProjectName } from './seedProjectName.js';
 import { type InitConfig, initConfigInputSchema } from './types.js';
 
 const confirmShouldContinue = async (choices: readonly Choice[]) => {
@@ -221,13 +222,20 @@ export const configureFromPrompt = async (
   const { entryPoint, fields, noSkip, packageManager, type } =
     await cloneTemplate(templateName, destinationDir);
 
-  if (fields.length === 0) {
+  // Only a workspace prompts for a project name of its own to pass on.
+  const { fields: remainingFields, answers: seededAnswers } = existingRepo
+    ? seedProjectName(fields, templateData.projectName)
+    : { fields, answers: {} };
+
+  const seededTemplateData = { ...templateData, ...seededAnswers };
+
+  if (remainingFields.length === 0) {
     return {
       destinationDir,
       entryPoint,
       packageManager,
       templateComplete: true,
-      templateData,
+      templateData: seededTemplateData,
       templateName,
       type,
     };
@@ -235,11 +243,11 @@ export const configureFromPrompt = async (
 
   const shouldContinueWithTemplate = noSkip
     ? true
-    : await confirmShouldContinue(fields);
+    : await confirmShouldContinue(remainingFields);
 
   if (shouldContinueWithTemplate) {
     const customAnswers = await runForm({
-      choices: fields,
+      choices: remainingFields,
       message: styleText(
         'bold',
         `Complete ${styleText('cyan', templateName)}:`,
@@ -252,7 +260,7 @@ export const configureFromPrompt = async (
       entryPoint,
       packageManager,
       templateComplete: true,
-      templateData: { ...templateData, ...customAnswers },
+      templateData: { ...seededTemplateData, ...customAnswers },
       templateName,
       type,
     };
@@ -262,14 +270,14 @@ export const configureFromPrompt = async (
     `Templating has been skipped. Resume it later by running ${log.bold('skuba init')} in the new directory.`,
   );
 
-  const customAnswers = generatePlaceholders(fields);
+  const customAnswers = generatePlaceholders(remainingFields);
 
   return {
     destinationDir,
     entryPoint,
     packageManager,
     templateComplete: false,
-    templateData: { ...templateData, ...customAnswers },
+    templateData: { ...seededTemplateData, ...customAnswers },
     templateName,
     type,
   };

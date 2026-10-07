@@ -29,6 +29,8 @@ export interface Choice {
   name: string;
   message: string;
   initial?: string;
+  /** Pre-filled answer that the user can edit, as opposed to a hint. */
+  initialValue?: string;
   validate?: (value: string) => boolean | string;
 }
 
@@ -303,6 +305,7 @@ export const runForm = async <T = Record<string, string>>(props: {
           text({
             message: choice.message,
             placeholder: choice.initial,
+            initialValue: choice.initialValue,
             validate: toClackValidate(choice),
           }),
       ]),
