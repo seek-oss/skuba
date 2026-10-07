@@ -1,405 +1,284 @@
 import path from 'path';
-import { inspect } from 'util';
+import { inspect, isDeepStrictEqual } from 'util';
 
-import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
+import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
+import { defaultConfig } from 'pnpm-plugin-skuba';
+import {
+  type Document,
+  type Node,
+  Pair,
+  type Scalar,
+  YAMLMap,
+  YAMLSeq,
+  isCollection,
+  isMap,
+  isNode,
+  isPair,
+  isScalar,
+  isSeq,
+  parseDocument,
+  visit,
+} from 'yaml';
 
 import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
 import type { InternalLintResult } from '../internal.js';
 
-import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
-
-import { Git } from '@skuba-lib/api';
-import { defaultConfig } from 'pnpm-plugin-skuba';
-
 const lockFileUpdateTriggers = ['overrides'];
 
-const isSimpleValue = (value: unknown) =>
+const MANAGED_COMMENT = ' Managed by skuba';
+
+type SimpleValue = boolean | number | string;
+
+type UnknownPair = Pair<unknown, unknown>;
+
+const isSimpleValue = (value: unknown): value is SimpleValue =>
   typeof value === 'boolean' ||
   typeof value === 'number' ||
   typeof value === 'string';
 
-// Quote strings that begin with YAML reserved indicator characters (@ and `)
-const quoteYamlStringValue = (value: string): string => {
-  if (/^[@`]/.test(value)) {
-    return `'${value}'`;
+const compareCodeUnits = (a: string, b: string) => {
+  if (a === b) {
+    return 0;
   }
-  return value;
+
+  return a < b ? -1 : 1;
 };
 
-const escapeRegex = (value: string): string =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const isManagedCommentLine = (line: string) =>
+  line.trim() === MANAGED_COMMENT.trim();
 
-const wrapOptionalQuotesRegex = (value: string): string =>
-  `['"]?(${value})['"]?`;
+const isManaged = (node: unknown): boolean =>
+  isScalar(node) &&
+  typeof node.comment === 'string' &&
+  node.comment.split('\n').some(isManagedCommentLine);
 
-const removeOptionalQuotes = (value: string): string =>
-  value.replace(/^(['"])(.*)\1$/s, '$2');
-
-const buildManagedCommentEdits = (
-  node: SgNode,
-  insertedText: string,
-  matchRegex: RegExp,
-  source: string,
-): Edit[] => {
-  const nodeRange = node.range();
-  const maybeManagedComment = node.next();
-
-  if (maybeManagedComment?.kind() !== 'comment') {
-    return [
-      {
-        insertedText,
-        startPos: nodeRange.start.index,
-        endPos: nodeRange.end.index,
-      },
-    ];
+const stripManagedCommentLines = (
+  comment: string | null | undefined,
+): string | undefined => {
+  if (!comment) {
+    return undefined;
   }
 
-  const commentRange = maybeManagedComment.range();
-  const content = source.slice(nodeRange.start.index, commentRange.end.index);
-  if (matchRegex.test(content)) {
-    return [];
-  }
+  const lines = comment
+    .split('\n')
+    .filter((line) => !isManagedCommentLine(line));
 
-  return [
-    {
-      insertedText,
-      startPos: nodeRange.start.index,
-      endPos: commentRange.end.index,
-    },
-  ];
+  return lines.some((line) => line.trim()) ? lines.join('\n') : undefined;
 };
 
-const applyDeleteEdits = async (
-  source: string,
-  astRoot: SgNode,
-): Promise<{
-  updatedSource: string;
-  updatedAstRoot: SgNode;
-}> => {
-  const {
-    simpleValues = [],
-    arrayValues = [],
-    objectValues = [],
-  } = Object.groupBy(Object.entries(defaultConfig), ([, value]) => {
-    if (isSimpleValue(value)) {
-      return 'simpleValues';
-    }
-    if (Array.isArray(value)) {
-      return 'arrayValues';
-    }
-    return 'objectValues';
-  }) as {
-    simpleValues: Array<[string, string | boolean | number]>;
-    arrayValues: Array<[string, string[]]>;
-    objectValues: Array<[string, Record<string, boolean>]>;
-  };
+const keyOf = (pair: UnknownPair): string =>
+  String(isScalar(pair.key) ? pair.key.value : pair.key);
 
-  const nodesToDelete = astRoot.findAll({
-    rule: {
-      any: [
-        {
-          kind: 'block_mapping_pair',
-          precedes: {
-            kind: 'comment',
-            regex: '# Managed by skuba',
-          },
-          has: {
-            kind: 'flow_node',
-            field: 'key',
-            not: {
-              regex: `^${wrapOptionalQuotesRegex(simpleValues.map(([key]) => escapeRegex(key)).join('|'))}$`,
-            },
-          },
-          inside: {
-            kind: 'block_mapping',
-            inside: {
-              kind: 'block_node',
-              inside: {
-                kind: 'document',
-              },
-            },
-          },
-        },
-        ...arrayValues.map(([key, value]) => ({
-          kind: 'block_sequence_item',
-          precedes: {
-            kind: 'comment',
-            regex: '# Managed by skuba',
-          },
-          has: {
-            kind: 'flow_node',
-            not: {
-              regex: `^${wrapOptionalQuotesRegex(value.map((v) => escapeRegex(v)).join('|'))}$`,
-            },
-          },
-          inside: {
-            kind: 'block_sequence',
-            inside: {
-              kind: 'block_node',
-              inside: {
-                kind: 'block_mapping_pair',
-                has: {
-                  kind: 'flow_node',
-                  field: 'key',
-                  regex: `^${wrapOptionalQuotesRegex(escapeRegex(key))}$`,
-                },
-              },
-            },
-          },
-        })),
-        {
-          kind: 'block_sequence_item',
-          precedes: {
-            kind: 'comment',
-            regex: '# Managed by skuba',
-          },
-          has: {
-            kind: 'flow_node',
-          },
-          inside: {
-            kind: 'block_sequence',
-            inside: {
-              kind: 'block_node',
-              inside: {
-                kind: 'block_mapping_pair',
-                has: {
-                  kind: 'flow_node',
-                  field: 'key',
-                  not: {
-                    regex: `^${wrapOptionalQuotesRegex(arrayValues.map(([key]) => escapeRegex(key)).join('|'))}$`,
-                  },
-                },
-              },
-            },
-          },
-        },
-        ...objectValues.map(([key, value]) => ({
-          kind: 'block_mapping_pair',
-          has: {
-            kind: 'flow_node',
-            field: 'key',
-            not: {
-              regex: `^${wrapOptionalQuotesRegex(Object.keys(value).map(escapeRegex).join('|'))}$`,
-            },
-          },
-          precedes: {
-            kind: 'comment',
-            regex: '^# Managed by skuba$',
-          },
-          inside: {
-            kind: 'block_mapping',
-            inside: {
-              kind: 'block_node',
-              inside: {
-                kind: 'block_mapping_pair',
-                has: {
-                  kind: 'flow_node',
-                  field: 'key',
-                  regex: `^${wrapOptionalQuotesRegex(escapeRegex(key))}$`,
-                },
-              },
-            },
-          },
-        })),
-        {
-          kind: 'block_mapping_pair',
-          has: {
-            kind: 'flow_node',
-            field: 'key',
-          },
-          precedes: {
-            kind: 'comment',
-            regex: '^# Managed by skuba$',
-          },
-          inside: {
-            kind: 'block_mapping',
-            inside: {
-              kind: 'block_node',
-              inside: {
-                kind: 'block_mapping_pair',
-                has: {
-                  kind: 'flow_node',
-                  field: 'key',
-                  not: {
-                    regex: `^${wrapOptionalQuotesRegex(objectValues.map(([key]) => escapeRegex(key)).join('|'))}$`,
-                  },
-                },
-              },
-            },
-          },
-        },
-      ],
+const markManaged = (node: Scalar): Scalar => {
+  node.comment = MANAGED_COMMENT;
+  node.spaceBefore = undefined;
+  return node;
+};
+
+const createManagedScalar = (doc: Document, value: SimpleValue): Scalar =>
+  markManaged(doc.createNode(value));
+
+const stripOrphanedManagedComments = (doc: Document) => {
+  doc.commentBefore = stripManagedCommentLines(doc.commentBefore) ?? null;
+  doc.comment = stripManagedCommentLines(doc.comment) ?? null;
+
+  visit(doc, {
+    Node: (_, node) => {
+      node.commentBefore = stripManagedCommentLines(node.commentBefore);
+
+      if (isCollection(node)) {
+        node.comment = stripManagedCommentLines(node.comment);
+      }
     },
   });
+};
 
-  const commentNodes = astRoot.findAll({
-    rule: {
-      kind: 'comment',
-      regex: '^# Managed by skuba$',
-      any: [
-        {
-          inside: {
-            kind: 'block_mapping_pair',
-            inside: {
-              kind: 'block_mapping',
-              inside: {
-                kind: 'block_node',
-                inside: {
-                  kind: 'document',
-                },
-              },
-            },
-          },
-        },
-        {
-          follows: {
-            kind: 'comment',
-          },
-        },
-      ],
-    },
-  });
+/**
+ * The `yaml` parser attaches a comment above the first item of a block
+ * collection to the collection itself. Move it to the item so it follows the
+ * item when the collection is reordered.
+ */
+const moveLeadingCommentToFirstItem = (
+  collection: YAMLMap<unknown, unknown> | YAMLSeq<unknown>,
+) => {
+  const [first] = collection.items;
+  const target = isPair(first) ? first.key : first;
 
-  const deleteCommentEdits = commentNodes
-    .map((node) => {
-      const previousNode = node.prev();
-      const nodeRange = node.range();
+  if (!collection.commentBefore || !isNode(target)) {
+    return;
+  }
 
-      // This can match against valid nodes as we can't check line numbers in the AST
-      if (previousNode?.range().start.line === nodeRange.start.line) {
-        return undefined;
+  target.commentBefore = [collection.commentBefore, target.commentBefore]
+    .filter(Boolean)
+    .join('\n');
+  collection.commentBefore = undefined;
+};
+
+const isManagedItem = (item: unknown) =>
+  isPair(item) ? isManaged(item.value) : isManaged(item);
+
+const pruneUnmanagedSections = (root: YAMLMap<unknown, unknown>) => {
+  root.items = root.items.filter((pair) => {
+    if (Object.hasOwn(defaultConfig, keyOf(pair))) {
+      return true;
+    }
+
+    const value = pair.value;
+
+    if (isScalar(value)) {
+      return !isManaged(value);
+    }
+
+    if (isCollection(value)) {
+      const items = (value.items as unknown[]).filter(
+        (item) => !isManagedItem(item),
+      );
+
+      if (items.length === value.items.length) {
+        return true;
       }
 
-      const endPos =
-        source.at(nodeRange.end.index) === '\n'
-          ? nodeRange.end.index + 1
-          : nodeRange.end.index;
+      value.items = items;
 
-      return {
-        startPos: nodeRange.start.index - nodeRange.start.column,
-        endPos,
-        insertedText: '',
-      };
-    })
-    .filter((edit) => edit !== undefined);
-
-  if (!nodesToDelete.length && !deleteCommentEdits.length) {
-    return {
-      updatedSource: source,
-      updatedAstRoot: astRoot,
-    };
-  }
-
-  const deleteEdits = nodesToDelete.map((node) => {
-    const nodeRange = node.range();
-
-    const column = nodeRange.start.column;
-    // delete the whole line including any characters before the column, eg. whitespace or list operators
-    const startPos = nodeRange.start.index - column;
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the node has a next sibling
-    const commentNode = node.next()!;
-    const commentNodeRange = commentNode.range();
-    const commentNodeEndIndex = commentNodeRange.end.index;
-    const endPos =
-      source.at(commentNodeEndIndex) === '\n'
-        ? commentNodeEndIndex + 1
-        : commentNodeEndIndex;
-
-    if (commentNodeRange.start.line !== nodeRange.start.line) {
-      return {
-        insertedText: '',
-        startPos: commentNodeRange.start.index - commentNodeRange.start.column,
-        endPos,
-      };
+      return items.length > 0;
     }
 
-    return {
-      insertedText: '',
-      startPos,
-      endPos,
-    };
+    return true;
   });
+};
 
-  const updatedSource = astRoot.commitEdits([
-    ...deleteEdits,
-    ...deleteCommentEdits,
-  ]);
-  const updatedAstRoot = (await parseAsync('yaml', updatedSource)).root();
+const syncSimpleValue = (
+  doc: Document,
+  root: YAMLMap<unknown, unknown>,
+  key: string,
+  value: SimpleValue,
+) => {
+  const existing = root.items.find((pair) => keyOf(pair) === key);
 
-  // check if there are any orphaned sections
-  // eg. section is now empty after deleting the last array item or object key
-  const orphanedSections = updatedAstRoot.findAll({
-    rule: {
-      any: [
-        {
-          kind: 'block_mapping_pair',
-          inside: {
-            kind: 'block_mapping',
-            inside: {
-              kind: 'block_node',
-              inside: {
-                kind: 'document',
-              },
-            },
-          },
-          all: [
-            {
-              not: {
-                has: {
-                  kind: 'flow_node',
-                  field: 'value',
-                },
-              },
-            },
-            {
-              not: {
-                has: {
-                  kind: 'block_node',
-                  field: 'value',
-                },
-              },
-            },
-          ],
-        },
-      ],
-    },
-  });
-
-  if (!orphanedSections.length) {
-    return {
-      updatedSource,
-      updatedAstRoot,
-    };
+  if (!existing) {
+    root.items.push(
+      new Pair(doc.createNode(key), createManagedScalar(doc, value)),
+    );
+    return;
   }
 
-  const deleteSectionEdits = orphanedSections.map((node) => {
-    const nodeRange = node.range();
+  existing.value =
+    isScalar(existing.value) && existing.value.value === value
+      ? markManaged(existing.value)
+      : createManagedScalar(doc, value);
+};
 
-    const column = nodeRange.start.column;
-    const startPos = nodeRange.start.index - column;
-    const endPos =
-      updatedSource.at(nodeRange.end.index) === '\n'
-        ? nodeRange.end.index + 1
-        : nodeRange.end.index;
+const syncArrayValue = (
+  doc: Document,
+  root: YAMLMap<unknown, unknown>,
+  key: string,
+  values: string[],
+) => {
+  const existing = root.items.find((pair) => keyOf(pair) === key);
 
-    return {
-      insertedText: '',
-      startPos,
-      endPos,
-    };
+  const seq = isSeq(existing?.value) ? existing.value : new YAMLSeq();
+  seq.flow = false;
+  moveLeadingCommentToFirstItem(seq);
+
+  if (!existing) {
+    root.items.push(new Pair(doc.createNode(key), seq));
+  } else {
+    existing.value = seq;
+  }
+
+  const managedValues = new Set(values);
+  const existingManagedItems = new Map<string, Scalar>();
+  const userItems: unknown[] = [];
+
+  for (const item of seq.items) {
+    const isManagedValue =
+      isScalar(item) && managedValues.has(String(item.value));
+
+    if (isManagedValue && !existingManagedItems.has(String(item.value))) {
+      existingManagedItems.set(String(item.value), item);
+    } else if (!isManagedValue && !isManaged(item)) {
+      userItems.push(item);
+    }
+  }
+
+  const managedItems = values.toSorted(compareCodeUnits).map((value) => {
+    const existingItem = existingManagedItems.get(value);
+    return existingItem
+      ? markManaged(existingItem)
+      : createManagedScalar(doc, value);
   });
 
-  const prunedSource = updatedAstRoot.commitEdits(deleteSectionEdits);
-  const prunedAstRoot = (await parseAsync('yaml', prunedSource)).root();
-
-  return {
-    updatedSource: prunedSource,
-    updatedAstRoot: prunedAstRoot,
-  };
+  seq.items = [...managedItems, ...userItems];
 };
+
+const syncObjectValue = (
+  doc: Document,
+  root: YAMLMap<unknown, unknown>,
+  key: string,
+  value: Record<string, SimpleValue>,
+) => {
+  const existing = root.items.find((pair) => keyOf(pair) === key);
+
+  const map: YAMLMap<unknown, unknown> = isMap(existing?.value)
+    ? existing.value
+    : new YAMLMap();
+  map.flow = false;
+  moveLeadingCommentToFirstItem(map);
+
+  if (!existing) {
+    root.items.push(new Pair(doc.createNode(key), map));
+  } else {
+    existing.value = map;
+  }
+
+  const existingManagedPairs = new Map<string, UnknownPair>();
+  const userPairs: UnknownPair[] = [];
+
+  for (const pair of map.items) {
+    const pairKey = keyOf(pair);
+    if (Object.hasOwn(value, pairKey)) {
+      if (!existingManagedPairs.has(pairKey)) {
+        existingManagedPairs.set(pairKey, pair);
+      }
+    } else if (!isManaged(pair.value)) {
+      userPairs.push(pair);
+    }
+  }
+
+  const managedPairs = Object.keys(value)
+    .toSorted(compareCodeUnits)
+    .map((pairKey) => {
+      const pairValue = value[pairKey] as SimpleValue;
+      const existingPair = existingManagedPairs.get(pairKey);
+
+      if (!existingPair) {
+        return new Pair(
+          doc.createNode(pairKey),
+          createManagedScalar(doc, pairValue),
+        );
+      }
+
+      if (isScalar(existingPair.key)) {
+        existingPair.key.spaceBefore = undefined;
+      }
+
+      existingPair.value =
+        isScalar(existingPair.value) && existingPair.value.value === pairValue
+          ? markManaged(existingPair.value)
+          : createManagedScalar(doc, pairValue);
+
+      return existingPair;
+    });
+
+  map.items = [...managedPairs, ...userPairs];
+};
+
+const toJs = (node: unknown): unknown =>
+  node && typeof node === 'object' && 'toJSON' in node
+    ? (node as Node).toJSON()
+    : node;
 
 export const patchPnpmWorkspace = async (
   mode: 'format' | 'lint',
@@ -408,7 +287,7 @@ export const patchPnpmWorkspace = async (
   const root = await Git.findRoot({ dir: cwd });
   const dir = root ?? cwd;
 
-  let pnpmWorkspaceFile: string;
+  let pnpmWorkspaceFile;
   try {
     pnpmWorkspaceFile = await fs.promises.readFile(
       path.join(dir, 'pnpm-workspace.yaml'),
@@ -422,199 +301,47 @@ export const patchPnpmWorkspace = async (
     };
   }
 
-  registerAstGrepLanguages();
-  const astRoot = (await parseAsync('yaml', pnpmWorkspaceFile)).root();
+  const doc: Document = parseDocument(pnpmWorkspaceFile);
 
-  const { updatedSource, updatedAstRoot } = await applyDeleteEdits(
-    pnpmWorkspaceFile,
-    astRoot,
+  if (doc.errors.length) {
+    throw new Error(
+      `Failed to parse pnpm-workspace.yaml: ${doc.errors.map((err) => err.message).join('\n')}`,
+    );
+  }
+
+  const originalTriggers = lockFileUpdateTriggers.map((trigger) =>
+    toJs(doc.get(trigger)),
   );
-  const startOfDocument = updatedAstRoot.range().start.index;
-
-  const existingSections = updatedAstRoot.findAll({
-    rule: {
-      kind: 'block_mapping_pair',
-      inside: {
-        kind: 'block_mapping',
-        inside: {
-          kind: 'block_node',
-          inside: {
-            kind: 'document',
-          },
-        },
-      },
-      has: {
-        kind: 'flow_node',
-        field: 'key',
-        regex: `^${wrapOptionalQuotesRegex(
-          Object.keys(defaultConfig).map(escapeRegex).join('|'),
-        )}$`,
-      },
-    },
-  });
-
-  const existingSectionsSet = new Set(
-    existingSections.map((section) =>
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the section has a key
-      removeOptionalQuotes(section.field('key')!.text()),
-    ),
-  );
-
-  const addSectionEdits = Object.entries(defaultConfig)
-    .filter(([key]) => !existingSectionsSet.has(key))
-    .map(([key, value]) => {
-      if (isSimpleValue(value)) {
-        return {
-          insertedText: `${quoteYamlStringValue(key)}: ${value} # Managed by skuba\n`,
-          startPos: startOfDocument,
-          endPos: startOfDocument,
-        };
-      }
-
-      if (Array.isArray(value)) {
-        return {
-          insertedText: `${quoteYamlStringValue(key)}:\n${value.map((v) => `  - ${quoteYamlStringValue(v)} # Managed by skuba\n`).join('')}`,
-          startPos: startOfDocument,
-          endPos: startOfDocument,
-        };
-      }
-
-      return {
-        insertedText: `${quoteYamlStringValue(key)}:\n${Object.entries(value)
-          .map(
-            ([k, v]) =>
-              `  ${quoteYamlStringValue(k)}: ${v} # Managed by skuba\n`,
-          )
-          .join('')}`,
-        startPos: startOfDocument,
-        endPos: startOfDocument,
-      };
-    });
-
-  const updateSectionEdits = existingSections
-    .map((section) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the section has a key
-      const rawKey = section.field('key')!.text();
-      const key = removeOptionalQuotes(rawKey);
-      const value = defaultConfig[key as keyof typeof defaultConfig];
-
-      if (isSimpleValue(value)) {
-        return buildManagedCommentEdits(
-          section,
-          `${rawKey}: ${value} # Managed by skuba`,
-          new RegExp(
-            `^${wrapOptionalQuotesRegex(escapeRegex(key))}: ${escapeRegex(String(value))} # Managed by skuba$`,
-          ),
-          updatedSource,
-        );
-      }
-
-      if (Array.isArray(value)) {
-        const existingItems = section.findAll({
-          rule: {
-            kind: 'block_sequence_item',
-            has: {
-              kind: 'flow_node',
-              regex: `^${wrapOptionalQuotesRegex(value.map((v) => escapeRegex(v)).join('|'))}$`,
-            },
-          },
-        });
-
-        const existingItemsSet = new Set(
-          existingItems.map((item) =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the item has a child
-            removeOptionalQuotes(item.child(1)!.text()),
-          ),
-        );
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the section has a value
-        const blockValue = section.field('value')!;
-        const blockValueRange = blockValue.range();
-        const blockStartPos =
-          blockValueRange.start.index - blockValueRange.start.column;
-        const newItemsEdits = value
-          .filter((item) => !existingItemsSet.has(item))
-          .map((item) => ({
-            insertedText: `  - ${quoteYamlStringValue(item)} # Managed by skuba\n`,
-            startPos: blockStartPos,
-            endPos: blockStartPos,
-          }));
-
-        const existingItemsEdits = existingItems.flatMap((existingItem) => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the item has a child
-          const existingRawValue = existingItem.child(1)!.text();
-          const existingValue = removeOptionalQuotes(existingRawValue);
-          return buildManagedCommentEdits(
-            existingItem,
-            `- ${existingRawValue} # Managed by skuba`,
-            new RegExp(
-              `^- ${wrapOptionalQuotesRegex(escapeRegex(existingValue))} # Managed by skuba$`,
-            ),
-            updatedSource,
-          );
-        });
-
-        return [...newItemsEdits, ...existingItemsEdits];
-      }
-
-      const existingObjectValues = section.findAll({
-        rule: {
-          kind: 'block_mapping_pair',
-          has: {
-            kind: 'flow_node',
-            field: 'key',
-            regex: `^${wrapOptionalQuotesRegex(Object.keys(value).map(escapeRegex).join('|'))}$`,
-          },
-        },
-      });
-
-      const existingObjectValuesSet = new Set(
-        existingObjectValues.map((item) =>
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the item has a key
-          removeOptionalQuotes(item.field('key')!.text()),
-        ),
-      );
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the section has a value
-      const blockNodeValue = section.field('value')!;
-      const blockValueRange = blockNodeValue.range();
-      const blockStartPos =
-        blockValueRange.start.index - blockValueRange.start.column;
-
-      const newObjectValuesEdits = Object.entries(value)
-        .filter(([objKey]) => !existingObjectValuesSet.has(objKey))
-        .map(([objKey, objValue]) => ({
-          insertedText: `  ${quoteYamlStringValue(objKey)}: ${objValue} # Managed by skuba\n`,
-          startPos: blockStartPos,
-          endPos: blockStartPos,
-        }));
-
-      const existingObjectValuesEdits = existingObjectValues.flatMap(
-        (existingObjectValue) => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the item has a key
-          const existingRawKey = existingObjectValue.field('key')!.text();
-          const existingKey = removeOptionalQuotes(existingRawKey);
-          const configValue = value[existingKey as keyof typeof value];
-          return buildManagedCommentEdits(
-            existingObjectValue,
-            `${existingRawKey}: ${configValue as string | boolean | number} # Managed by skuba`,
-            new RegExp(
-              `^${wrapOptionalQuotesRegex(escapeRegex(existingKey))}: ${escapeRegex(String(configValue))} # Managed by skuba$`,
-            ),
-            updatedSource,
-          );
-        },
-      );
-
-      return [...newObjectValuesEdits, ...existingObjectValuesEdits];
-    })
-    .flat();
 
   if (
-    !addSectionEdits.length &&
-    !updateSectionEdits.length &&
-    pnpmWorkspaceFile === updatedSource
+    doc.contents === null ||
+    (isScalar(doc.contents) && doc.contents.value === null)
   ) {
+    doc.contents = new YAMLMap();
+  }
+
+  const contents = doc.contents;
+
+  if (!isMap(contents)) {
+    throw new Error('pnpm-workspace.yaml must contain a mapping');
+  }
+
+  stripOrphanedManagedComments(doc);
+  pruneUnmanagedSections(contents);
+
+  for (const [key, value] of Object.entries(defaultConfig)) {
+    if (isSimpleValue(value)) {
+      syncSimpleValue(doc, contents, key, value);
+    } else if (Array.isArray(value)) {
+      syncArrayValue(doc, contents, key, value);
+    } else {
+      syncObjectValue(doc, contents, key, value);
+    }
+  }
+
+  const finalSource = doc.toString({ lineWidth: 0, singleQuote: true });
+
+  if (finalSource === pnpmWorkspaceFile) {
     return {
       ok: true,
       fixable: false,
@@ -622,12 +349,7 @@ export const patchPnpmWorkspace = async (
     };
   }
 
-  const finalSource = updatedAstRoot.commitEdits([
-    ...addSectionEdits,
-    ...updateSectionEdits,
-  ]);
-
-  if (mode === 'lint' && finalSource !== pnpmWorkspaceFile) {
+  if (mode === 'lint') {
     return {
       ok: false,
       fixable: true,
@@ -647,51 +369,10 @@ export const patchPnpmWorkspace = async (
     'utf8',
   );
 
-  const finalAst = (await parseAsync('yaml', finalSource)).root();
-
-  const hasChanged = lockFileUpdateTriggers.some((trigger) => {
-    const finalSection = finalAst.find({
-      rule: {
-        kind: 'block_mapping_pair',
-        has: {
-          kind: 'flow_node',
-          field: 'key',
-          regex: `^${wrapOptionalQuotesRegex(escapeRegex(trigger))}$`,
-        },
-        inside: {
-          kind: 'block_mapping',
-          inside: {
-            kind: 'block_node',
-            inside: {
-              kind: 'document',
-            },
-          },
-        },
-      },
-    });
-
-    const existingSection = astRoot.find({
-      rule: {
-        kind: 'block_mapping_pair',
-        has: {
-          kind: 'flow_node',
-          field: 'key',
-          regex: `^${wrapOptionalQuotesRegex(escapeRegex(trigger))}$`,
-        },
-        inside: {
-          kind: 'block_mapping',
-          inside: {
-            kind: 'block_node',
-            inside: {
-              kind: 'document',
-            },
-          },
-        },
-      },
-    });
-
-    return existingSection?.text() !== finalSection?.text();
-  });
+  const hasChanged = lockFileUpdateTriggers.some(
+    (trigger, index) =>
+      !isDeepStrictEqual(originalTriggers[index], toJs(doc.get(trigger))),
+  );
 
   if (hasChanged) {
     log.subtle(

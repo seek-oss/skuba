@@ -1,9 +1,9 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import {
   formatPackage,
@@ -14,12 +14,9 @@ import type {
   PatchReturnType,
 } from '../../lint/internalLints/upgrade/index.js';
 
-export const hasDirNameRegex = /__dirname\b/;
-export const hasFileNameRegex = /__filename\b/;
-
 const PACKAGES_EXCLUDED_FROM_TYPE_MODULE = ['eslint-config-skuba'];
 
-export const addTypeModule = async (originalContent: string) => {
+const addTypeModule = async (originalContent: string) => {
   const packageJson = parsePackage(originalContent);
 
   if (packageJson === undefined) {
@@ -58,9 +55,9 @@ export const tryAddTypeModuleToPackageJson: PatchFunction = async (
 ): Promise<PatchReturnType> => {
   const { mode, manifest } = config;
   const cwd = path.dirname(manifest.path);
-  const fileNames: string[] = await fg(['**/*package.json'], {
+  const fileNames: string[] = await globFiles(['**/*package.json'], {
     cwd,
-    ignore: ['**/node_modules/**', '**/.git/**'],
+    exclude: ['**/node_modules/**', '**/.git/**'],
   });
 
   if (!fileNames.length) {

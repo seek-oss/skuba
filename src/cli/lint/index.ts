@@ -23,12 +23,12 @@ export const lint = async (
     workerThreads,
   };
 
-  const { eslint, prettier, tscOk, tscOutputStream } = await externalLint(opts);
+  const { eslint, oxfmt, tscOk, tscOutputStream } = await externalLint(opts);
   const internal = await internalLint('lint', opts);
 
   try {
     await throwOnTimeout(
-      createAnnotations(internal, eslint, prettier, tscOk, tscOutputStream),
+      createAnnotations(internal, eslint, oxfmt, tscOk, tscOutputStream),
       { s: 30 },
     );
   } catch (err) {
@@ -36,19 +36,19 @@ export const lint = async (
     log.subtle(inspect(err));
   }
 
-  if (!internal.ok || !eslint.ok || !prettier.ok || !tscOk) {
+  if (!internal.ok || !eslint.ok || !oxfmt.ok || !tscOk) {
     process.exitCode = 1;
 
     const tools = [
       ...(internal.ok ? [] : ['skuba']),
       ...(eslint.ok ? [] : ['ESLint']),
-      ...(prettier.ok ? [] : ['Prettier']),
+      ...(oxfmt.ok ? [] : ['Oxfmt']),
       ...(tscOk ? [] : ['tsc']),
     ];
 
     log.err(`${tools.join(', ')} found issues that require triage.`);
 
-    if (internal.fixable || eslint.fixable || !prettier.ok) {
+    if (internal.fixable || eslint.fixable || !oxfmt.ok) {
       log.newline();
       log.warn(
         `Try running ${log.bold('pnpm exec skuba format')} to fix them.`,
@@ -59,7 +59,7 @@ export const lint = async (
   await autofix({
     debug: opts.debug,
     eslint: eslint.fixable,
-    prettier: !prettier.ok,
+    oxfmt: !oxfmt.ok,
     internal: internal.fixable,
   });
 };

@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import type {
   PatchConfig,
   PatchReturnType,
@@ -13,15 +13,8 @@ vi.mock('../../../../../../utils/exec.js', () => ({
 }));
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
-}));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  default: memfs,
+  ...memfs,
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
@@ -58,9 +51,12 @@ describe('migrateVocab', () => {
   });
 
   it('should rename vocab.config.js to vocab.config.cjs', async () => {
-    vol.fromJSON({
-      'vocab.config.js': '',
-    });
+    vol.fromJSON(
+      {
+        'vocab.config.js': '',
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateVocab({

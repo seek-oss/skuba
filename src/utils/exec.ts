@@ -1,59 +1,19 @@
-import type { styleText } from 'node:util';
-import { cpus } from 'os';
-import type stream from 'stream';
 import util from 'util';
 
-import concurrently from 'concurrently';
 import { type Options, type ResultPromise, execa } from 'execa';
-import { npmRunPath } from 'npm-run-path';
 import npmWhich from 'npm-which';
 
-import { concurrentlyErrorsSchema, isErrorWithCode } from './error.js';
+import { isErrorWithCode } from './error.js';
 import { log } from './logging.js';
-
-type StyleColor = Parameters<typeof styleText>[0];
 
 export type Exec<T extends Options = Options> = (
   command: string,
   ...args: string[]
 ) => ResultPromise<T>;
 
-interface ExecConcurrentlyCommand {
-  command: string;
-  name: string;
-  prefixColor?: StyleColor;
-}
-
-interface ExecConcurrentlyOptions {
-  /**
-   * The maximum number of processes that can execute concurrently.
-   *
-   * Defaults to the CPU core count.
-   */
-  maxProcesses?: number;
-
-  /**
-   * A set length to pad names to.
-   *
-   * Defaults to the length of the longest command name.
-   */
-  nameLength?: number;
-
-  /**
-   * The stream that logging output will be written to.
-   *
-   * Defaults to `process.stdout`.
-   */
-  outputStream?: stream.Writable;
-}
-
 type ExecOptions<T extends Options> = T & StreamStdioOptions;
 
 type StreamStdioOptions = { streamStdio?: true };
-
-const envWithPath = {
-  PATH: npmRunPath({ cwd: import.meta.dirname }),
-};
 
 const runCommand = <T extends Options>(
   command: string,
@@ -85,54 +45,6 @@ export const createExec =
     runCommand(command, args, opts);
 
 export const exec: Exec = (command, ...args) => runCommand(command, args);
-
-export const execConcurrently = async (
-  commands: ExecConcurrentlyCommand[],
-  { maxProcesses, nameLength, outputStream }: ExecConcurrentlyOptions = {},
-) => {
-  const maxNameLength =
-    nameLength ??
-    commands.reduce(
-      (length, command) => Math.max(length, command.name.length),
-      0,
-    );
-
-  try {
-    await concurrently(
-      commands.map(({ command, name, prefixColor }) => ({
-        command,
-        env: envWithPath,
-        name: name.padEnd(maxNameLength),
-        prefixColor: Array.isArray(prefixColor) ? prefixColor[0] : prefixColor,
-      })),
-      {
-        maxProcesses: maxProcesses ?? cpus().length,
-
-        outputStream,
-
-        // Use a minimalist logging prefix.
-        prefix: '{name} │',
-      },
-    ).result;
-  } catch (err) {
-    const result = concurrentlyErrorsSchema.safeParse(err);
-
-    if (!result.success) {
-      throw err;
-    }
-
-    const failed = result.data
-      .filter(({ exitCode }) => exitCode !== 0)
-      .sort(({ index: indexA }, { index: indexB }) => indexA - indexB)
-      .map((subprocess) => subprocess.command.name);
-
-    throw Error(
-      `${failed.join(', ')} subprocess${
-        failed.length === 1 ? '' : 'es'
-      } failed.`,
-    );
-  }
-};
 
 export const ensureCommands = async (...names: string[]) => {
   let success = true;

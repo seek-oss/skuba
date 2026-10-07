@@ -1,29 +1,20 @@
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { mountBuildkiteAgent } from './mountBuildkiteAgent.js';
 
-import * as Git from '@skuba-lib/api/git';
-
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
-}));
-
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  default: memfs,
+  ...memfs,
 }));
 
 vi.mock('@skuba-lib/api/git', async () => ({
   ...(await vi.importActual<object>('@skuba-lib/api/git')),
   findRoot: vi.fn(),
 }));
+import * as Git from '@skuba-lib/api/git';
 
 const findRoot = vi.mocked(Git.findRoot);
 
@@ -100,7 +91,7 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should skip if there are no relevant files', async () => {
-    vol.fromJSON({ 'package.json': '{}' });
+    vol.fromJSON({ 'package.json': '{}' }, process.cwd());
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -111,15 +102,16 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should skip if nothing needs migrating', async () => {
-    vol.fromJSON({
-      'docker-compose.yml': `services:
+    vol.fromJSON(
+      {
+        'docker-compose.yml': `services:
   app:
     volumes:
       - ./:/workdir
       # Mount cached dependencies.
       - /workdir/node_modules
 `,
-      '.buildkite/pipeline.yml': `steps:
+        '.buildkite/pipeline.yml': `steps:
   - plugins:
       - docker-compose#v5.10.0:
           environment:
@@ -128,7 +120,9 @@ describe('mountBuildkiteAgent', () => {
           propagate-environment: true
           run: app
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -139,10 +133,13 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should not modify files in lint mode', async () => {
-    vol.fromJSON({
-      'docker-compose.yml': DOCKER_COMPOSE,
-      '.buildkite/pipeline.yml': PIPELINE,
-    });
+    vol.fromJSON(
+      {
+        'docker-compose.yml': DOCKER_COMPOSE,
+        '.buildkite/pipeline.yml': PIPELINE,
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'lint' } as PatchConfig),
@@ -157,9 +154,12 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should remove the buildkite-agent mount from docker-compose.yml', async () => {
-    vol.fromJSON({
-      'docker-compose.yml': DOCKER_COMPOSE,
-    });
+    vol.fromJSON(
+      {
+        'docker-compose.yml': DOCKER_COMPOSE,
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -181,9 +181,12 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should add mount-buildkite-agent to the docker-compose plugin', async () => {
-    vol.fromJSON({
-      '.buildkite/pipeline.yml': PIPELINE,
-    });
+    vol.fromJSON(
+      {
+        '.buildkite/pipeline.yml': PIPELINE,
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -229,15 +232,18 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should append mount-buildkite-agent when no later option exists', async () => {
-    vol.fromJSON({
-      '.buildkite/pipeline.yml': `steps:
+    vol.fromJSON(
+      {
+        '.buildkite/pipeline.yml': `steps:
   - plugins:
       - docker-compose#v5.10.0:
           dependencies: false
           environment:
             - GITHUB_API_TOKEN
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -258,8 +264,9 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should flip mount-buildkite-agent when the docker-compose plugin opts out', async () => {
-    vol.fromJSON({
-      '.buildkite/pipeline.yml': `steps:
+    vol.fromJSON(
+      {
+        '.buildkite/pipeline.yml': `steps:
   - plugins:
       - docker-compose#v5.10.0:
           environment:
@@ -268,7 +275,9 @@ describe('mountBuildkiteAgent', () => {
           propagate-environment: true
           run: app
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -290,9 +299,12 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should flip mount-buildkite-agent and drop the bind mount for the docker plugin', async () => {
-    vol.fromJSON({
-      '.buildkite/pipeline.yml': DOCKER_PLUGIN_PIPELINE,
-    });
+    vol.fromJSON(
+      {
+        '.buildkite/pipeline.yml': DOCKER_PLUGIN_PIPELINE,
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -315,8 +327,9 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should add mount-buildkite-agent to the docker plugin when it is missing', async () => {
-    vol.fromJSON({
-      '.buildkite/pipeline.yml': `steps:
+    vol.fromJSON(
+      {
+        '.buildkite/pipeline.yml': `steps:
   - plugins:
       - docker#v5.13.0:
           environment:
@@ -328,7 +341,9 @@ describe('mountBuildkiteAgent', () => {
             # Mount cached dependencies.
             - /workdir/node_modules
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -362,9 +377,12 @@ describe('mountBuildkiteAgent', () => {
             - /workdir/node_modules
 `;
 
-    vol.fromJSON({
-      '.buildkite/pipeline.yml': pipeline,
-    });
+    vol.fromJSON(
+      {
+        '.buildkite/pipeline.yml': pipeline,
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -377,10 +395,13 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should handle multiple files and plugins', async () => {
-    vol.fromJSON({
-      'docker-compose.yml': DOCKER_COMPOSE,
-      '.buildkite/pipeline.yml': PIPELINE,
-    });
+    vol.fromJSON(
+      {
+        'docker-compose.yml': DOCKER_COMPOSE,
+        '.buildkite/pipeline.yml': PIPELINE,
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -408,9 +429,12 @@ describe('mountBuildkiteAgent', () => {
           run: app
 `;
 
-    vol.fromJSON({
-      '.buildkite/pipeline.yml': pipeline,
-    });
+    vol.fromJSON(
+      {
+        '.buildkite/pipeline.yml': pipeline,
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
@@ -427,9 +451,10 @@ describe('mountBuildkiteAgent', () => {
   });
 
   it('should still remove the docker-compose mount when the pipeline already opts in', async () => {
-    vol.fromJSON({
-      'docker-compose.yml': DOCKER_COMPOSE,
-      '.buildkite/pipeline.yml': `steps:
+    vol.fromJSON(
+      {
+        'docker-compose.yml': DOCKER_COMPOSE,
+        '.buildkite/pipeline.yml': `steps:
   - plugins:
       - docker-compose#v5.10.0:
           environment:
@@ -438,7 +463,9 @@ describe('mountBuildkiteAgent', () => {
           propagate-environment: true
           run: app
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),

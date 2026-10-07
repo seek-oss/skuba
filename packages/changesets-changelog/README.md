@@ -4,8 +4,9 @@ An opinionated changelog generator for [Changesets](https://github.com/changeset
 
 This package provides a single changelog generator that:
 
-- **Automatically uses GitHub metadata** (PR links, commit links, authors) when `GITHUB_TOKEN` is set, falling back gracefully to Git-based versioning when it isn't.
+- **Links GitHub metadata** (PR links, commit links) from the changeset commit.
 - **Bolds conventional commit scopes** (e.g. `feat(api): ...` becomes `**api:** ...`) for consistent formatting across changelogs.
+- **Linkifies bare issue references** (e.g. `#1234`) in changeset summaries.
 - **Supports preamble injection** via a `skuba-changelog-inject` CLI, which prepends content from `.changeset/.PREAMBLE.md` into the generated `CHANGELOG.md` — useful for adding migration guides or release highlights to major versions.
 
 ## Usage
@@ -20,15 +21,17 @@ In your `.changeset/config.json`, set the changelog generator:
 }
 ```
 
-### 2. Set up GitHub integration (recommended)
+### 2. Set up GitHub integration
 
-For GitHub-linked entries (PR links, commit SHAs, authors), provide a GitHub personal access token with the `public_repo` scope:
+Provide a GitHub personal access token with the `read:user` and `repo:status` scopes:
 
 ```sh
 export GITHUB_TOKEN=your_token_here
 ```
 
-Without `GITHUB_TOKEN`, the generator falls back to Git-based versioning and logs a warning.
+`GITHUB_TOKEN` is required. Without it, `changeset version` fails with an error prompting you to create one.
+
+A `.env` file in the working directory is loaded automatically (via `util.parseEnv`) and is not written into `process.env`.
 
 ### 3. Inject a release preamble (optional)
 
@@ -39,3 +42,78 @@ pnpm skuba-changelog-inject
 ```
 
 This inserts the preamble into `CHANGELOG.md` and removes `.PREAMBLE.md` automatically.
+
+## Options
+
+Pass options as the second item in the `changelog` array:
+
+```json
+{
+  "changelog": [
+    "@skuba-lib/changesets-changelog",
+    {
+      "repo": "org/repo",
+      "disableThanks": false,
+      "disableDependencyLinks": false
+    }
+  ]
+}
+```
+
+### `repo`
+
+- **Type:** `string`
+- **Default:** `GITHUB_REPOSITORY`
+
+The `org/repo` slug of your GitHub repository. If you run `changeset version` locally, set this option or export `GITHUB_REPOSITORY`.
+
+GitHub Actions sets `GITHUB_REPOSITORY` automatically, so you can omit `repo` when versioning only runs in CI.
+
+### `disableThanks`
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+When `true` (the default), each line omits `Thanks [@user]!`.
+
+Set `"disableThanks": false` to include author attribution from the associated PR or commit, or from `author:` / `user:` lines in the changeset summary.
+
+### `disableDependencyLinks`
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+When `true` (the default), the internal-dependency section omits commit links:
+
+```md
+- Updated dependencies:
+  - package@version
+```
+
+Set `"disableDependencyLinks": false` to include commit links from the changesets that bumped those dependencies:
+
+```md
+- Updated dependencies [[`abc1234`](url)]:
+  - package@version
+```
+
+## Environment variables
+
+| Variable             | Purpose                                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `GITHUB_TOKEN`       | Required. `changeset version` fails without it.                                                                  |
+| `GITHUB_REPOSITORY`  | Default `org/repo` when `repo` is omitted. Set automatically in GitHub Actions.                                  |
+| `GITHUB_SERVER_URL`  | GitHub host. Defaults to `https://github.com`. Set this (and `GITHUB_GRAPHQL_URL`) for GitHub Enterprise Server. |
+| `GITHUB_GRAPHQL_URL` | GraphQL endpoint for GitHub Enterprise Server, e.g. `https://github.example.com/api/graphql`.                    |
+
+## Changeset summary keywords
+
+These lines are stripped from the published changelog and override GitHub metadata when present:
+
+```md
+pr: 123
+commit: abcdef0
+author: @ghost
+```
+
+`pull` / `pull request` work like `pr`. `user` works like `author`. Repeat `author:` for multiple people.

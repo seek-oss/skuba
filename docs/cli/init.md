@@ -162,10 +162,9 @@ Familiarise yourself with the directory structure that **skuba** has created:
 ├── .dockerignore
 ├── .gitignore
 ├── .nvmrc
-├── .prettierignore
-├── .prettierrc.js
 ├── Dockerfile
 ├── eslint.config.js
+├── oxfmt.config.ts
 ├── README.md
 ├── docker-compose.yml
 ├── vitest.config.ts

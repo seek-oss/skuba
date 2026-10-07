@@ -1,8 +1,8 @@
 import path from 'path';
 
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';
 
 import { tryAddTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
@@ -14,16 +14,8 @@ const resultWithTypeModule =
   '{\n  "name": "test",\n  "version": "1.0.0",\n  "type": "module",\n  "dependencies": {\n    "lodash": "4.17.21"\n  }\n}\n';
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
-}));
-
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  ...memfs,
+  default: memfs,
 }));
 
 beforeEach(() => {
@@ -58,7 +50,7 @@ describe('tryAddTypeModuleToPackageJson', () => {
     });
 
     it('should add type module to the root package json file if not present', async () => {
-      vol.fromJSON({ 'package.json': input });
+      vol.fromJSON({ 'package.json': input }, process.cwd());
 
       await expect(
         tryAddTypeModuleToPackageJson({
@@ -78,7 +70,7 @@ describe('tryAddTypeModuleToPackageJson', () => {
 
     it('should skip if type module is already present', async () => {
       const inputWithTypeModule = `{ "name": "test", "version": "1.0.0", "type": "module", "dependencies": { "lodash": "4.17.21" } }`;
-      vol.fromJSON({ 'package.json': inputWithTypeModule });
+      vol.fromJSON({ 'package.json': inputWithTypeModule }, process.cwd());
 
       await expect(
         tryAddTypeModuleToPackageJson({
@@ -94,10 +86,13 @@ describe('tryAddTypeModuleToPackageJson', () => {
     });
 
     it('should add type module to all package json files if not present', async () => {
-      vol.fromJSON({
-        'package.json': input,
-        'sub-package/package.json': input,
-      });
+      vol.fromJSON(
+        {
+          'package.json': input,
+          'sub-package/package.json': input,
+        },
+        process.cwd(),
+      );
 
       await expect(
         tryAddTypeModuleToPackageJson({

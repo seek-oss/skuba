@@ -1,9 +1,9 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
@@ -12,7 +12,7 @@ export const hasDirNameRegex = /__dirname\b/g;
 export const hasDirNameVariableRegex = /const __dirname =/g;
 export const hasFileNameRegex = /__filename\b/g;
 export const hasFileNameVariableRegex = /const __filename =/g;
-export const requireMainRegex = /require\.main\s*===\s*module/g;
+const requireMainRegex = /require\.main\s*===\s*module/g;
 
 const removeGlobalVars = (contents: string) =>
   contents
@@ -26,11 +26,11 @@ export const tryRewriteGlobalVars: PatchFunction = async (config) => {
   const { mode, manifest } = config;
   const cwd = path.dirname(manifest.path);
 
-  const fileNames = await fg(
+  const fileNames = await globFiles(
     ['**/*.ts', '**/*.test.ts', '**/*.js', '**/*.test.js'],
     {
       cwd,
-      ignore: [
+      exclude: [
         '**/.git',
         '**/node_modules',
         '**/lib/**',

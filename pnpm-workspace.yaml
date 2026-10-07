@@ -26,6 +26,7 @@ minimumReleaseAgeExclude:
   - eslint-config-seek # Managed by skuba
   - eslint-config-skuba # Managed by skuba
   - eslint-plugin-skuba # Managed by skuba
+  - oxc-config-seek # Managed by skuba
   - pnpm-plugin-skuba # Managed by skuba
   - skuba # Managed by skuba
   - skuba-dive # Managed by skuba
@@ -37,27 +38,28 @@ overrides:
 packageManagerStrictVersion: true # Managed by skuba
 
 publicHoistPattern:
-  - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
   - '@changesets/cli' # Managed by skuba
   - '@eslint/*' # Managed by skuba
   - '@skuba-lib/*' # Managed by skuba
   - '@types*' # Managed by skuba
+  - '@vitest/*' # Managed by skuba
   - esbuild # Managed by skuba
   - eslint # Managed by skuba
   - eslint-config-skuba # Managed by skuba
-  - prettier # Managed by skuba
+  - oxc-config-seek # Managed by skuba
+  - oxfmt # Managed by skuba
   - publint # Managed by skuba
   - rolldown # Managed by skuba
   - tsconfig-seek # Managed by skuba
   - tsdown # Managed by skuba
   - typescript # Managed by skuba
-  - '@vitest/*' # Managed by skuba
   - vitest # Managed by skuba
+  - remark-lint-*
 
 trustPolicyExclude:
-  - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13
   - semver@6.3.1 # Managed by skuba
+  - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13
 
 strictDepBuilds: false # Managed by skuba
 trustPolicy: off # Managed by skuba

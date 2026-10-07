@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -12,15 +12,8 @@ vi.mock('../../../../../../utils/exec.js', () => ({
 }));
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
-}));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  default: memfs,
+  ...memfs,
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
@@ -45,9 +38,12 @@ const baseArgs: PatchConfig = {
 
 describe('removePnpmPlugin', () => {
   it('should skip if pnpm-workspace.yaml is up to date', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': ``,
-    });
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': ``,
+      },
+      process.cwd(),
+    );
 
     await patchPnpmWorkspace('format');
 
@@ -63,9 +59,12 @@ describe('removePnpmPlugin', () => {
   });
 
   it('should not apply changes in lint mode', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': ``,
-    });
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': ``,
+      },
+      process.cwd(),
+    );
 
     await expect(
       removePnpmPlugin({
@@ -84,11 +83,14 @@ describe('removePnpmPlugin', () => {
   });
 
   it('should apply changes in format mode', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `configDependencies:
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `configDependencies:
   pnpm-plugin-skuba: 2.0.0+sha512-nhxd9TdhOOXJ1bcQaqtDiI02gbxhJ8lTw3ZzSHDJPqIbbtnABQT7nLKqLX2zKi7tbfRI8+QSgL3eR2d/QFOLew==
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       removePnpmPlugin({
@@ -123,6 +125,7 @@ describe('removePnpmPlugin', () => {
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -138,7 +141,8 @@ describe('removePnpmPlugin', () => {
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -155,13 +159,16 @@ describe('removePnpmPlugin', () => {
   });
 
   it('should remove only pnpm-plugin-skuba if there are other configDependencies', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `packages:
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `packages:
   - .
 configDependencies:
   pnpm-plugin-skuba: 2.0.0+sha512-nhxd9TdhOOXJ1bcQaqtDiI02gbxhJ8lTw3ZzSHDJPqIbbtnABQT7nLKqLX2zKi7tbfRI8+QSgL3eR2d/QFOLew==
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       removePnpmPlugin({
@@ -174,7 +181,9 @@ configDependencies:
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "pnpm-workspace.yaml": "allowBuilds:
+        "pnpm-workspace.yaml": "packages:
+        - .
+      allowBuilds:
         '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
@@ -196,6 +205,7 @@ configDependencies:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -211,7 +221,8 @@ configDependencies:
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -222,8 +233,6 @@ configDependencies:
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
-      packages:
-        - .
       ",
       }
     `);

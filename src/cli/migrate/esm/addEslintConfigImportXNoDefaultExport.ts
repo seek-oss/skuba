@@ -2,9 +2,9 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type SgNode, parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import type {
   PatchFunction,
@@ -74,15 +74,15 @@ export const insertImportXConfigFilesOverride = async (
   return `${ast.commitEdits([arr.replace(newArray)]).trimEnd()}\n`;
 };
 
-export const tryAddEslintConfigImportXNoDefaultExport: PatchFunction = async (
+const tryAddEslintConfigImportXNoDefaultExport: PatchFunction = async (
   config,
 ): Promise<PatchReturnType> => {
   const { mode, manifest } = config;
   const cwd = path.dirname(manifest.path);
 
-  const fileNames = await fg(ESLINT_CONFIG_GLOB, {
+  const fileNames = await globFiles(ESLINT_CONFIG_GLOB, {
     cwd,
-    ignore: [
+    exclude: [
       '**/node_modules/**',
       '**/.git/**',
       '**/lib/**',

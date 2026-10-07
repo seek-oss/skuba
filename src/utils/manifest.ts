@@ -12,8 +12,6 @@ export const projectTypeSchema = z.union([
   z.literal('package'),
 ]);
 
-export const PROJECT_TYPES = ['application', 'package'] as const;
-
 const DEFAULT_ENTRY_POINT = 'src/app.ts';
 
 let skubaManifest: NormalizedPackageJson | undefined;
@@ -68,7 +66,7 @@ export const getManifestProperties = async <T extends string, V = unknown>(
   };
 };
 
-export const getStringPropFromConsumerManifest = async <T extends string>(
+const getStringPropFromConsumerManifest = async <T extends string>(
   prop: T,
 ): Promise<string | undefined> => {
   const manifest = await getManifestProperties(prop);

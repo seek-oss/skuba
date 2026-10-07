@@ -1,18 +1,18 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const dockerSyntaxRegex = /^#\s*syntax=\s*docker\/dockerfile:\S+\n+/;
 
-export const patchDockerfileSyntaxDirective = async (
+const patchDockerfileSyntaxDirective = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
-  const dockerfilePaths = await fg(['**/Dockerfile*'], {
-    ignore: ['**/.git', '**/node_modules'],
+  const dockerfilePaths = await globFiles(['**/Dockerfile*'], {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (dockerfilePaths.length === 0) {

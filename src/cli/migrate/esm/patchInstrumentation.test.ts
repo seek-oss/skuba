@@ -1,7 +1,7 @@
 import latestVersion from 'latest-version';
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import { log } from '../../../utils/logging.js';
 import type {
   PatchConfig,
@@ -17,23 +17,16 @@ vi.mock('../../../utils/exec.js', () => ({
 }));
 
 vi.mock('node:fs', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('node:fs/promises', () => ({
-  default: memfs.fs.promises,
-  ...memfs.fs.promises,
+  default: memfs.promises,
+  ...memfs.promises,
 }));
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
-}));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  default: memfs,
+  ...memfs,
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
@@ -71,10 +64,13 @@ describe('patchInstrumentation', () => {
   });
 
   it('should skip if no imports for Datadog or OpenTelemetry instrumentation are found in source files', async () => {
-    vol.fromJSON({
-      Dockerfile: '',
-      'src/index.ts': '',
-    });
+    vol.fromJSON(
+      {
+        Dockerfile: '',
+        'src/index.ts': '',
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'skip',
@@ -84,11 +80,14 @@ describe('patchInstrumentation', () => {
   });
 
   it('should patch a Dockerfile with dd-trace import and explicit node CMD', async () => {
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD ["node", "lib/listen.js"]`,
-      'src/index.ts': "import tracer from 'dd-trace';",
-    });
+        'src/index.ts': "import tracer from 'dd-trace';",
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -104,18 +103,21 @@ CMD ["node", "lib/listen.js"]`,
   });
 
   it('should patch a Dockerfile with @opentelemetry/api import and explicit node CMD', async () => {
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD ["node", "lib/listen.js"]`,
-      'src/index.ts': "import { trace } from '@opentelemetry/api';",
-      'package.json': JSON.stringify({
-        name: 'test',
-        version: '1.0.0',
-        dependencies: {
-          '@opentelemetry/api': '^1.0.0',
-        },
-      }),
-    });
+        'src/index.ts': "import { trace } from '@opentelemetry/api';",
+        'package.json': JSON.stringify({
+          name: 'test',
+          version: '1.0.0',
+          dependencies: {
+            '@opentelemetry/api': '^1.0.0',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -141,18 +143,21 @@ CMD ["node", "lib/listen.js"]`,
   it('should patch a Dockerfile with @opentelemetry/api import and explicit node CMD but install a version similar to an existing @opentelemetry version', async () => {
     vi.mocked(latestVersion).mockResolvedValue('0.215.0');
 
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD ["node", "lib/listen.js"]`,
-      'src/index.ts': "import { trace } from '@opentelemetry/api';",
-      'package.json': JSON.stringify({
-        name: 'test',
-        version: '1.0.0',
-        dependencies: {
-          '@opentelemetry/instrumentation-http': '0.215.0',
-        },
-      }),
-    });
+        'src/index.ts': "import { trace } from '@opentelemetry/api';",
+        'package.json': JSON.stringify({
+          name: 'test',
+          version: '1.0.0',
+          dependencies: {
+            '@opentelemetry/instrumentation-http': '0.215.0',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -187,21 +192,24 @@ CMD ["node", "lib/listen.js"]`,
       .spyOn(log, 'warn')
       .mockImplementation(() => undefined);
 
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD ["node", "lib/listen.js"]`,
-      'src/index.ts': `
+        'src/index.ts': `
           import tracer from 'dd-trace';
           import { trace } from '@opentelemetry/api';
         `,
-      'package.json': JSON.stringify({
-        name: 'test',
-        version: '1.0.0',
-        dependencies: {
-          '@opentelemetry/api': '^1.0.0',
-        },
-      }),
-    });
+        'package.json': JSON.stringify({
+          name: 'test',
+          version: '1.0.0',
+          dependencies: {
+            '@opentelemetry/api': '^1.0.0',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -255,18 +263,21 @@ CMD ["lib/listen.js"]`,
   });
 
   it('should patch a Dockerfile with @opentelemetry/api import and implicit node CMD', async () => {
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD ["lib/listen.js"]`,
-      'src/index.ts': "import { trace } from '@opentelemetry/api';",
-      'package.json': JSON.stringify({
-        name: 'test',
-        version: '1.0.0',
-        dependencies: {
-          '@opentelemetry/api': '^1.0.0',
-        },
-      }),
-    });
+        'src/index.ts': "import { trace } from '@opentelemetry/api';",
+        'package.json': JSON.stringify({
+          name: 'test',
+          version: '1.0.0',
+          dependencies: {
+            '@opentelemetry/api': '^1.0.0',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -294,21 +305,24 @@ CMD ["lib/listen.js"]`,
       .spyOn(log, 'warn')
       .mockImplementation(() => undefined);
 
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD ["lib/listen.js"]`,
-      'src/index.ts': `
+        'src/index.ts': `
           import tracer from 'dd-trace';
           import { trace } from '@opentelemetry/api';
         `,
-      'package.json': JSON.stringify({
-        name: 'test',
-        version: '1.0.0',
-        dependencies: {
-          '@opentelemetry/api': '^1.0.0',
-        },
-      }),
-    });
+        'package.json': JSON.stringify({
+          name: 'test',
+          version: '1.0.0',
+          dependencies: {
+            '@opentelemetry/api': '^1.0.0',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -339,11 +353,14 @@ CMD ["lib/listen.js"]`,
   });
 
   it('should patch a Dockerfile with a dd-trace import and shell form CMD', async () => {
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD node lib/listen.js`,
-      'src/index.ts': "import tracer from 'dd-trace';",
-    });
+        'src/index.ts': "import tracer from 'dd-trace';",
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -359,18 +376,21 @@ CMD node lib/listen.js`,
   });
 
   it('should patch a Dockerfile with a @opentelemetry/api import and shell form CMD', async () => {
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD node lib/listen.js`,
-      'src/index.ts': "import { trace } from '@opentelemetry/api';",
-      'package.json': JSON.stringify({
-        name: 'test',
-        version: '1.0.0',
-        dependencies: {
-          '@opentelemetry/api': '^1.0.0',
-        },
-      }),
-    });
+        'src/index.ts': "import { trace } from '@opentelemetry/api';",
+        'package.json': JSON.stringify({
+          name: 'test',
+          version: '1.0.0',
+          dependencies: {
+            '@opentelemetry/api': '^1.0.0',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -398,21 +418,24 @@ CMD node lib/listen.js`,
       .spyOn(log, 'warn')
       .mockImplementation(() => undefined);
 
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD node lib/listen.js`,
-      'src/index.ts': `
+        'src/index.ts': `
           import tracer from 'dd-trace';
           import { trace } from '@opentelemetry/api';
         `,
-      'package.json': JSON.stringify({
-        name: 'test',
-        version: '1.0.0',
-        dependencies: {
-          '@opentelemetry/api': '^1.0.0',
-        },
-      }),
-    });
+        'package.json': JSON.stringify({
+          name: 'test',
+          version: '1.0.0',
+          dependencies: {
+            '@opentelemetry/api': '^1.0.0',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -447,21 +470,24 @@ CMD node lib/listen.js`,
       .spyOn(log, 'warn')
       .mockImplementation(() => undefined);
 
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD lib/listen.js`,
-      'src/index.ts': `
+        'src/index.ts': `
           import tracer from 'dd-trace';
           import { trace } from '@opentelemetry/api';
         `,
-      'package.json': JSON.stringify({
-        name: 'test',
-        version: '1.0.0',
-        dependencies: {
-          '@opentelemetry/api': '^1.0.0',
-        },
-      }),
-    });
+        'package.json': JSON.stringify({
+          name: 'test',
+          version: '1.0.0',
+          dependencies: {
+            '@opentelemetry/api': '^1.0.0',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -492,11 +518,14 @@ CMD lib/listen.js`,
   });
 
   it('should avoid clobbering existing instrumentation flags in the Dockerfile', async () => {
-    vol.fromJSON({
-      Dockerfile: `FROM node:14
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:14
 CMD ["node", "--import", "dd-trace/initialize.mjs", "lib/listen.js"]`,
-      'src/index.ts': "import tracer from 'dd-trace';",
-    });
+        'src/index.ts': "import tracer from 'dd-trace';",
+      },
+      process.cwd(),
+    );
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
       result: 'skip',

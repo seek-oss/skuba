@@ -1,7 +1,7 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../../../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchApiDockerfiles } from './patchApiDockerfiles.js';
@@ -15,15 +15,8 @@ vi.mock('../../../../../../index.js', () => ({
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
-}));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  ...memfs,
+  default: memfs,
 }));
 
 vi.spyOn(console, 'warn').mockImplementation(() => {
@@ -57,7 +50,7 @@ const baseArgs: PatchConfig = {
 
 describe('tryPatchApiDockerfiles', () => {
   it('should skip if no Dockerfiles are found', async () => {
-    vol.fromJSON({});
+    vol.fromJSON({}, process.cwd());
 
     await expect(
       patchApiDockerfiles({
@@ -71,12 +64,15 @@ describe('tryPatchApiDockerfiles', () => {
   });
 
   it('should skip if no patchable Dockerfiles are found', async () => {
-    vol.fromJSON({
-      Dockerfile: `
+    vol.fromJSON(
+      {
+        Dockerfile: `
 FROM node:18-alpine AS build
 RUN yarn install
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchApiDockerfiles({
@@ -99,8 +95,9 @@ RUN yarn install
   });
 
   it('should skip if package.json is already copied from the same --from source', async () => {
-    vol.fromJSON({
-      Dockerfile: `
+    vol.fromJSON(
+      {
+        Dockerfile: `
 FROM node:18-alpine AS build
 WORKDIR /workdir
 COPY package.json yarn.lock ./
@@ -115,7 +112,9 @@ COPY --from=build /workdir/package.json package.json
 COPY --from=build /workdir/node_modules node_modules
 CMD ["node", "lib/listen.js"]
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchApiDockerfiles({
@@ -149,8 +148,9 @@ CMD ["node", "lib/listen.js"]
   });
 
   it('should add package.json COPY when missing for root directory', async () => {
-    vol.fromJSON({
-      Dockerfile: `
+    vol.fromJSON(
+      {
+        Dockerfile: `
 FROM node:18-alpine AS build
 WORKDIR /workdir
 COPY package.json yarn.lock ./
@@ -164,7 +164,9 @@ COPY --from=build /workdir/lib lib
 COPY --from=build /workdir/node_modules node_modules
 CMD ["node", "lib/listen.js"]
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchApiDockerfiles({
@@ -197,8 +199,9 @@ CMD ["node", "lib/listen.js"]
   });
 
   it('should work with different --from source name', async () => {
-    vol.fromJSON({
-      Dockerfile: `
+    vol.fromJSON(
+      {
+        Dockerfile: `
 FROM node:18-alpine AS builder
 WORKDIR /workdir
 COPY package.json yarn.lock ./
@@ -212,7 +215,9 @@ COPY --from=builder /workdir/lib lib
 COPY --from=builder /workdir/node_modules node_modules
 CMD ["node", "lib/listen.js"]
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchApiDockerfiles({
@@ -245,8 +250,9 @@ CMD ["node", "lib/listen.js"]
   });
 
   it('should add package.json COPY for nested path', async () => {
-    vol.fromJSON({
-      Dockerfile: `
+    vol.fromJSON(
+      {
+        Dockerfile: `
 FROM node:18-alpine AS build
 WORKDIR /workdir
 COPY package.json yarn.lock ./
@@ -260,7 +266,9 @@ COPY --from=build /workdir/apps/api/lib apps/api/lib
 COPY --from=build /workdir/node_modules node_modules
 CMD ["node", "apps/api/lib/listen.js"]
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchApiDockerfiles({
@@ -293,8 +301,9 @@ CMD ["node", "apps/api/lib/listen.js"]
   });
 
   it('should not add package.json if copied from different --from source', async () => {
-    vol.fromJSON({
-      Dockerfile: `
+    vol.fromJSON(
+      {
+        Dockerfile: `
 FROM node:18-alpine AS build
 WORKDIR /workdir
 COPY package.json yarn.lock ./
@@ -312,7 +321,9 @@ COPY --from=build /workdir/lib lib
 COPY --from=build /workdir/node_modules node_modules
 CMD ["node", "lib/listen.js"]
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchApiDockerfiles({
@@ -349,8 +360,9 @@ CMD ["node", "lib/listen.js"]
   });
 
   it('should skip if using pnpm deploy', async () => {
-    vol.fromJSON({
-      Dockerfile: `
+    vol.fromJSON(
+      {
+        Dockerfile: `
 FROM node:18-alpine AS build
 WORKDIR /workdir
 COPY package.json pnpm-lock.yaml ./
@@ -364,7 +376,9 @@ WORKDIR /app
 COPY --from=build /app .
 CMD ["node", "lib/listen.js"]
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchApiDockerfiles({
@@ -378,15 +392,18 @@ CMD ["node", "lib/listen.js"]
   });
 
   it('should add package.json when COPY does not have --from parameter', async () => {
-    vol.fromJSON({
-      Dockerfile: `
+    vol.fromJSON(
+      {
+        Dockerfile: `
 FROM node:18-alpine
 WORKDIR /app
 COPY lib lib
 COPY node_modules node_modules
 CMD ["node", "lib/listen.js"]
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchApiDockerfiles({

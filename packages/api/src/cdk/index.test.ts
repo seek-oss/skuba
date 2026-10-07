@@ -9,9 +9,15 @@ describe('normaliseTemplate', () => {
     });
   });
 
-  it('replaces workerCurrentVersion hashes with x characters of equal length', () => {
+  it('replaces CurrentVersion hashes with x characters of equal length regardless of construct id', () => {
     expect(normaliseTemplate({ Ref: 'workerCurrentVersionAbc123' })).toEqual({
       Ref: 'workerCurrentVersionxxxxxx',
+    });
+    expect(normaliseTemplate({ Ref: 'notifierCurrentVersionAbc123' })).toEqual({
+      Ref: 'notifierCurrentVersionxxxxxx',
+    });
+    expect(normaliseTemplate({ Ref: 'CurrentVersionAbc123' })).toEqual({
+      Ref: 'CurrentVersionxxxxxx',
     });
   });
 

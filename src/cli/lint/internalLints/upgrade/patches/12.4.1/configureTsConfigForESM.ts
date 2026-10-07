@@ -1,12 +1,12 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import ts from 'typescript';
 import * as z from 'zod';
 
 import { Git } from '../../../../../../index.js';
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -31,8 +31,8 @@ const tsConfigSchema = z.looseObject({
 type TsConfig = z.infer<typeof tsConfigSchema>;
 
 const fetchFiles = async (patterns: string[]) => {
-  const files = await fg(patterns, {
-    ignore: ['**/.git', '**/node_modules'],
+  const files = await globFiles(patterns, {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   return Promise.all(
@@ -47,10 +47,7 @@ const fetchFiles = async (patterns: string[]) => {
   );
 };
 
-export const addJestModuleNameMapper = (
-  contents: string,
-  srcPaths: string[],
-) => {
+const addJestModuleNameMapper = (contents: string, srcPaths: string[]) => {
   if (!srcPaths.length) {
     return contents;
   }
@@ -131,7 +128,7 @@ export const addJestModuleNameMapper = (
   return contents;
 };
 
-export const parsePackageJson = (
+const parsePackageJson = (
   contents: string,
 ): {
   original: PackageJson;
@@ -149,7 +146,7 @@ export const parsePackageJson = (
   }
 };
 
-export const updatePackageJson = ({
+const updatePackageJson = ({
   parsed,
   customCondition,
 }: {

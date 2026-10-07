@@ -1,12 +1,12 @@
 import { styleText } from 'node:util';
 import path from 'path';
 
+import { log as clackLog } from '@clack/prompts';
 import fs from 'fs-extra';
 import * as z from 'zod/v4';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
-import { log } from '../../utils/logging.js';
 import {
   BASE_TEMPLATE_DIR,
   type TemplateConfig,
@@ -16,7 +16,8 @@ import { hasStringProp } from '../../utils/validation.js';
 import { formatPackage } from '../configure/processing/package.js';
 import type { ReadResult } from '../configure/types.js';
 
-import { getTemplateConfig, runForm } from './getConfig.js';
+import { getTemplateConfig } from './getConfig.js';
+import { runForm } from './prompts.js';
 import { readJSONFromStdIn } from './readJSONFromStdIn.js';
 
 interface Props {
@@ -91,7 +92,6 @@ export const resumeTemplating = async ({
     ? manifest.packageJson.skuba.template
     : 'template';
 
-  log.newline();
   const templateData = nonInteractive
     ? await getTemplateDataFromStdIn(templateConfig)
     : await runForm({
@@ -121,6 +121,5 @@ export const resumeTemplating = async ({
 
   await ensureTemplateConfigDeletion(destinationRoot);
 
-  log.newline();
-  log.ok('Templating complete!');
+  clackLog.success('Templating complete!');
 };

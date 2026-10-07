@@ -1,10 +1,12 @@
+import path from 'node:path';
 import { inspect } from 'node:util';
 
-import fg from 'fast-glob';
+import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
 
 import { exec } from '../../../utils/exec.js';
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
 
@@ -82,13 +84,19 @@ type PackageInfo = {
 export const upgradeInfraPackages = async (
   mode: 'lint' | 'format',
   packages: PackageInfo[],
+  dir: string = process.cwd(),
 ): Promise<PatchReturnType> => {
+  const gitRoot = await Git.findRoot({ dir });
+  const root = gitRoot ?? dir;
+
   const [packageJsonPaths, pnpmWorkspacePaths] = await Promise.all([
-    fg(['**/package.json'], {
-      ignore: ['**/.git', '**/node_modules'],
+    globFiles(['**/package.json'], {
+      exclude: ['**/.git', '**/node_modules'],
+      cwd: root,
     }),
-    fg('**/pnpm-workspace.yaml', {
-      ignore: ['**/.git', '**/node_modules'],
+    globFiles('**/pnpm-workspace.yaml', {
+      exclude: ['**/.git', '**/node_modules'],
+      cwd: root,
     }),
   ]);
 
@@ -102,20 +110,22 @@ export const upgradeInfraPackages = async (
   const [packageJsons, pnpmWorkspaces] = await Promise.all([
     Promise.all(
       packageJsonPaths.map(async (file) => {
-        const contents = await fs.promises.readFile(file, 'utf8');
+        const fullPath = path.join(root, file);
+        const contents = await fs.promises.readFile(fullPath, 'utf8');
 
         return {
-          file,
+          file: fullPath,
           contents,
         };
       }),
     ),
     Promise.all(
       pnpmWorkspacePaths.map(async (file) => {
-        const contents = await fs.promises.readFile(file, 'utf8');
+        const fullPath = path.join(root, file);
+        const contents = await fs.promises.readFile(fullPath, 'utf8');
 
         return {
-          file,
+          file: fullPath,
           contents,
         };
       }),

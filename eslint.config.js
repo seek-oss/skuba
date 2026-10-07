@@ -1,5 +1,4 @@
 import tsParser from '@typescript-eslint/parser';
-
 import skuba from 'eslint-config-skuba';
 
 export default [
@@ -48,11 +47,6 @@ export default [
               name: 'fs/promises',
               message:
                 'Prefer fs-extra as it implements graceful-fs behaviour.',
-            },
-            {
-              name: 'fast-glob',
-              allowImportNames: ['default'],
-              message: "Please use import 'fg' from 'fast-glob' instead",
             },
             {
               name: '@ast-grep/napi',

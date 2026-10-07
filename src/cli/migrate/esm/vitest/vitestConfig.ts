@@ -1,15 +1,14 @@
 import path from 'path';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
+import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../utils/glob.js';
 import { log } from '../../../../utils/logging.js';
 import { getCustomConditions } from '../../../build/tsc.js';
 
 import { type FileContent, readFiles } from './vitest.js';
-
-import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
 
 const determineCustomConditions = async (): Promise<string[]> => {
   const gitRoot = await findRoot({ dir: process.cwd() });
@@ -725,13 +724,13 @@ const scaffoldTestConfig = async ({
 };
 
 export const scaffoldVitestConfig = async () => {
-  const jestConfigFiles = await fg(
+  const jestConfigFiles = await globFiles(
     [
       '**/jest.config.{ts,js,mjs,mts,cts}',
       '**/jest.config.*.{ts,js,mjs,mts,cts}',
     ],
     {
-      ignore: ['**/.git', '**/node_modules'],
+      exclude: ['**/.git', '**/node_modules'],
     },
   );
 

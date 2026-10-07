@@ -98,7 +98,7 @@ export const internalLint = async (
   const logger = createLogger({
     debug: input?.debug ?? false,
     prefixes: [
-      ...(mode === 'lint' ? [styleText('blueBright', 'skuba    │')] : []),
+      ...(mode === 'lint' ? [styleText('blueBright', 'skuba  │')] : []),
     ],
   });
 

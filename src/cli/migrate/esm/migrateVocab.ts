@@ -1,14 +1,14 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 
 export const migrateVocab: PatchFunction = async ({ mode }) => {
-  const vocabFilePaths = await fg(['**/vocab.config.js'], {
-    ignore: ['**/.git', '**/node_modules'],
+  const vocabFilePaths = await globFiles(['**/vocab.config.js'], {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (!vocabFilePaths.length) {

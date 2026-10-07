@@ -1,26 +1,18 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import * as execModule from '../../../../../../utils/exec.js';
 import * as checks from '../../../../../migrate/nodeVersion/checks.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchPackageBuilds } from './patchPackageBuilds.js';
 
-import { getOwnerAndRepo } from '@skuba-lib/api/git';
-
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
-}));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  ...memfs,
+  default: memfs,
 }));
 vi.mock('@skuba-lib/api/git');
+import { getOwnerAndRepo } from '@skuba-lib/api/git';
 
 const exec = vi.spyOn(execModule, 'exec');
 const createExec = vi.spyOn(execModule, 'createExec');
@@ -62,7 +54,7 @@ describe('patchPackageBuilds', () => {
   );
 
   it('should skip if no package.json files found', async () => {
-    vol.fromJSON({});
+    vol.fromJSON({}, process.cwd());
 
     await expect(
       patchPackageBuilds({
@@ -76,21 +68,24 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should skip if tsdown.config already exists', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsdown.config.mts': 'export default {};',
-    });
+          null,
+          2,
+        ),
+        'tsdown.config.mts': 'export default {};',
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -106,20 +101,23 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should return apply in lint mode when package.json is found', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -135,21 +133,24 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should create tsdown.config.mts with default config in format mode', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
-            test: 'vi',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+              test: 'vi',
+            },
           },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -190,23 +191,26 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should extract and include assets in tsdown.config.mts', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: {
-            type: 'package',
-            assets: ['src/**/*.graphql', 'src/**/*.json'],
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: {
+              type: 'package',
+              assets: ['src/**/*.graphql', 'src/**/*.json'],
+            },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-          scripts: {
-            build: 'skuba build-package',
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -259,22 +263,25 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should create tsdown.config.mts without copy when no assets are present', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: {
-            type: 'package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: {
+              type: 'package',
+            },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-          scripts: {
-            build: 'skuba build-package',
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -291,31 +298,34 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should use custom condition from tsconfig.json in exports field', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: {
-            type: 'package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: {
+              type: 'package',
+            },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-          scripts: {
-            build: 'skuba build-package',
+          null,
+          2,
+        ),
+        'tsconfig.json': JSON.stringify(
+          {
+            compilerOptions: {
+              customConditions: ['seek-dev'],
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.json': JSON.stringify(
-        {
-          compilerOptions: {
-            customConditions: ['seek-dev'],
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -351,31 +361,34 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should use only the first custom condition when multiple are defined', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: {
-            type: 'package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: {
+              type: 'package',
+            },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-          scripts: {
-            build: 'skuba build-package',
+          null,
+          2,
+        ),
+        'tsconfig.json': JSON.stringify(
+          {
+            compilerOptions: {
+              customConditions: ['seek-dev', 'another-condition', 'third'],
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.json': JSON.stringify(
-        {
-          compilerOptions: {
-            customConditions: ['seek-dev', 'another-condition', 'third'],
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -396,32 +409,35 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should add customConditions to tsconfig when none exist', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: {
-            type: 'package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: {
+              type: 'package',
+            },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-          scripts: {
-            build: 'skuba build-package',
+          null,
+          2,
+        ),
+        'tsconfig.json': JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2020',
+              module: 'commonjs',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.json': JSON.stringify(
-        {
-          compilerOptions: {
-            target: 'ES2020',
-            module: 'commonjs',
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -445,47 +461,50 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should extract assets from monorepo packages', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'root',
-          version: '1.0.0',
-          private: true,
-        },
-        null,
-        2,
-      ),
-      'packages/package-a/package.json': JSON.stringify(
-        {
-          name: 'package-a',
-          version: '1.0.0',
-          skuba: {
-            type: 'package',
-            assets: ['src/**/*.txt'],
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'root',
+            version: '1.0.0',
+            private: true,
           },
-          scripts: {
-            build: 'skuba build-package',
+          null,
+          2,
+        ),
+        'packages/package-a/package.json': JSON.stringify(
+          {
+            name: 'package-a',
+            version: '1.0.0',
+            skuba: {
+              type: 'package',
+              assets: ['src/**/*.txt'],
+            },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'packages/package-b/package.json': JSON.stringify(
-        {
-          name: 'package-b',
-          version: '1.0.0',
-          skuba: {
-            type: 'package',
-            assets: ['src/**/*.yml', 'src/**/*.yaml'],
+          null,
+          2,
+        ),
+        'packages/package-b/package.json': JSON.stringify(
+          {
+            name: 'package-b',
+            version: '1.0.0',
+            skuba: {
+              type: 'package',
+              assets: ['src/**/*.yml', 'src/**/*.yaml'],
+            },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-          scripts: {
-            build: 'skuba build-package',
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -508,44 +527,47 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should handle monorepo with multiple package.json files', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'root',
-          version: '1.0.0',
-          private: true,
-          scripts: {
-            build: 'yarn workspaces run build',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'root',
+            version: '1.0.0',
+            private: true,
+            scripts: {
+              build: 'yarn workspaces run build',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'packages/package-a/package.json': JSON.stringify(
-        {
-          name: 'package-a',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+          null,
+          2,
+        ),
+        'packages/package-a/package.json': JSON.stringify(
+          {
+            name: 'package-a',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'packages/package-b/package.json': JSON.stringify(
-        {
-          name: 'package-b',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+          null,
+          2,
+        ),
+        'packages/package-b/package.json': JSON.stringify(
+          {
+            name: 'package-b',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -626,9 +648,12 @@ describe('patchPackageBuilds', () => {
       },
     };
 
-    vol.fromJSON({
-      'package.json': JSON.stringify(originalPackageJson, null, 2),
-    });
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(originalPackageJson, null, 2),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -650,31 +675,34 @@ describe('patchPackageBuilds', () => {
       Promise.resolve(path === 'package.json'),
     );
 
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'packages/not-a-package/package.json': JSON.stringify(
-        {
-          name: 'not-a-package',
-          version: '1.0.0',
-          skuba: { type: 'application' },
-          scripts: {
-            test: 'vi',
+          null,
+          2,
+        ),
+        'packages/not-a-package/package.json': JSON.stringify(
+          {
+            name: 'not-a-package',
+            version: '1.0.0',
+            skuba: { type: 'application' },
+            scripts: {
+              test: 'vi',
+            },
           },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -695,47 +723,50 @@ describe('patchPackageBuilds', () => {
       Promise.resolve(path !== 'package.json'),
     );
 
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'root',
-          version: '1.0.0',
-          private: true,
-        },
-        null,
-        2,
-      ),
-      'packages/package-a/package.json': JSON.stringify(
-        {
-          name: 'package-a',
-          version: '1.0.0',
-          main: './lib-commonjs/index.js',
-          module: './lib-es2015/index.js',
-          types: './lib-types/index.d.ts',
-          files: ['lib*/**/*.js'],
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'root',
+            version: '1.0.0',
+            private: true,
           },
-        },
-        null,
-        2,
-      ),
-      'packages/package-b/package.json': JSON.stringify(
-        {
-          name: 'package-b',
-          version: '1.0.0',
-          main: './lib-commonjs/index.js',
-          module: './lib-es2015/index.js',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+          null,
+          2,
+        ),
+        'packages/package-a/package.json': JSON.stringify(
+          {
+            name: 'package-a',
+            version: '1.0.0',
+            main: './lib-commonjs/index.js',
+            module: './lib-es2015/index.js',
+            types: './lib-types/index.d.ts',
+            files: ['lib*/**/*.js'],
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+        'packages/package-b/package.json': JSON.stringify(
+          {
+            name: 'package-b',
+            version: '1.0.0',
+            main: './lib-commonjs/index.js',
+            module: './lib-es2015/index.js',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
+          },
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -792,23 +823,26 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should remove publishConfig from package.json', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
+            publishConfig: {
+              main: 'lib-commonjs/index.js',
+            },
           },
-          publishConfig: {
-            main: 'lib-commonjs/index.js',
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -842,21 +876,24 @@ describe('patchPackageBuilds', () => {
 });
 describe('patchPackageBuilds - skipLibCheck', () => {
   it('should add skipLibCheck to tsconfig.json when compilerOptions does not exist', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.json': JSON.stringify({}, null, 2),
-    });
+          null,
+          2,
+        ),
+        'tsconfig.json': JSON.stringify({}, null, 2),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -874,30 +911,33 @@ describe('patchPackageBuilds - skipLibCheck', () => {
   });
 
   it('should add skipLibCheck to tsconfig.json when compilerOptions exists but skipLibCheck does not', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.json': JSON.stringify(
-        {
-          compilerOptions: {
-            target: 'ES2020',
-            module: 'commonjs',
+          null,
+          2,
+        ),
+        'tsconfig.json': JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2020',
+              module: 'commonjs',
+            },
           },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -924,21 +964,24 @@ describe('patchPackageBuilds - skipLibCheck', () => {
       },
     };
 
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.json': JSON.stringify(originalTsconfig, null, 2),
-    });
+          null,
+          2,
+        ),
+        'tsconfig.json': JSON.stringify(originalTsconfig, null, 2),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -962,51 +1005,54 @@ describe('patchPackageBuilds - skipLibCheck', () => {
       Promise.resolve(path !== 'package.json'),
     );
 
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'root',
-          version: '1.0.0',
-          private: true,
-        },
-        null,
-        2,
-      ),
-      'packages/package-a/package.json': JSON.stringify(
-        {
-          name: 'package-a',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'root',
+            version: '1.0.0',
+            private: true,
           },
-        },
-        null,
-        2,
-      ),
-      'packages/package-a/tsconfig.json': JSON.stringify(
-        {
-          compilerOptions: {
-            target: 'ES2020',
+          null,
+          2,
+        ),
+        'packages/package-a/package.json': JSON.stringify(
+          {
+            name: 'package-a',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'packages/package-b/package.json': JSON.stringify(
-        {
-          name: 'package-b',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+          null,
+          2,
+        ),
+        'packages/package-a/tsconfig.json': JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2020',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'packages/package-b/tsconfig.json': JSON.stringify({}, null, 2),
-    });
+          null,
+          2,
+        ),
+        'packages/package-b/package.json': JSON.stringify(
+          {
+            name: 'package-b',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
+          },
+          null,
+          2,
+        ),
+        'packages/package-b/tsconfig.json': JSON.stringify({}, null, 2),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -1027,20 +1073,21 @@ describe('patchPackageBuilds - skipLibCheck', () => {
   });
 
   it('should preserve tsconfig.json comment when adding skipLibCheck', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.json': `{
+          null,
+          2,
+        ),
+        'tsconfig.json': `{
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -1048,7 +1095,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     }
   }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -1066,29 +1115,32 @@ describe('patchPackageBuilds - skipLibCheck', () => {
   });
 
   it('should remove tsconfig.build.json if it exists', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.build.json': JSON.stringify(
-        {
-          compilerOptions: {
-            target: 'ES2020',
+          null,
+          2,
+        ),
+        'tsconfig.build.json': JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2020',
+            },
           },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -1104,39 +1156,42 @@ describe('patchPackageBuilds - skipLibCheck', () => {
   });
 
   it('should not remove tsconfig.build.json if it contains references', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-        },
-        null,
-        2,
-      ),
-      'tsconfig.build.json': JSON.stringify(
-        {
-          compilerOptions: {
-            target: 'ES2020',
+          null,
+          2,
+        ),
+        'tsconfig.build.json': JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2020',
+            },
+            references: [{ path: './nested/tsconfig.build.json' }],
           },
-          references: [{ path: './nested/tsconfig.build.json' }],
-        },
-        null,
-        2,
-      ),
-      'nested/tsconfig.build.json': JSON.stringify(
-        {
-          compilerOptions: {
-            target: 'ES2020',
+          null,
+          2,
+        ),
+        'nested/tsconfig.build.json': JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2020',
+            },
           },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -1152,23 +1207,26 @@ describe('patchPackageBuilds - skipLibCheck', () => {
   });
 
   it('should not override an existing node engine field in package.json', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          engines: {
-            node: '>=18.0.0',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            engines: {
+              node: '>=18.0.0',
+            },
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({
@@ -1186,23 +1244,26 @@ describe('patchPackageBuilds - skipLibCheck', () => {
   });
 
   it('should add a node section to an existing engines field in package.json', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify(
-        {
-          name: 'test',
-          version: '1.0.0',
-          engines: {
-            npm: '>=8.0.0',
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify(
+          {
+            name: 'test',
+            version: '1.0.0',
+            engines: {
+              npm: '>=8.0.0',
+            },
+            skuba: { type: 'package' },
+            scripts: {
+              build: 'skuba build-package',
+            },
           },
-          skuba: { type: 'package' },
-          scripts: {
-            build: 'skuba build-package',
-          },
-        },
-        null,
-        2,
-      ),
-    });
+          null,
+          2,
+        ),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchPackageBuilds({

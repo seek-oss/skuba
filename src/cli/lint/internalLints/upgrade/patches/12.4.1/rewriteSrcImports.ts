@@ -1,9 +1,9 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -25,7 +25,7 @@ export const hasSkubaDiveRegisterImportRegex =
 export const hasRelativeRegisterImportRegex =
   /import\s+['"](\.\.?\/.*?register)(?:\.js)?['"];?\s*/gm;
 
-export const hasRelativeImportRegex =
+const hasRelativeImportRegex =
   /import\s+['"](\.\.?\/[^'"]*?)(?:\.js)?['"];?\s*/gm;
 
 export const hasSrcImportRegex =
@@ -46,9 +46,6 @@ const whitespaceRegex = /\s/g;
 
 const removeSkubaDiveRegisterImport = (contents: string) =>
   contents.replace(hasSkubaDiveRegisterImportRegex, '');
-
-const removeRelativeRegisterImport = (contents: string) =>
-  contents.replace(hasRelativeRegisterImportRegex, '');
 
 const removeSelectiveRelativeImports = (
   contents: string,
@@ -99,34 +96,7 @@ export const replaceSrcImport = (contents: string) => {
   return removeSkubaDiveRegisterImport(withReplacedSrcImports);
 };
 
-export const replaceSrcImportWithConditionalRegisterRemoval = (
-  contents: string,
-  shouldRemoveRelativeRegister: boolean,
-) => {
-  const combinedSrcRegex = new RegExp(
-    [
-      hasSrcImportRegex.source,
-      hasSrcSideEffectImportRegex.source,
-      hasImportRegex.source,
-      hasJestMockRegex.source,
-    ].join('|'),
-    'gm',
-  );
-
-  const withReplacedSrcImports = contents.replace(combinedSrcRegex, (match) =>
-    match.replace(/(['"])src\//g, '$1#src/'),
-  );
-
-  const withoutSkubaDive = removeSkubaDiveRegisterImport(
-    withReplacedSrcImports,
-  );
-
-  return shouldRemoveRelativeRegister
-    ? removeRelativeRegisterImport(withoutSkubaDive)
-    : withoutSkubaDive;
-};
-
-export const replaceSrcImportWithSelectiveRegisterRemoval = (
+const replaceSrcImportWithSelectiveRegisterRemoval = (
   contents: string,
   file: string,
   deletionSet: Set<string>,
@@ -155,8 +125,8 @@ export const replaceSrcImportWithSelectiveRegisterRemoval = (
 export const tryRewriteSrcImports: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsFileNames = await fg(['**/*.ts', '**/*.test.ts'], {
-    ignore: [
+  const tsFileNames = await globFiles(['**/*.ts', '**/*.test.ts'], {
+    exclude: [
       '**/.git',
       '**/node_modules',
       'src/cli/lint/internalLints/upgrade/patches/**/*',

@@ -36,7 +36,6 @@ import path from 'node:path';
 import process from 'node:process';
 
 import { type SgNode, parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import ts from 'typescript';
 
@@ -64,11 +63,19 @@ export type SameFileSpyWarning = {
 export const detectSameFileSpyUsage = async (
   dir: string = process.cwd(),
 ): Promise<SameFileSpyWarning[]> => {
-  const filePaths = await fg(['**/*.ts', '**/*.tsx'], {
-    absolute: true,
+  const filePaths: string[] = [];
+
+  for await (const entry of fs.promises.glob(['**/*.ts', '**/*.tsx'], {
     cwd: dir,
-    ignore: ['**/.git', '**/node_modules'],
-  });
+    exclude: ['**/.git', '**/node_modules'],
+    withFileTypes: true,
+  })) {
+    if (!entry.isFile()) {
+      continue;
+    }
+
+    filePaths.push(path.join(entry.parentPath, entry.name));
+  }
 
   const results = await Promise.all(
     filePaths.map((filePath) => analyzeFileForSpyUsage(filePath)),

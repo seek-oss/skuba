@@ -1,12 +1,12 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { isErrorWithCode } from '../../../../../../utils/error.js';
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
-import { formatPrettier } from '../../../../../configure/processing/prettier.js';
+import { runOxfmt } from '../../../../../adapter/oxfmt.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const addListener = (identifier: string) =>
@@ -62,9 +62,9 @@ const findLogger = async ({
     }
   }
 
-  const loggerPaths = await fg('**/{logger,logging}.ts', {
+  const loggerPaths = await globFiles('**/{logger,logging}.ts', {
     cwd: root,
-    ignore: ['**/.git', '**/node_modules'],
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   const loggingModule = await tryReadFilesSequentially(loggerPaths);
@@ -101,8 +101,8 @@ const findLogger = async ({
 const patchUnhandledRejections = async (
   mode: 'format' | 'lint',
 ): Promise<PatchReturnType> => {
-  const filepaths = await fg('**/src/listen.ts', {
-    ignore: ['**/.git', '**/node_modules'],
+  const filepaths = await globFiles('**/src/listen.ts', {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   let hasPatched = false;
@@ -137,13 +137,13 @@ const patchUnhandledRejections = async (
       addListener(logger.identifier),
     ].join('\n\n');
 
-    const newContents = await formatPrettier(patched, { parser: 'typescript' });
-
     if (mode === 'lint') {
       return { result: 'apply' };
     }
 
-    await fs.promises.writeFile(filepath, newContents);
+    await fs.promises.writeFile(filepath, patched);
+
+    await runOxfmt('format', log, [filepath]);
 
     hasPatched = true;
   }

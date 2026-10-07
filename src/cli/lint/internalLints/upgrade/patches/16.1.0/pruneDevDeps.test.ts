@@ -1,21 +1,13 @@
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { pruneDevDeps } from './pruneDevDeps.js';
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
-}));
-
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  default: memfs,
+  ...memfs,
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
@@ -61,9 +53,12 @@ describe('patchDockerfiles', () => {
   });
 
   it('should skip if Dockerfile does not use the skuba BASE_IMAGE pattern', async () => {
-    vol.fromJSON({
-      Dockerfile: `FROM node:24-alpine AS build\n\nCOPY . .\nRUN pnpm install --offline\nRUN pnpm build\n`,
-    });
+    vol.fromJSON(
+      {
+        Dockerfile: `FROM node:24-alpine AS build\n\nCOPY . .\nRUN pnpm install --offline\nRUN pnpm build\n`,
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -85,8 +80,9 @@ describe('patchDockerfiles', () => {
   });
 
   it('should skip if Dockerfile has RUN pnpm prune --prod', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
+    vol.fromJSON(
+      {
+        Dockerfile: `\
 ARG BASE_IMAGE
 FROM \${BASE_IMAGE} AS build
 COPY . .
@@ -101,7 +97,9 @@ COPY --from=build /workdir/node_modules node_modules
 COPY --from=build /workdir/package.json package.json
 ENV NODE_ENV=production
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -112,8 +110,9 @@ ENV NODE_ENV=production
   });
 
   it('should skip if the Dockerfile as RUN pnpm deploy', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
+    vol.fromJSON(
+      {
+        Dockerfile: `\
 ARG BASE_IMAGE
 FROM \${BASE_IMAGE} AS build
 COPY . .
@@ -128,7 +127,9 @@ COPY --from=build /workdir/node_modules node_modules
 COPY --from=build /workdir/package.json package.json
 ENV NODE_ENV=production
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -139,8 +140,9 @@ ENV NODE_ENV=production
   });
 
   it('should skip if Dockerfile has no ARG BASE_IMAGE', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
+    vol.fromJSON(
+      {
+        Dockerfile: `\
 FROM \${BASE_IMAGE} AS build
 COPY . .
 RUN pnpm install --offline
@@ -149,7 +151,9 @@ FROM gcr.io/distroless/nodejs24-debian13 AS runtime
 WORKDIR /workdir
 COPY --from=build /workdir/node_modules node_modules
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -160,8 +164,9 @@ COPY --from=build /workdir/node_modules node_modules
   });
 
   it('should skip if Dockerfile has no COPY --from=build /workdir/node_modules', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
+    vol.fromJSON(
+      {
+        Dockerfile: `\
 ARG BASE_IMAGE
 FROM \${BASE_IMAGE} AS build
 COPY . .
@@ -172,7 +177,9 @@ WORKDIR /workdir
 COPY --from=build /workdir/lib lib
 COPY --from=build /workdir/package.json package.json
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -183,9 +190,12 @@ COPY --from=build /workdir/package.json package.json
   });
 
   it('should return apply without writing files in lint mode', async () => {
-    vol.fromJSON({
-      Dockerfile: BEFORE_DOCKERFILE,
-    });
+    vol.fromJSON(
+      {
+        Dockerfile: BEFORE_DOCKERFILE,
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'lint' } as PatchConfig),
@@ -219,9 +229,12 @@ COPY --from=build /workdir/package.json package.json
   });
 
   it('should apply the multi-stage build patch', async () => {
-    vol.fromJSON({
-      Dockerfile: BEFORE_DOCKERFILE,
-    });
+    vol.fromJSON(
+      {
+        Dockerfile: BEFORE_DOCKERFILE,
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -256,8 +269,9 @@ COPY --from=build /workdir/package.json package.json
   });
 
   it('should handle the ${BASE_IMAGE}:${BASE_TAG} image reference', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
+    vol.fromJSON(
+      {
+        Dockerfile: `\
 ARG BASE_IMAGE
 ARG BASE_TAG
 
@@ -278,7 +292,9 @@ COPY --from=build /workdir/node_modules node_modules
 COPY --from=build /workdir/package.json package.json
 ENV NODE_ENV=production
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -314,8 +330,9 @@ ENV NODE_ENV=production
   });
 
   it('should insert prune before an existing install --offline --frozen-lockfile --prod command', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
+    vol.fromJSON(
+      {
+        Dockerfile: `\
 ARG BASE_IMAGE
 
 ###
@@ -335,7 +352,9 @@ COPY --from=build /workdir/node_modules node_modules
 COPY --from=build /workdir/package.json package.json
 ENV NODE_ENV=production
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -370,10 +389,13 @@ ENV NODE_ENV=production
   });
 
   it('should patch only applicable Dockerfiles when multiple are present', async () => {
-    vol.fromJSON({
-      Dockerfile: BEFORE_DOCKERFILE,
-      'Dockerfile.dev-deps': `FROM node:24-alpine AS dev-deps\n\nRUN pnpm fetch\n`,
-    });
+    vol.fromJSON(
+      {
+        Dockerfile: BEFORE_DOCKERFILE,
+        'Dockerfile.dev-deps': `FROM node:24-alpine AS dev-deps\n\nRUN pnpm fetch\n`,
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -415,8 +437,9 @@ ENV NODE_ENV=production
   });
 
   it('should insert prune before an existing install --prod command', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
+    vol.fromJSON(
+      {
+        Dockerfile: `\
 ARG BASE_IMAGE
 
 ###
@@ -436,7 +459,9 @@ COPY --from=build /workdir/node_modules node_modules
 COPY --from=build /workdir/package.json package.json
 ENV NODE_ENV=production
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -471,8 +496,9 @@ ENV NODE_ENV=production
   });
 
   it('should insert prune before an existing install --prod command without CI=true', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
+    vol.fromJSON(
+      {
+        Dockerfile: `\
 ARG BASE_IMAGE
 
 ###
@@ -492,7 +518,9 @@ COPY --from=build /workdir/node_modules node_modules
 COPY --from=build /workdir/package.json package.json
 ENV NODE_ENV=production
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),
@@ -527,10 +555,13 @@ ENV NODE_ENV=production
   });
 
   it('should patch multiple applicable Dockerfiles', async () => {
-    vol.fromJSON({
-      Dockerfile: BEFORE_DOCKERFILE,
-      'services/api/Dockerfile': BEFORE_DOCKERFILE,
-    });
+    vol.fromJSON(
+      {
+        Dockerfile: BEFORE_DOCKERFILE,
+        'services/api/Dockerfile': BEFORE_DOCKERFILE,
+      },
+      process.cwd(),
+    );
 
     await expect(
       pruneDevDeps({ mode: 'format' } as PatchConfig),

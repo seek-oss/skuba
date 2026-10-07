@@ -38,7 +38,6 @@ export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
     name: '.gitignore',
     type: 'ignore',
   },
-  { name: '.prettierignore', type: 'ignore' },
   {
     name: '.npmrc',
     type: 'npmrc',

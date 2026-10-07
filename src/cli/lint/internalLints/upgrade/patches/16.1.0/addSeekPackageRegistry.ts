@@ -1,13 +1,12 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
+import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 const SEEK_REGISTRY = '@seek:registry=https://npm.cloudsmith.io/seek/npm/';
 const SEEK_ORG = 'SEEK-Jobs';
@@ -31,9 +30,9 @@ export const addSeekPackageRegistry: PatchFunction = async ({
     };
   }
 
-  const npmrcPaths = await fg(['**/.npmrc'], {
+  const npmrcPaths = await globFiles(['**/.npmrc'], {
     cwd: gitRoot,
-    ignore: ['**/.git', '**/node_modules'],
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (npmrcPaths.length === 0) {

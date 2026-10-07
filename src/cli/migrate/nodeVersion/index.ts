@@ -1,9 +1,9 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
 
@@ -11,7 +11,8 @@ import { isLikelyPackage } from './checks.js';
 import { tryUpgradeInfraPackages } from './upgrade.js';
 
 type FileSelector =
-  { files: string; file?: never } | { file: string; files?: never };
+  | { files: string; file?: never }
+  | { file: string; files?: never };
 
 type ReplaceOptions = {
   version: string;
@@ -257,9 +258,9 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
-    : await fg(patch.files ?? [], {
+    : await globFiles(patch.files ?? [], {
         cwd: dir,
-        ignore: ['**/node_modules/**'],
+        exclude: ['**/node_modules/**'],
       });
 
   await Promise.all(

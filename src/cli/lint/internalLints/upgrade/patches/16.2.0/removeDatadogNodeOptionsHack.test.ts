@@ -1,21 +1,14 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { findLatestAllowedVersion } from '../../../../../../utils/findLatestAllowedVersion.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryRemoveDatadogNodeOptionsHack } from './removeDatadogNodeOptionsHack.js';
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
-}));
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('../../../../../../utils/findLatestAllowedVersion.js');
 vi.mock('../../../../../../utils/exec.js');
@@ -84,7 +77,7 @@ describe('removeDatadogNodeOptionsHack', () => {
       'appStack.ts': cdkAppStack({ redirectHandler: '' }),
       'package.json': packageJson(),
     };
-    vol.fromJSON(input);
+    vol.fromJSON(input, process.cwd());
 
     await expect(
       tryRemoveDatadogNodeOptionsHack({ ...baseArgs, mode: 'format' }),
@@ -102,7 +95,7 @@ describe('removeDatadogNodeOptionsHack', () => {
       'appStack.ts': cdkAppStack(),
       'package.json': packageJson(),
     };
-    vol.fromJSON(input);
+    vol.fromJSON(input, process.cwd());
 
     await expect(
       tryRemoveDatadogNodeOptionsHack({ ...baseArgs, mode: 'format' }),
@@ -115,10 +108,13 @@ describe('removeDatadogNodeOptionsHack', () => {
   });
 
   it('reverses the CDK hack and bumps datadog-lambda-js while keeping dd-trace', async () => {
-    vol.fromJSON({
-      'appStack.ts': cdkAppStack(),
-      'package.json': packageJson(),
-    });
+    vol.fromJSON(
+      {
+        'appStack.ts': cdkAppStack(),
+        'package.json': packageJson(),
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryRemoveDatadogNodeOptionsHack({ ...baseArgs, mode: 'format' }),
@@ -160,12 +156,15 @@ describe('removeDatadogNodeOptionsHack', () => {
   });
 
   it('removes a NODE_OPTIONS that only held the dd-trace import while keeping dd-trace', async () => {
-    vol.fromJSON({
-      'appStack.ts': cdkAppStack({
-        nodeOptions: "NODE_OPTIONS: '--import dd-trace/initialize.mjs',",
-      }),
-      'package.json': packageJson(),
-    });
+    vol.fromJSON(
+      {
+        'appStack.ts': cdkAppStack({
+          nodeOptions: "NODE_OPTIONS: '--import dd-trace/initialize.mjs',",
+        }),
+        'package.json': packageJson(),
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryRemoveDatadogNodeOptionsHack({ ...baseArgs, mode: 'format' }),
@@ -206,9 +205,10 @@ describe('removeDatadogNodeOptionsHack', () => {
   });
 
   it('reverses the serverless hack', async () => {
-    vol.fromJSON({
-      'foo.ts': `import { datadog } from 'datadog-lambda-js';\n`,
-      'serverless.yml': `provider:
+    vol.fromJSON(
+      {
+        'foo.ts': `import { datadog } from 'datadog-lambda-js';\n`,
+        'serverless.yml': `provider:
   environment:
     NODE_OPTIONS: '--enable-source-maps --import dd-trace/initialize.mjs'
 custom:
@@ -216,8 +216,10 @@ custom:
     addLayers: false
     redirectHandlers: false
 `,
-      'package.json': packageJson(),
-    });
+        'package.json': packageJson(),
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryRemoveDatadogNodeOptionsHack({ ...baseArgs, mode: 'format' }),
@@ -247,9 +249,10 @@ custom:
   });
 
   it('removes the redirectHandlers line including a trailing TODO comment', async () => {
-    vol.fromJSON({
-      'foo.ts': `import { datadog } from 'datadog-lambda-js';\n`,
-      'serverless.yml': `provider:
+    vol.fromJSON(
+      {
+        'foo.ts': `import { datadog } from 'datadog-lambda-js';\n`,
+        'serverless.yml': `provider:
   environment:
     NODE_OPTIONS: '--enable-source-maps --import dd-trace/initialize.mjs'
 custom:
@@ -257,8 +260,10 @@ custom:
     addLayers: false
     redirectHandlers: false # TODO: Wrap your handler with the \`datadog\` function wrapper from \`datadog-lambda-js\` or the \`withLambdaExtension\` function wrapper from \`seek-datadog-custom-metrics/lambda\`. Alternatively, remove this setting and enable addLayers: true
 `,
-      'package.json': packageJson(),
-    });
+        'package.json': packageJson(),
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryRemoveDatadogNodeOptionsHack({ ...baseArgs, mode: 'format' }),
@@ -292,7 +297,7 @@ custom:
       'appStack.ts': cdkAppStack(),
       'package.json': packageJson(),
     };
-    vol.fromJSON(input);
+    vol.fromJSON(input, process.cwd());
 
     await expect(
       tryRemoveDatadogNodeOptionsHack({ ...baseArgs, mode: 'lint' }),
