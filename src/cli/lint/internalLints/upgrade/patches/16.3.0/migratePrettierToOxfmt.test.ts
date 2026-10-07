@@ -6,7 +6,6 @@ import { defaults as seekOxfmtConfig } from 'oxc-config-seek/oxfmt';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as execModule from '../../../../../../utils/exec.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -81,7 +80,6 @@ const baseArgs = (dir: string): PatchConfig => ({
     },
     path: 'package.json',
   },
-  packageManager: configForPackageManager('pnpm'),
   mode: 'format',
 });
 
@@ -360,26 +358,5 @@ export default defineConfig({
     await expect(
       pathExists(path.join(dir, 'packages/foo/.prettierrc')),
     ).resolves.toBe(false);
-  });
-
-  it('does not run pnpm install for yarn projects', async () => {
-    await writeFiles(dir, {
-      '.prettierrc': '{ "singleQuote": true }\n',
-    });
-
-    await expect(
-      migratePrettierToOxfmt({
-        ...baseArgs(dir),
-        packageManager: configForPackageManager('yarn'),
-        mode: 'format',
-      }),
-    ).resolves.toEqual({
-      result: 'apply',
-    } satisfies PatchReturnType);
-
-    expect(exec).not.toHaveBeenCalled();
-    await expect(pathExists(path.join(dir, 'oxfmt.config.ts'))).resolves.toBe(
-      true,
-    );
   });
 });

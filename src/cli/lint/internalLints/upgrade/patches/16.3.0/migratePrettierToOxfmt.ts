@@ -297,7 +297,6 @@ const migrateDirectory = async (
 
 export const migratePrettierToOxfmt: PatchFunction = async ({
   mode,
-  packageManager,
   dir = process.cwd(),
 }): Promise<PatchReturnType> => {
   const root = (await Git.findRoot({ dir })) ?? dir;
@@ -318,18 +317,16 @@ export const migratePrettierToOxfmt: PatchFunction = async ({
 
   await patchPnpmWorkspace(mode, root);
 
-  if (packageManager.command === 'pnpm') {
-    try {
-      await exec(
-        'pnpm',
-        'install',
-        '--frozen-lockfile=false',
-        '--prefer-offline',
-      );
-    } catch (error) {
-      log.warn('Failed to install dependencies after patching pnpm workspace');
-      log.subtle(inspect(error));
-    }
+  try {
+    await exec(
+      'pnpm',
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
+  } catch (error) {
+    log.warn('Failed to install dependencies after patching pnpm workspace');
+    log.subtle(inspect(error));
   }
 
   await Promise.all(
