@@ -2,11 +2,6 @@ import path from 'node:path';
 
 import fs, { type GlobOptions } from 'fs-extra';
 
-/**
- * Files matching `pattern`, relative to `cwd`.
- *
- * Wraps `fs.promises.glob` and skips directories.
- */
 export const globFiles = async (
   pattern: string | readonly string[],
   opts: GlobOptions,
