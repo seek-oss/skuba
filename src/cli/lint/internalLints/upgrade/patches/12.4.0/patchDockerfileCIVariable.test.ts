@@ -1,19 +1,19 @@
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryPatchDockerfileCIVariable } from './patchDockerfileCIVariable.js';
 
-vi.mock('fast-glob');
 vi.mock('fs-extra');
+vi.mock('../../../../../../utils/glob.js');
 
 describe('patchDockerfileCIVariable', () => {
   afterEach(() => vi.resetAllMocks());
 
   it('should skip if no dockerfiles found', async () => {
-    vi.mocked(fg).mockResolvedValueOnce([]);
+    vi.mocked(globFiles).mockResolvedValueOnce([]);
     await expect(
       tryPatchDockerfileCIVariable({
         mode: 'format',
@@ -25,7 +25,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should skip if dockerfiles do not contain pnpm install --prod commands', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'FROM node:18\nRUN npm install',
     );
@@ -40,7 +40,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod',
     );
@@ -57,7 +57,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should patch dockerfiles with CI variable if mode is format', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod',
     );
@@ -79,11 +79,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should patch multiple dockerfiles containing pnpm install --prod commands', async () => {
-    vi.mocked(fg).mockResolvedValueOnce([
-      'Dockerfile',
-      'Dockerfile.dev',
-      'Dockerfile.prod',
-    ]);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.dev', 'Dockerfile.prod']);
 
     // First dockerfile has the target command
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
@@ -122,7 +118,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should handle dockerfiles with complex content', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile']);
     const complexDockerfile = `# Multi-stage build
 FROM node:18 AS deps
 WORKDIR /app
@@ -175,7 +171,7 @@ CMD ["npm", "start"]`;
   });
 
   it('should patch dockerfiles with pnpm install --prod commands', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --prod',
     );
@@ -197,7 +193,7 @@ CMD ["npm", "start"]`;
   });
 
   it('should detect pnpm install --prod commands in lint mode', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --prod',
     );
@@ -214,7 +210,7 @@ CMD ["npm", "start"]`;
   });
 
   it('should handle mixed variants in multiple dockerfiles', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
 
     // First dockerfile has basic pnpm install --prod
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(

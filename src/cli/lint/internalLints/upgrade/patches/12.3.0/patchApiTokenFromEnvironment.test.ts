@@ -1,19 +1,19 @@
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { globFiles } from '../../../../../../utils/glob.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryPatchApiTokenFromEnvironment } from './patchApiTokenFromEnvironment.js';
 
-vi.mock('fast-glob');
 vi.mock('fs-extra');
+vi.mock('../../../../../../utils/glob.js');
 
 describe('patchApiTokenFromEnvironment', () => {
   afterEach(() => vi.resetAllMocks());
 
   it('should skip if no scripts found', async () => {
-    vi.mocked(fg).mockResolvedValueOnce([]);
+    vi.mocked(globFiles).mockResolvedValueOnce([]);
     await expect(
       tryPatchApiTokenFromEnvironment({
         mode: 'format',
@@ -25,7 +25,7 @@ describe('patchApiTokenFromEnvironment', () => {
   });
 
   it('should skip if scripts do not contain the apiTokenFromEnvironment usage', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['scripts/test.ts']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce('No usage here');
     await expect(
       tryPatchApiTokenFromEnvironment({
@@ -38,7 +38,7 @@ describe('patchApiTokenFromEnvironment', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['scripts/test.ts']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       "import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n",
     );
@@ -55,7 +55,7 @@ describe('patchApiTokenFromEnvironment', () => {
   });
 
   it('should patch scripts if mode is format', async () => {
-    vi.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
+    vi.mocked(globFiles).mockResolvedValueOnce(['scripts/test.ts']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       "import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n\n" +
         'const client = new Octokit({ auth: apiTokenFromEnvironment() });',

@@ -2,9 +2,9 @@ import path from 'path';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../../utils/glob.js';
 import { log } from '../../../../utils/logging.js';
 import { getCustomConditions } from '../../../build/tsc.js';
 
@@ -724,13 +724,13 @@ const scaffoldTestConfig = async ({
 };
 
 export const scaffoldVitestConfig = async () => {
-  const jestConfigFiles = await fg(
+  const jestConfigFiles = await globFiles(
     [
       '**/jest.config.{ts,js,mjs,mts,cts}',
       '**/jest.config.*.{ts,js,mjs,mts,cts}',
     ],
     {
-      ignore: ['**/.git', '**/node_modules'],
+      exclude: ['**/.git', '**/node_modules'],
     },
   );
 

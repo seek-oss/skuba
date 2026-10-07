@@ -1,9 +1,9 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import {
   formatPackage,
@@ -55,9 +55,9 @@ export const tryAddTypeModuleToPackageJson: PatchFunction = async (
 ): Promise<PatchReturnType> => {
   const { mode, manifest } = config;
   const cwd = path.dirname(manifest.path);
-  const fileNames: string[] = await fg(['**/*package.json'], {
+  const fileNames: string[] = await globFiles(['**/*package.json'], {
     cwd,
-    ignore: ['**/node_modules/**', '**/.git/**'],
+    exclude: ['**/node_modules/**', '**/.git/**'],
   });
 
   if (!fileNames.length) {

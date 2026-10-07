@@ -1,14 +1,14 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { globFiles } from '../../../utils/glob.js';
 import { log } from '../../../utils/logging.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 
 export const migrateDockerfileRequires: PatchFunction = async ({ mode }) => {
-  const dockerfilePaths = await fg(['**/Dockerfile*'], {
-    ignore: ['**/.git', '**/node_modules'],
+  const dockerfilePaths = await globFiles(['**/Dockerfile*'], {
+    exclude: ['**/.git', '**/node_modules'],
   });
 
   if (!dockerfilePaths.length) {

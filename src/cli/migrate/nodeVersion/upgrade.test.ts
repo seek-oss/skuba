@@ -27,14 +27,6 @@ vi.mock('fs-extra', () => ({
   default: memfs,
 }));
 
-vi.mock('fast-glob', () => ({
-  default: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
-}));
-
 vi.mock('../../../utils/exec.js');
 
 vi.spyOn(console, 'error').mockImplementation(() => undefined);
