@@ -6,6 +6,7 @@ import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy.js';
 import { isErrorWithCode } from '../../utils/error.js';
+import { pathExists } from '../../utils/fs.js';
 import { log } from '../../utils/logging.js';
 import { DEFAULT_PACKAGE_MANAGER } from '../../utils/packageManager.js';
 import { getRandomPort } from '../../utils/port.js';
@@ -16,6 +17,7 @@ import {
   templateConfigSchema,
 } from '../../utils/template.js';
 
+import type { ExistingRepoDefaults } from './existingRepo.js';
 import {
   downloadGitHubTemplate,
   downloadPrivateTemplate,
@@ -45,16 +47,14 @@ const confirmShouldContinue = async (choices: readonly Choice[]) => {
 };
 
 const createDirectory = async (dir: string) => {
-  try {
-    await fs.promises.mkdir(dir);
-  } catch (err) {
-    if (isErrorWithCode(err, 'EEXIST')) {
-      log.err(`The directory '${dir}' already exists.`);
-      process.exit(1);
-    }
-
-    throw err;
+  // A nested `destinationDir` such as `apps/my-worker` needs its parents
+  // created, which rules out relying on `mkdir` to report an existing directory.
+  if (await pathExists(dir)) {
+    log.err(`The directory '${dir}' already exists.`);
+    process.exit(1);
   }
+
+  await fs.promises.mkdir(dir, { recursive: true });
 };
 
 const cloneTemplate = async (
@@ -96,9 +96,7 @@ const cloneTemplate = async (
     });
   }
 
-  const templateConfig = await getTemplateConfig(
-    path.join(process.cwd(), destinationDir),
-  );
+  const templateConfig = await getTemplateConfig(path.resolve(destinationDir));
 
   return templateConfig;
 };
@@ -169,6 +167,7 @@ export const getTemplateConfig = async (
 export const baseToTemplateData = async ({
   ownerName,
   platformName,
+  projectName,
   repoName,
   defaultBranch,
   renovatePreset,
@@ -184,6 +183,7 @@ export const baseToTemplateData = async ({
   return {
     orgName,
     ownerName,
+    projectName,
     repoName,
     defaultBranch,
     renovatePreset,
@@ -199,22 +199,20 @@ export const baseToTemplateData = async ({
   };
 };
 
-export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const { ownerName, platformName, repoName, defaultBranch, renovatePreset } =
-    await promptBaseFields();
+export const configureFromPrompt = async (
+  existingRepo?: ExistingRepoDefaults,
+): Promise<InitConfig> => {
+  const { destinationDir, ...baseFields } =
+    await promptBaseFields(existingRepo);
+
   clackLog.info(
-    `${styleText('cyan', repoName)} by ${styleText('cyan', ownerName)}`,
+    `${styleText('cyan', baseFields.projectName)} by ${styleText(
+      'cyan',
+      baseFields.ownerName,
+    )}`,
   );
 
-  const templateData = await baseToTemplateData({
-    ownerName,
-    platformName,
-    repoName,
-    defaultBranch,
-    renovatePreset,
-  });
-
-  const destinationDir = repoName;
+  const templateData = await baseToTemplateData(baseFields);
 
   await createDirectory(destinationDir);
 
@@ -281,9 +279,13 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   const config = await readJSONFromStdIn(initConfigInputSchema);
   const { destinationDir, templateComplete, templateName } = config;
 
+  const projectName =
+    config.templateData.projectName ?? config.templateData.repoName;
+
   const templateData = {
-    ...(await baseToTemplateData(config.templateData)),
+    ...(await baseToTemplateData({ ...config.templateData, projectName })),
     ...config.templateData,
+    projectName,
   };
 
   await createDirectory(destinationDir);
@@ -356,5 +358,11 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   };
 };
 
-export const getConfig = ({ nonInteractive }: { nonInteractive: boolean }) =>
-  nonInteractive ? configureFromPipe() : configureFromPrompt();
+export const getConfig = ({
+  existingRepo,
+  nonInteractive,
+}: {
+  existingRepo?: ExistingRepoDefaults;
+  nonInteractive: boolean;
+}) =>
+  nonInteractive ? configureFromPipe() : configureFromPrompt(existingRepo);

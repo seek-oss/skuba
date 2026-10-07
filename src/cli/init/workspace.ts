@@ -67,6 +67,30 @@ const readGlobs = (value: SgNode): string[] => {
     .map(stripQuotes);
 };
 
+export const readWorkspaceGlobs = async (
+  workspaceRoot: string,
+): Promise<string[]> => {
+  let contents: string;
+  try {
+    contents = await fs.promises.readFile(
+      path.join(workspaceRoot, 'pnpm-workspace.yaml'),
+      'utf8',
+    );
+  } catch (err) {
+    if (isErrorWithCode(err, 'ENOENT')) {
+      return [];
+    }
+    throw err;
+  }
+
+  registerAstGrepLanguages();
+  const astRoot = (await parseAsync('yaml', contents)).root();
+
+  const packagesValue = findPackagesValue(astRoot);
+
+  return packagesValue ? readGlobs(packagesValue) : [];
+};
+
 const isCovered = (globs: string[], rel: string): boolean =>
   // Negation globs (`!foo`) exclude rather than cover paths; picomatch would
   // otherwise treat them as matching everything.

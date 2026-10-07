@@ -32,6 +32,7 @@ import { runOxfmt } from '../adapter/oxfmt.js';
 import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
 import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
 
+import { getExistingRepoDefaults } from './existingRepo.js';
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
 import { logInitHelp } from './help.js';
@@ -235,7 +236,12 @@ export const init = async (args = process.argv.slice(2)) => {
     templateData,
     templateName,
     type,
-  } = await getConfig({ nonInteractive });
+  } = await getConfig({
+    existingRepo: workspaceRoot
+      ? await getExistingRepoDefaults({ workspaceRoot })
+      : undefined,
+    nonInteractive,
+  });
 
   await ensureCommands(packageManager);
 

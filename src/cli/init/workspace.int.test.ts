@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { registerWorkspaceProject } from './workspace.js';
+import { readWorkspaceGlobs, registerWorkspaceProject } from './workspace.js';
 
 const TEMP_ROOT = path.join(
   import.meta.dirname,
@@ -36,6 +36,44 @@ const writeWorkspace = async (
 
 afterEach(async () => {
   await fs.remove(TEMP_ROOT);
+});
+
+describe('readWorkspaceGlobs', () => {
+  it('reads a block sequence', async () => {
+    const workspaceRoot = await writeWorkspace({
+      'pnpm-workspace.yaml': 'packages:\n  - apps/*\n  - packages/*\n',
+    });
+
+    await expect(readWorkspaceGlobs(workspaceRoot)).resolves.toEqual([
+      'apps/*',
+      'packages/*',
+    ]);
+  });
+
+  it('reads an inline flow sequence', async () => {
+    const workspaceRoot = await writeWorkspace({
+      'pnpm-workspace.yaml': "packages: ['apps/*', 'packages/*']\n",
+    });
+
+    await expect(readWorkspaceGlobs(workspaceRoot)).resolves.toEqual([
+      'apps/*',
+      'packages/*',
+    ]);
+  });
+
+  it('is empty when there is no packages: section', async () => {
+    const workspaceRoot = await writeWorkspace({
+      'pnpm-workspace.yaml': 'onlyBuiltDependencies:\n  - esbuild\n',
+    });
+
+    await expect(readWorkspaceGlobs(workspaceRoot)).resolves.toEqual([]);
+  });
+
+  it('is empty when there is no pnpm-workspace.yaml', async () => {
+    const workspaceRoot = await writeWorkspace({ 'package.json': '{}\n' });
+
+    await expect(readWorkspaceGlobs(workspaceRoot)).resolves.toEqual([]);
+  });
 });
 
 describe('registerWorkspaceProject', () => {
