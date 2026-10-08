@@ -23,7 +23,6 @@ ESM requires explicit file extensions in import statements, which is not the cas
 ```ts
 // CJS
 import { module } from './imported-module';
-
 // ESM
 import { module } from './imported-module.js';
 ```
@@ -43,7 +42,6 @@ We can no longer rely on implicit `index.js` resolution:
 ```ts
 // CJS
 import { module } from './imported-module';
-
 // ESM
 import { module } from './imported-module/index.js';
 ```
