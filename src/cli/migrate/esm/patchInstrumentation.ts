@@ -11,10 +11,7 @@ import { log } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 
-export const patchInstrumentation: PatchFunction = async ({
-  mode,
-  packageManager,
-}) => {
+export const patchInstrumentation: PatchFunction = async ({ mode }) => {
   const [dockerfilePaths, tsPaths] = await Promise.all([
     globFiles(['**/Dockerfile*'], {
       exclude: ['**/.git', '**/node_modules'],
@@ -215,11 +212,9 @@ export const patchInstrumentation: PatchFunction = async ({
 
     try {
       await rootExec(
-        packageManager.command,
+        'pnpm',
         'install',
-        ...(packageManager.command === 'pnpm'
-          ? ['--frozen-lockfile=false']
-          : []),
+        '--frozen-lockfile=false',
         '--prefer-offline',
         '--ignore-scripts',
       );

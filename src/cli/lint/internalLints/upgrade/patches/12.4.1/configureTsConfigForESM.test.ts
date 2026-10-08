@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../../../../index.js';
 import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryConfigureTsConfigForESM } from './configureTsConfigForESM.js';
@@ -46,7 +45,6 @@ const baseArgs: PatchConfig = {
     },
     path: 'package.json',
   },
-  packageManager: configForPackageManager('yarn'),
   mode: 'format',
 };
 

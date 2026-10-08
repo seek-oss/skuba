@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import { upgradeInfraPackages } from '../../../../../migrate/nodeVersion/upgrade.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -22,7 +21,6 @@ const baseArgs: PatchConfig = {
     },
     path: 'package.json',
   },
-  packageManager: configForPackageManager('pnpm'),
   mode: 'format',
 };
 

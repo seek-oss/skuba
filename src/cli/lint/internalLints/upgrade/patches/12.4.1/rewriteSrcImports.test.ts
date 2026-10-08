@@ -2,7 +2,6 @@ import { dedent } from 'ts-dedent';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
 
 import {
@@ -29,7 +28,6 @@ beforeEach(() => vol.reset());
 describe('tryRewriteSrcImports', () => {
   const baseArgs = {
     manifest: {} as PatchConfig['manifest'],
-    packageManager: configForPackageManager('yarn'),
   };
 
   afterEach(() => vi.resetAllMocks());

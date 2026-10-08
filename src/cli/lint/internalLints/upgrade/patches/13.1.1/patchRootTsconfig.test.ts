@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchRootConfig } from './patchRootTsconfig.js';
@@ -28,7 +27,6 @@ const baseArgs: PatchConfig = {
     },
     path: 'package.json',
   },
-  packageManager: configForPackageManager('yarn'),
   mode: 'format',
 };
 

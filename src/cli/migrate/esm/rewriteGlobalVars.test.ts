@@ -3,7 +3,6 @@ import path from 'path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../testing/memfs.js';
-import { configForPackageManager } from '../../../utils/packageManager.js';
 import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';
 
 import {
@@ -29,7 +28,6 @@ describe('tryRewriteGlobalVars', () => {
       path: path.join(process.cwd(), 'package.json'),
       packageJson: {},
     } as PatchConfig['manifest'],
-    packageManager: configForPackageManager('yarn'),
   };
 
   afterEach(() => vi.resetAllMocks());

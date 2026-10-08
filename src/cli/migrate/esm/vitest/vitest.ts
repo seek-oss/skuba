@@ -9,10 +9,6 @@ import { createExec, exec } from '../../../../utils/exec.js';
 import { globFiles } from '../../../../utils/glob.js';
 import { log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
-import {
-  type PackageManagerConfig,
-  detectPackageManager,
-} from '../../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
 
 import { editLifeCycleHooks } from './lifeCycleEdits.js';
@@ -123,7 +119,6 @@ const patchFiles = async ({
 
 export const migrateToVitest = async (opts: {
   mode: 'lint' | 'format';
-  packageManager?: PackageManagerConfig;
 }): Promise<PatchReturnType> => {
   const mode = opts.mode;
   // Adding `vitest.config.ts` to all the integration tests causes the vscode extension
@@ -224,20 +219,14 @@ export const migrateToVitest = async (opts: {
     ),
   );
 
-  const packageManager = opts.packageManager ?? (await detectPackageManager());
-
-  if (packageManager.command === 'pnpm') {
-    await exec(
-      'pnpm',
-      '--config.minimumReleaseAge=4320',
-      'dlx',
-      '@sku-lib/codemod',
-      'jest-to-vitest',
-      '.',
-    );
-  } else {
-    await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');
-  }
+  await exec(
+    'pnpm',
+    '--config.minimumReleaseAge=4320',
+    'dlx',
+    '@sku-lib/codemod',
+    'jest-to-vitest',
+    '.',
+  );
 
   // The sku migration doesn't handle async hooks nicely so we have to go back and re-patch them
   const tsFilePaths = await globFiles(['**/*.ts', '**/*.tsx'], {
@@ -325,16 +314,14 @@ export const migrateToVitest = async (opts: {
 
   try {
     await rootExec(
-      packageManager.command,
+      'pnpm',
       'install',
-      ...(packageManager.command === 'pnpm' ? ['--frozen-lockfile=false'] : []),
+      '--frozen-lockfile=false',
       '--prefer-offline',
       '--ignore-scripts',
     );
 
-    if (packageManager.command === 'pnpm') {
-      await rootExec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
-    }
+    await rootExec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
   } catch (error) {
     log.warn('Failed to install dependencies after Vitest migration');
     log.subtle(inspect(error));

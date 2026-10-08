@@ -3,7 +3,6 @@ import path from 'path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchAttwNode16 } from './patchAttwNode16.js';
@@ -33,7 +32,6 @@ const baseArgs: PatchConfig = {
     },
     path: 'package.json',
   },
-  packageManager: configForPackageManager('yarn'),
   mode: 'format',
 };
 

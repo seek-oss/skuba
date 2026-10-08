@@ -18,8 +18,7 @@ This document details how to simplify such a setup.
 ## Use with `docker-ecr-cache`
 
 This section of the document assumes use of [pnpm](./pnpm.md).
-If using `yarn`, some more work may be needed in some setups.
-**skuba** advises migrating to `pnpm` if possible.
+**skuba** no longer supports `yarn`; see [Migrating from Yarn 1.x to pnpm](./pnpm.md#migrating-from-yarn-1x-to-pnpm).
 
 `docker-ecr-cache` is very commonly used in SEEK **skuba** projects.
 Some **skuba** templates, like `express-koa-api`, come with a `docker-ecr-cache` setup that has this included.
