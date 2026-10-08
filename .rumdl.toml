@@ -1,0 +1,14 @@
+cache = false
+
+# Line length was not enforced by remark.
+disable = ["MD013"]
+
+# Format fixtures are intentionally unformatted.
+exclude = ["integration"]
+
+[per-file-ignores]
+# Changesets open with front matter, not a heading.
+".changeset/**/*.md" = ["MD041"]
+
+# Generated history nests headings, lists, and bare URLs under bullets.
+"CHANGELOG.md" = ["MD023", "MD024", "MD028", "MD034", "MD040", "MD076"]

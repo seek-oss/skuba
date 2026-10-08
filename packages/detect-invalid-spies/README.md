@@ -39,7 +39,7 @@ pnpm --config.minimumReleaseAge=4320 dlx @skuba-lib/detect-invalid-spies .
 
 It prints each invalid spy to stderr and exits with code `1` if any are found:
 
-```
+```text
   Invalid spy in src/greet.test.ts
   spy:     (jest|vi).spyOn(…, 'sayHello')
   module:  src/greet.ts (via './greet.js')
