@@ -25,42 +25,33 @@ export type OxfmtResult =
       errors?: OxfmtError[];
     };
 
-const oxfmtExec = createExec({
-  all: true,
-  stdio: 'pipe',
-});
+const createOxfmtExec = (cwd?: string) =>
+  createExec({
+    all: true,
+    stdio: 'pipe',
+    ...(cwd === undefined ? {} : { cwd }),
+  });
 
-const logOxfmtOutput = (logger: Logger, output: unknown) => {
-  if (typeof output !== 'string' || output.length === 0) {
-    return;
-  }
-
-  // `logger.plain` prefixes each call, so split to keep `Oxfmt  │` on every line.
-  for (const line of output.trimEnd().split('\n')) {
-    logger.plain(line);
-  }
-};
-
-const runOxfmtCli = async (logger: Logger, ...args: string[]) => {
-  try {
-    const result = await oxfmtExec('oxfmt', ...args);
-    logOxfmtOutput(logger, result.all);
-  } catch (error) {
-    if (error instanceof ExecaError) {
-      logOxfmtOutput(logger, error.all);
-    }
-    throw error;
+const runOxfmtCli = async (
+  logger: Logger | undefined,
+  args: string[],
+  cwd?: string,
+) => {
+  const subprocess = createOxfmtExec(cwd)('oxfmt', ...args);
+  for await (const line of subprocess.iterable({ from: 'all' })) {
+    logger?.plain(line);
   }
 };
 
 export const runOxfmt = async (
   mode: 'format' | 'lint',
-  logger: Logger,
+  logger?: Logger,
   filePaths: string[] = [],
+  cwd?: string,
 ): Promise<OxfmtResult> => {
   if (mode === 'format') {
     try {
-      await runOxfmtCli(logger, ...filePaths);
+      await runOxfmtCli(logger, filePaths, cwd);
       return {
         ok: true,
       };
@@ -72,7 +63,7 @@ export const runOxfmt = async (
   }
 
   try {
-    await runOxfmtCli(logger, '--check', ...filePaths);
+    await runOxfmtCli(logger, ['--check', ...filePaths], cwd);
     return {
       ok: true,
     };
@@ -87,13 +78,13 @@ export const runOxfmt = async (
     const invalidPaths: OxfmtError[] = [];
 
     try {
-      await oxfmtExec('oxfmt', '--list-different', ...filePaths);
+      await createOxfmtExec(cwd)('oxfmt', '--list-different', ...filePaths);
       return {
         ok: true,
       };
     } catch (error) {
       if (!(error instanceof ExecaError)) {
-        logger.err(error);
+        logger?.err(error);
         return {
           ok: false,
           execError: error instanceof Error ? error.message : 'Unknown error',

@@ -251,13 +251,21 @@ interface AutofixParameters {
   oxfmt: boolean;
   internal: boolean;
 
+  /**
+   * The working tree already contains changes that should be committed, such
+   * as an upgrade applied before lint. Push them even when lint is clean.
+   */
+  pendingChanges?: boolean;
+
   eslintConfigFile?: string;
 }
 
 export const autofix = async (params: AutofixParameters): Promise<void> => {
   const dir = process.cwd();
 
-  if (!params.eslint && !params.oxfmt && !params.internal) {
+  const rerunTools = params.eslint || params.oxfmt || params.internal;
+
+  if (!rerunTools && !params.pendingChanges) {
     return;
   }
 
@@ -278,29 +286,33 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
   try {
     log.newline();
 
-    log.warn(
-      `Attempting to autofix issues (${[
-        params.internal ? 'skuba' : undefined,
-        params.internal || params.eslint ? 'ESLint' : undefined,
-        'Oxfmt', // Oxfmt is always run
-      ]
-        .filter((s) => s !== undefined)
-        .join(', ')})...`,
-    );
+    if (rerunTools) {
+      log.warn(
+        `Attempting to autofix issues (${[
+          params.internal ? 'skuba' : undefined,
+          params.internal || params.eslint ? 'ESLint' : undefined,
+          'Oxfmt', // Oxfmt is always run
+        ]
+          .filter((s) => s !== undefined)
+          .join(', ')})...`,
+      );
 
-    const logger = createLogger({ debug: params.debug });
+      const logger = createLogger({ debug: params.debug });
 
-    if (params.internal) {
-      await internalLint('format');
+      if (params.internal) {
+        await internalLint('format');
+      }
+
+      if (params.internal || params.eslint) {
+        await runESLint('format', logger, params.eslintConfigFile);
+      }
+
+      // Unconditionally re-run oxfmt; reaching here means we have pre-existing
+      // format violations or may have created new ones through ESLint/internal fixes.
+      await runOxfmt('format', logger);
+    } else {
+      log.warn('Pushing skuba upgrade...');
     }
-
-    if (params.internal || params.eslint) {
-      await runESLint('format', logger, params.eslintConfigFile);
-    }
-
-    // Unconditionally re-run oxfmt; reaching here means we have pre-existing
-    // format violations or may have created new ones through ESLint/internal fixes.
-    await runOxfmt('format', logger);
 
     const ignore = await createAutofixIgnore({ currentBranch, dir });
     if (!ignore) {

@@ -1,5 +1,6 @@
 import path from 'path';
 
+import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 import { gte, sort } from 'semver';
 
@@ -10,10 +11,15 @@ import {
   detectPackageManager,
 } from '../../../../utils/packageManager.js';
 import { getSkubaVersion } from '../../../../utils/version.js';
+import { runOxfmt } from '../../../adapter/oxfmt.js';
 import { formatPackage } from '../../../configure/processing/package.js';
 import type { ReadResult } from '../../../configure/types.js';
 import type { SkubaPackageJson } from '../../../init/writePackageJson.js';
 import type { InternalLintResult } from '../../internal.js';
+
+export type UpgradeSkubaResult = InternalLintResult & {
+  upgraded?: boolean;
+};
 
 export type Patches = Patch[];
 export type Patch = {
@@ -32,6 +38,46 @@ export type PatchConfig = {
 };
 
 export type PatchFunction = (config: PatchConfig) => Promise<PatchReturnType>;
+
+// Keep each oxfmt invocation well under typical ARG_MAX limits.
+const OXFMT_PATH_BATCH = 100;
+
+const changedWorktreeFiles = async (
+  dir: string,
+): Promise<{ root: string; files: string[] } | undefined> => {
+  try {
+    const root = await Git.findRoot({ dir });
+    if (!root) {
+      return;
+    }
+
+    const changed = await Git.getChangedFiles({ dir: root });
+
+    return {
+      root,
+      files: changed
+        .filter((file) => file.state !== 'deleted')
+        .map((file) => file.path),
+    };
+  } catch {
+    return undefined;
+  }
+};
+
+const batchFormatChangedFiles = async (
+  files: string[],
+  cwd: string,
+  logger?: Logger,
+) => {
+  for (let index = 0; index < files.length; index += OXFMT_PATH_BATCH) {
+    await runOxfmt(
+      'format',
+      logger,
+      files.slice(index, index + OXFMT_PATH_BATCH),
+      cwd,
+    );
+  }
+};
 
 const getPatches = async (manifestVersion: string): Promise<Patches> => {
   const patches = await fs.promises.readdir(
@@ -77,7 +123,7 @@ export const upgradeSkuba = async (
   mode: 'lint' | 'format',
   logger: Logger,
   additionalFlags: string[] = [],
-): Promise<InternalLintResult> => {
+): Promise<UpgradeSkubaResult> => {
   const [currentVersion, manifest, packageManager] = await Promise.all([
     getSkubaVersion(),
     getConsumerManifest(),
@@ -168,12 +214,18 @@ export const upgradeSkuba = async (
     throw new Error('Could not find a package json for this project');
   }
 
-  (updatedManifest.packageJson.skuba as SkubaPackageJson).version =
-    currentVersion;
+  updatedManifest.packageJson.skuba ??= { version: currentVersion };
+  updatedManifest.packageJson.skuba.version = currentVersion;
 
   const updatedPackageJson = await formatPackage(updatedManifest.packageJson);
 
   await fs.promises.writeFile(updatedManifest.path, updatedPackageJson);
+
+  const changed = await changedWorktreeFiles(process.cwd());
+  if (changed && changed.files.length > 0) {
+    await batchFormatChangedFiles(changed.files, changed.root);
+  }
+
   logger.newline();
   logger.plain('skuba update complete.');
   logger.newline();
@@ -181,5 +233,6 @@ export const upgradeSkuba = async (
   return {
     ok: true,
     fixable: false,
+    upgraded: true,
   };
 };
