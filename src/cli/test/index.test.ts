@@ -29,7 +29,10 @@ import { upgradeSkuba } from '../lint/internalLints/upgrade/index.js';
 
 import { test } from './index.js';
 
+const originalArgv = process.argv;
+
 beforeEach(() => {
+  process.argv = originalArgv;
   process.exitCode = undefined;
   exec.mockResolvedValue({ exitCode: 0 });
   vi.mocked(isCiEnv).mockReturnValue(false);
@@ -38,6 +41,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  process.argv = originalArgv;
   process.exitCode = undefined;
   vi.clearAllMocks();
 });
@@ -67,13 +71,30 @@ it('lints with pending changes after an upgrade so a clean lint still pushes', a
     fixable: false,
     upgraded: true,
   });
+  process.argv = ['node', 'skuba', '--coverage', 'src/example.test.ts'];
 
   await test();
 
-  expect(lint).toHaveBeenCalledWith(expect.any(Array), undefined, true, {
+  expect(lint).toHaveBeenCalledWith([], undefined, true, {
     pendingChanges: true,
   });
   expect(exec.mock.calls[0]?.[0]).toBe('vitest');
+});
+
+it('forwards only --debug into the post-upgrade lint', async () => {
+  vi.mocked(isCiEnv).mockReturnValue(true);
+  vi.mocked(upgradeSkuba).mockResolvedValue({
+    ok: true,
+    fixable: false,
+    upgraded: true,
+  });
+  process.argv = ['node', 'skuba', '--debug', '--coverage'];
+
+  await test();
+
+  expect(lint).toHaveBeenCalledWith(['--debug'], undefined, true, {
+    pendingChanges: true,
+  });
 });
 
 it('still runs tests when the upgrade fails', async () => {

@@ -25,7 +25,9 @@ export const test = async () => {
       if (result.upgraded) {
         // Lint publishes the upgrade. `pendingChanges` covers the case where
         // that lint is clean and autofix would otherwise skip the push.
-        await lint(argv, undefined, true, { pendingChanges: true });
+        await lint(hasDebugFlag(argv) ? ['--debug'] : [], undefined, true, {
+          pendingChanges: true,
+        });
       }
     } catch (error) {
       logger.warn('Failed to upgrade skuba before tests.');
