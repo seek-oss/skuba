@@ -13,6 +13,7 @@ describe('Renovate preset template', () => {
       baseToTemplateData({
         ownerName: 'my-org/my-team',
         repoName: 'my-repo',
+        projectName: 'my-repo',
         platformName: 'arm64',
         defaultBranch: 'main',
         renovatePreset,

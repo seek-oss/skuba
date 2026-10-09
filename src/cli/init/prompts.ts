@@ -1,3 +1,5 @@
+import nodePath from 'path';
+
 import {
   type CANCEL_SYMBOL,
   cancel,
@@ -13,27 +15,43 @@ import {
 import { pathExistsSync } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
 
+import type { ExistingRepoDefaults } from './existingRepo.js';
 import { DEFAULT_RENOVATE_PRESET } from './types.js';
 import {
   type Platform,
   isGitHubOrg,
   isGitHubRepo,
   isGitHubTeam,
+  isProjectName,
 } from './validation.js';
 
 export interface Choice {
   name: string;
   message: string;
   initial?: string;
+  /** Pre-filled answer that the user can edit, as opposed to a hint. */
+  initialValue?: string;
   validate?: (value: string) => boolean | string;
 }
 
 export interface BaseFields {
   ownerName: string;
   repoName: string;
+  /**
+   * Name of the project itself, which doubles as its package name.
+   *
+   * This matches `repoName` for a standalone repository, but diverges in a
+   * workspace where the repository hosts multiple projects.
+   */
+  projectName: string;
   platformName: Platform;
   defaultBranch: string;
   renovatePreset: string;
+}
+
+export interface PromptedProject extends BaseFields {
+  /** Directory to scaffold into, relative to the current working directory. */
+  destinationDir: string;
 }
 
 export const BASE_PROMPT_DEFAULTS = {
@@ -86,44 +104,91 @@ const toClackValidate =
     return undefined;
   };
 
-export const promptBaseFields = async (): Promise<BaseFields> => {
+const validateOwnerName = (value: string | undefined) => {
+  if (!value) {
+    return 'Required';
+  }
+
+  const [org, team] = value.split('/');
+
+  if (!org || !isGitHubOrg(org)) {
+    return 'Must contain a valid GitHub org name';
+  }
+
+  if (team !== undefined && !isGitHubTeam(team)) {
+    return 'Must contain a valid GitHub team name';
+  }
+
+  return undefined;
+};
+
+const validateRepoName = (value: string | undefined) => {
+  if (!value) {
+    return 'Required';
+  }
+
+  return isGitHubRepo(value) ? undefined : 'Must be a valid GitHub repo name';
+};
+
+const validateProjectDir = (
+  workspaceRoot: string,
+  value: string | undefined,
+) => {
+  if (!value) {
+    return 'Required';
+  }
+
+  const relative = nodePath.relative(
+    workspaceRoot,
+    nodePath.resolve(workspaceRoot, value),
+  );
+
+  if (!relative || relative.startsWith('..')) {
+    return 'Must be a directory inside the workspace root';
+  }
+
+  return pathExistsSync(nodePath.join(workspaceRoot, relative))
+    ? `'${relative.split(nodePath.sep).join('/')}' is an existing directory`
+    : undefined;
+};
+
+const platformPrompt = () =>
+  select({
+    message: 'Platform',
+    initialValue: BASE_PROMPT_DEFAULTS.platformName,
+    options: [
+      { value: 'arm64', label: 'arm64' },
+      { value: 'amd64', label: 'amd64' },
+    ],
+  });
+
+const defaultBranchPrompt = () =>
+  text({
+    message: 'Default Branch',
+    placeholder: BASE_PROMPT_DEFAULTS.defaultBranch,
+    defaultValue: BASE_PROMPT_DEFAULTS.defaultBranch,
+  });
+
+const promptStandaloneFields = async (): Promise<PromptedProject> => {
   log.step('For starters, some project details:');
 
-  return group(
+  const fields = await group(
     {
       ownerName: () =>
         text({
           message: 'Owner',
           placeholder: 'SEEK-Jobs/my-team',
-          validate: (value) => {
-            if (!value) {
-              return 'Required';
-            }
-
-            const [org, team] = value.split('/');
-
-            if (!org || !isGitHubOrg(org)) {
-              return 'Must contain a valid GitHub org name';
-            }
-
-            if (team !== undefined && !isGitHubTeam(team)) {
-              return 'Must contain a valid GitHub team name';
-            }
-
-            return undefined;
-          },
+          validate: validateOwnerName,
         }),
       repoName: () =>
         text({
           message: 'Repo',
           placeholder: 'my-repo',
           validate: (value) => {
-            if (!value) {
-              return 'Required';
-            }
+            const invalid = validateRepoName(value);
 
-            if (!isGitHubRepo(value)) {
-              return 'Must be a valid GitHub repo name';
+            if (invalid || !value) {
+              return invalid;
             }
 
             return pathExistsSync(value)
@@ -131,21 +196,8 @@ export const promptBaseFields = async (): Promise<BaseFields> => {
               : undefined;
           },
         }),
-      platformName: () =>
-        select({
-          message: 'Platform',
-          initialValue: BASE_PROMPT_DEFAULTS.platformName,
-          options: [
-            { value: 'arm64', label: 'arm64' },
-            { value: 'amd64', label: 'amd64' },
-          ],
-        }),
-      defaultBranch: () =>
-        text({
-          message: 'Default Branch',
-          placeholder: BASE_PROMPT_DEFAULTS.defaultBranch,
-          defaultValue: BASE_PROMPT_DEFAULTS.defaultBranch,
-        }),
+      platformName: platformPrompt,
+      defaultBranch: defaultBranchPrompt,
       renovatePreset: () =>
         text({
           message: 'Renovate preset',
@@ -157,7 +209,86 @@ export const promptBaseFields = async (): Promise<BaseFields> => {
       onCancel: cancelPrompt,
     },
   );
+
+  return {
+    ...fields,
+    // The repository hosts this project alone.
+    projectName: fields.repoName,
+    destinationDir: fields.repoName,
+  };
 };
+
+const promptWorkspaceFields = async (
+  defaults: ExistingRepoDefaults,
+): Promise<PromptedProject> => {
+  log.step('For starters, some project details:');
+
+  const projectName = handleCancel(
+    await text({
+      message: 'Project name',
+      placeholder: 'my-worker',
+      validate: (value) => {
+        if (!value) {
+          return 'Required';
+        }
+
+        return isProjectName(value)
+          ? undefined
+          : 'Must be a lowercase alphanumeric name, optionally separated by . - _';
+      },
+    }),
+  );
+
+  const projectDir = handleCancel(
+    await text({
+      message: `Project directory, relative to ${defaults.workspaceRoot}`,
+      initialValue: [defaults.parentDir, projectName].filter(Boolean).join('/'),
+      validate: (value) => validateProjectDir(defaults.workspaceRoot, value),
+    }),
+  );
+
+  const fields = await group(
+    {
+      ownerName: () =>
+        text({
+          message: 'Owner',
+          initialValue: defaults.ownerName,
+          placeholder: 'SEEK-Jobs/my-team',
+          validate: validateOwnerName,
+        }),
+      // The project is a member of the existing repository, so this stays the
+      // repository's own name rather than the project's.
+      repoName: () =>
+        text({
+          message: 'Repo',
+          initialValue: defaults.repoName,
+          placeholder: 'my-repo',
+          validate: validateRepoName,
+        }),
+      platformName: platformPrompt,
+      defaultBranch: defaultBranchPrompt,
+    },
+    {
+      onCancel: cancelPrompt,
+    },
+  );
+
+  return {
+    ...fields,
+    projectName,
+    // The workspace root owns Renovate config, so there is nothing to ask for.
+    renovatePreset: BASE_PROMPT_DEFAULTS.renovatePreset,
+    destinationDir: nodePath.relative(
+      process.cwd(),
+      nodePath.resolve(defaults.workspaceRoot, projectDir),
+    ),
+  };
+};
+
+export const promptBaseFields = async (
+  existingRepo?: ExistingRepoDefaults,
+): Promise<PromptedProject> =>
+  existingRepo ? promptWorkspaceFields(existingRepo) : promptStandaloneFields();
 
 export const runForm = async <T = Record<string, string>>(props: {
   choices: readonly Choice[];
@@ -174,6 +305,7 @@ export const runForm = async <T = Record<string, string>>(props: {
           text({
             message: choice.message,
             placeholder: choice.initial,
+            initialValue: choice.initialValue,
             validate: toClackValidate(choice),
           }),
       ]),
@@ -185,6 +317,14 @@ export const runForm = async <T = Record<string, string>>(props: {
 
   return result as T;
 };
+
+export const confirmExistingRepo = async (workspaceRoot: string) =>
+  handleCancel(
+    await confirm({
+      message: `Scaffold into the existing repository at ${workspaceRoot}?`,
+      initialValue: false,
+    }),
+  );
 
 export const shouldContinue = async () =>
   handleCancel(
