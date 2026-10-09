@@ -21,7 +21,7 @@ import { showLogoAndVersionInfo } from '../../utils/logo.js';
 import { getConsumerManifest } from '../../utils/manifest.js';
 import {
   type PackageManager,
-  detectPackageManager,
+  configForPackageManager,
 } from '../../utils/packageManager.js';
 import {
   BASE_TEMPLATE_DIR,
@@ -388,7 +388,7 @@ const initNewRepo = async ({
     mode: 'format',
     dir: destinationDir,
     manifest,
-    packageManager: await detectPackageManager(destinationDir),
+    packageManager: configForPackageManager(packageManager),
   });
 
   const { depsInstalled } = await installFormatAndCommit({
