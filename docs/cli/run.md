@@ -38,7 +38,7 @@ skuba node src/some-cli-script.ts
 `some-cli-script.ts`:
 
 ```typescript
-import { logger } '#src/framework/logging.js';
+import { logger } '#src/framework/logging';
 ```
 
 `tsconfig.json`:
@@ -57,14 +57,14 @@ import { logger } '#src/framework/logging.js';
 {
   "imports": {
     "#src/*": {
-      "@seek/YOUR_REPO/source": "./src/*",
-      "default": "./lib/*"
+      "@seek/YOUR_REPO/source": "./src/*.ts",
+      "default": "./lib/*.js"
     }
   }
 }
 ```
 
-In this example, the `#src` module alias resolves to `./src/*` during local development and `./lib/*` in production builds.
+In this example, the `#src` module alias resolves to `./src/*.ts` during local development and `./lib/*.js` in production builds.
 
 When using these aliases in production code, ensure the `package.json` file is included in your deployment.
 If bundling your code, configure your bundler to recognize the custom conditions.
