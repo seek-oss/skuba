@@ -85,6 +85,8 @@ Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no packa
 
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
+Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
+
 Patch skipped: Upgrade aws-sdk-client-mock-vitest to 8.0.0 - no package.json or pnpm-workspace.yaml files to patch upgrade-skuba
 
 Patch skipped: Update tsdown attw: true to the node16 profile - no tsdown.config files found upgrade-skuba
@@ -229,6 +231,8 @@ Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no packa
 
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
+Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
+
 Patch skipped: Upgrade aws-sdk-client-mock-vitest to 8.0.0 - no package.json or pnpm-workspace.yaml files to patch upgrade-skuba
 
 Patch skipped: Update tsdown attw: true to the node16 profile - no tsdown.config files found upgrade-skuba
@@ -347,6 +351,8 @@ Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no packa
 
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
+Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
+
 Patch skipped: Upgrade aws-sdk-client-mock-vitest to 8.0.0 - no package.json or pnpm-workspace.yaml files to patch upgrade-skuba
 
 Patch skipped: Update tsdown attw: true to the node16 profile - no tsdown.config files found upgrade-skuba
@@ -459,6 +465,8 @@ Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspac
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
+
+Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 
 Patch skipped: Upgrade aws-sdk-client-mock-vitest to 8.0.0 - no package.json or pnpm-workspace.yaml files to patch upgrade-skuba
 

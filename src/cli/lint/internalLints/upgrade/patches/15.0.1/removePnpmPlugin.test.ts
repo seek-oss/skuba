@@ -119,7 +119,6 @@ describe('removePnpmPlugin', () => {
         unix-dgram: true # Managed by skuba
         unrs-resolver: true # Managed by skuba
       blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -132,7 +131,7 @@ describe('removePnpmPlugin', () => {
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
+      pmOnFail: error # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@changesets/cli' # Managed by skuba
@@ -151,8 +150,8 @@ describe('removePnpmPlugin', () => {
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       ",
@@ -199,7 +198,6 @@ configDependencies:
         unix-dgram: true # Managed by skuba
         unrs-resolver: true # Managed by skuba
       blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -212,7 +210,7 @@ configDependencies:
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
+      pmOnFail: error # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@changesets/cli' # Managed by skuba
@@ -231,8 +229,8 @@ configDependencies:
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       ",

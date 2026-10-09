@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../testing/memfs.js';
 import { createExec } from '../../../utils/exec.js';
+import { detectPnpmMajorVersion } from '../../../utils/pnpmVersion.js';
 
 import {
   patchPnpmWorkspace,
@@ -16,14 +17,19 @@ vi.mock('../../../utils/exec.js', () => ({
 
 vi.mock('../../../utils/logging.js');
 
+vi.mock('../../../utils/pnpmVersion.js');
+
 vi.mock('fs-extra', () => ({
   ...memfs,
   default: memfs,
 }));
 
+const detectPnpmMajorVersionMock = vi.mocked(detectPnpmMajorVersion);
+
 beforeEach(() => {
   vol.reset();
   vi.clearAllMocks();
+  detectPnpmMajorVersionMock.mockResolvedValue(11);
 });
 
 describe('patchPnpmWorkspace', () => {
@@ -70,7 +76,6 @@ describe('patchPnpmWorkspace', () => {
         unix-dgram: true # Managed by skuba
         unrs-resolver: true # Managed by skuba
       blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -83,7 +88,7 @@ describe('patchPnpmWorkspace', () => {
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
+      pmOnFail: error # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@changesets/cli' # Managed by skuba
@@ -102,8 +107,8 @@ describe('patchPnpmWorkspace', () => {
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       "
@@ -211,7 +216,6 @@ trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
         - some-package@1.0.0 # Comment after list item
       blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -224,9 +228,9 @@ trustPolicyExclude:
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      pmOnFail: error # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       "
     `);
   });
@@ -318,7 +322,6 @@ trustPolicyExclude:
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
         - some-package@1.0.0
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -331,9 +334,9 @@ trustPolicyExclude:
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      pmOnFail: error # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       "
     `);
   });
@@ -360,9 +363,9 @@ packageManagerStrictVersion: false`,
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
+      ignorePatchFailures: true
+      strictDepBuilds: true # Managed by skuba
+      packageManagerStrictVersion: false
       allowBuilds:
         '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
@@ -388,6 +391,7 @@ packageManagerStrictVersion: false`,
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
+      pmOnFail: error # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@changesets/cli' # Managed by skuba
@@ -406,7 +410,7 @@ packageManagerStrictVersion: false`,
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       "
@@ -479,7 +483,6 @@ allowBuilds:
         unix-dgram: true # Managed by skuba
         unrs-resolver: true # Managed by skuba
       blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -492,9 +495,9 @@ allowBuilds:
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      pmOnFail: error # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       "
     `);
   });
@@ -562,8 +565,7 @@ somelistSection:
         unrs-resolver: true # Managed by skuba
         some-option: true
       blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
+      pmOnFail: error # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@changesets/cli' # Managed by skuba
@@ -582,8 +584,8 @@ somelistSection:
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       "
@@ -669,8 +671,7 @@ trustPolicy: off
         user-build: true
 
       # Comment above trustPolicy
-      trustPolicy: off # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -683,8 +684,8 @@ trustPolicy: off
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
+      pmOnFail: error # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       "
@@ -762,5 +763,91 @@ trustPolicy: off
     expect(volToJson()['pnpm-workspace.yaml']).toBe(
       'publicHoistPattern: [unclosed\n',
     );
+  });
+
+  it('should apply pnpm v10 defaults to a project pinned to pnpm v10', async () => {
+    detectPnpmMajorVersionMock.mockResolvedValue(10);
+
+    vol.fromJSON({ 'pnpm-workspace.yaml': '' }, process.cwd());
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    const workspace = volToJson()['pnpm-workspace.yaml'];
+
+    expect(workspace).toContain(
+      'ignorePatchFailures: false # Managed by skuba',
+    );
+    expect(workspace).toContain(
+      'packageManagerStrictVersion: true # Managed by skuba',
+    );
+    expect(workspace).toContain('strictDepBuilds: false # Managed by skuba');
+    expect(workspace).toContain('trustPolicy: off # Managed by skuba');
+    expect(workspace).not.toContain('pmOnFail');
+  });
+
+  it('should migrate a pnpm v10 workspace to the v11 defaults', async () => {
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `ignorePatchFailures: false # Managed by skuba
+packageManagerStrictVersion: true # Managed by skuba
+strictDepBuilds: false # Managed by skuba
+trustPolicy: off # Managed by skuba`,
+      },
+      process.cwd(),
+    );
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    const workspace = volToJson()['pnpm-workspace.yaml'];
+
+    expect(workspace).toContain('pmOnFail: error # Managed by skuba');
+    expect(workspace).toContain('strictDepBuilds: true # Managed by skuba');
+    expect(workspace).toContain('trustPolicy: no-downgrade # Managed by skuba');
+    expect(workspace).not.toContain('ignorePatchFailures');
+    expect(workspace).not.toContain('packageManagerStrictVersion');
+  });
+
+  it('should skip if the project does not pin a supported pnpm version', async () => {
+    detectPnpmMajorVersionMock.mockResolvedValue(undefined);
+
+    vol.fromJSON({ 'pnpm-workspace.yaml': '' }, process.cwd());
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    expect(volToJson()['pnpm-workspace.yaml']).toBe('');
+  });
+
+  it('should skip if the project pins an unsupported pnpm major', async () => {
+    detectPnpmMajorVersionMock.mockResolvedValue(9);
+
+    vol.fromJSON({ 'pnpm-workspace.yaml': '' }, process.cwd());
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    expect(volToJson()['pnpm-workspace.yaml']).toBe('');
   });
 });
