@@ -70,7 +70,7 @@
     "@vitest/utils": "^5.0.3",
     "ejs": "^6.0.0",
     "esbuild": "~0.28.0",
-    "eslint": "^9.39.1",
+    "eslint": "^10.0.0",
     "eslint-config-skuba": "workspace:*",
     "execa": "^9.6.1",
     "find-up": "^8.0.0",
