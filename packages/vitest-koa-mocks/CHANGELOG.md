@@ -1,5 +1,11 @@
 # @skuba-lib/vitest-koa-mocks
 
+## 1.1.0
+
+### Minor Changes
+
+- Update the `vitest` peer range to include v5.0.0 ([#2575](https://github.com/seek-oss/skuba/pull/2575) [`5bc2247`](https://github.com/seek-oss/skuba/commit/5bc22473ce166a07c62dbcb36a46d0d9f5a33d1e))
+
 ## 1.0.2
 
 ### Patch Changes
