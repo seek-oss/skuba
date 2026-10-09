@@ -1,5 +1,15 @@
 # pnpm-plugin-skuba
 
+## 3.2.0
+
+### Minor Changes
+
+- **lint:** Hoist `oxfmt` and `oxc-config-seek` ([#2557](https://github.com/seek-oss/skuba/pull/2557) [`438204c`](https://github.com/seek-oss/skuba/commit/438204c41e65c7390032f3dfc556e9256dad8cdc))
+
+  These packages are now publicly hoisted so editors and other tools can resolve them without installing them as direct dependencies.
+
+  `prettier` is no longer hoisted now that skuba formats with Oxfmt.
+
 ## 3.1.0
 
 ### Minor Changes

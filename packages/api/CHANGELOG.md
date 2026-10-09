@@ -1,5 +1,30 @@
 # @skuba-lib/api
 
+## 3.0.0
+
+### Major Changes
+
+- Remove `moduleResolution` `node10`/`node` compatibility layer ([#2600](https://github.com/seek-oss/skuba/pull/2600) [`eebe4b4`](https://github.com/seek-oss/skuba/commit/eebe4b4250a0aae8812960362a99e7cfc48536ea))
+
+  Subpath imports require `moduleResolution` `node16`, `nodenext`, or `bundler`
+
+### Patch Changes
+
+- **Git.commitAllChanges:** Fix change filtering when `dir` is a subdirectory of the Git root ([#2547](https://github.com/seek-oss/skuba/pull/2547) [`dc61c18`](https://github.com/seek-oss/skuba/commit/dc61c18eddf7efd58dc47c557ddf181296cf69ca))
+
+  The working-directory filter compared a Git-root-relative file path against a
+  `dir` resolved from the current working directory, so running against a
+  subdirectory of the repository could skip every change and produce an empty
+  commit. Both paths are now resolved to absolute before comparison.
+
+- **deps:** Drop direct dependencies on `concurrently` and `npm-run-path` ([#2602](https://github.com/seek-oss/skuba/pull/2602) [`c490d44`](https://github.com/seek-oss/skuba/commit/c490d443166a107cc80a88ae8538327add910283))
+
+- **api:** `Cdk.normaliseTemplate` now normalises `CurrentVersion` asset hashes for any construct id, not just `worker`. Previously, Lambda version logical IDs like `notifierCurrentVersion...` were left with volatile hashes, causing cross-platform snapshot churn. ([#2554](https://github.com/seek-oss/skuba/pull/2554) [`28704fb`](https://github.com/seek-oss/skuba/commit/28704fbfb002eb4d67fb1bb9d3fc5e20279b2cd1))
+
+- **deps:** @octokit/types ^17.0.0 ([#2548](https://github.com/seek-oss/skuba/pull/2548) [`222af24`](https://github.com/seek-oss/skuba/commit/222af245efc4e843e5297c088122464bd10b4609))
+
+- **deps:** @octokit/types ^18.0.0 ([#2579](https://github.com/seek-oss/skuba/pull/2579) [`dd96c23`](https://github.com/seek-oss/skuba/commit/dd96c234af4f1da44d8c10a7a10bb94e57cb352c))
+
 ## 2.3.0
 
 ### Minor Changes
