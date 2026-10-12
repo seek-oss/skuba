@@ -1,5 +1,11 @@
 # @skuba-lib/detect-invalid-spies
 
+## 1.1.2
+
+### Patch Changes
+
+- **deps:** Replace `fast-glob` with Node.js `fs.glob` ([#2603](https://github.com/seek-oss/skuba/pull/2603) [`52acb5a`](https://github.com/seek-oss/skuba/commit/52acb5a9ac9bf045fad92f5e2b593c683e24b975))
+
 ## 1.1.1
 
 ### Patch Changes
