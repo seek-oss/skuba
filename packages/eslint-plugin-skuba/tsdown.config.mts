@@ -10,5 +10,7 @@ export default defineConfig({
     legacyCjs: false,
   },
   publint: true,
-  attw: true,
+  attw: {
+    profile: 'node16',
+  },
 });
