@@ -44,13 +44,13 @@
     "release": "pnpm --silent build && changeset publish",
     "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
     "skuba:exec": "node lib/skuba",
-    "stage": "pnpm --silent build && changeset version && pnpm --filter @skuba-lib/changesets-changelog inject && pnpm format",
     "test": "pnpm --silent skuba test --project unit",
     "test:ci": "CI=true pnpm --silent skuba test && pnpm --filter '!./template/**' test:ci",
     "test:int": "pnpm --silent skuba test --project integration",
     "test:template": "scripts/test-template.sh",
     "test:template:updateSnapshot": "scripts/test-template.sh -u",
-    "test:watch": "pnpm --silent skuba test"
+    "test:watch": "pnpm --silent skuba test",
+    "version": "pnpm --silent build && changeset version && pnpm --filter @skuba-lib/changesets-changelog inject && pnpm format"
   },
   "dependencies": {
     "@arethetypeswrong/core": "~0.18.3",
