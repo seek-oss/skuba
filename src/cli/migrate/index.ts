@@ -4,6 +4,7 @@ import { log } from '../../utils/logging.js';
 import { addFileExtensions } from './esm/addFileExtensions.js';
 import { migrateToESM } from './esm/index.js';
 import { nodeVersionMigration } from './nodeVersion/index.js';
+import { migrateOxfmtVscode } from './oxfmtVscode/index.js';
 
 export const migrations = {
   node20: () =>
@@ -57,6 +58,7 @@ export const migrations = {
     }),
   esm: () => migrateToESM({ mode: 'format' }),
   'file-extensions': () => addFileExtensions({ mode: 'format' }),
+  'oxfmt-vscode': () => migrateOxfmtVscode(),
 } satisfies Record<string, () => Promise<unknown>>;
 
 export const logAvailableMigrations = () => {

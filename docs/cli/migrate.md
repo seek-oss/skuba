@@ -728,6 +728,35 @@ For the keen observers, we have decided to ease the migration by firstly adoptin
 [Migrating from Jest]: https://vitest.dev/guide/migration.html#jest
 [open an issue]: https://github.com/seek-oss/skuba/issues/new
 
+## skuba migrate oxfmt-vscode
+
+Configures `.vscode/settings.json` to use [Oxc] as the default formatter for JavaScript and TypeScript files, with format-on-save enabled.
+
+```shell
+skuba migrate oxfmt-vscode
+```
+
+The following settings are written (merging with any existing content):
+
+```json
+{
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  }
+}
+```
+
+You will need the [Oxc VS Code extension] installed for formatting to work.
+
+[Oxc]: https://oxc.rs
+[Oxc VS Code extension]: https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode
+
+---
+
 ## skuba migrate file-extensions
 
 Attempts to add file extensions to your imports to improve compatibility with ESM.
