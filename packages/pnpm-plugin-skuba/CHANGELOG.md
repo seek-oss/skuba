@@ -1,5 +1,27 @@
 # pnpm-plugin-skuba
 
+## 4.0.0
+
+### Major Changes
+
+- Require pnpm 11 ([#2388](https://github.com/seek-oss/skuba/pull/2388) [`acf31c2`](https://github.com/seek-oss/skuba/commit/acf31c299439dea623e7406cbbe6e4b486ba1723))
+
+  The plugin now enforces stricter security controls and adopts pnpm 11 configuration:
+
+  - The config is split into `pnpmfile.v10.mjs` and `pnpmfile.v11.mjs`, exposed as a `defaultConfigs` map keyed by pnpm major version; `pnpmfile.mjs` remains the package entry point and targets pnpm 11
+  - `strictDepBuilds` is now enforced under pnpm 11
+  - `trustPolicy` is now enforced as `no-downgrade` under pnpm 11
+  - `pmOnFail: error` replaces `packageManagerStrictVersion` under pnpm 11
+  - `ignorePatchFailures: false` is removed as it is now the default
+
+### Minor Changes
+
+- **lint:** Hoist `oxfmt` and `oxc-config-seek` ([#2557](https://github.com/seek-oss/skuba/pull/2557) [`438204c`](https://github.com/seek-oss/skuba/commit/438204c41e65c7390032f3dfc556e9256dad8cdc))
+
+  These packages are now publicly hoisted so editors and other tools can resolve them without installing them as direct dependencies.
+
+  `prettier` is no longer hoisted now that skuba formats with Oxfmt.
+
 ## 3.1.0
 
 ### Minor Changes
