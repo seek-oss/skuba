@@ -3,7 +3,7 @@ import { inspect, isDeepStrictEqual } from 'util';
 
 import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
-import { defaultConfig } from 'pnpm-plugin-skuba';
+import { defaultConfigs } from 'pnpm-plugin-skuba';
 import {
   type Document,
   type Node,
@@ -24,6 +24,7 @@ import {
 import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
+import { detectPnpmMajorVersion } from '../../../utils/pnpmVersion.js';
 import type { InternalLintResult } from '../internal.js';
 
 const lockFileUpdateTriggers = ['overrides'];
@@ -33,6 +34,23 @@ const MANAGED_COMMENT = ' Managed by skuba';
 type SimpleValue = boolean | number | string;
 
 type UnknownPair = Pair<unknown, unknown>;
+
+type ManagedConfig = Record<
+  string,
+  boolean | number | string | string[] | Record<string, boolean>
+>;
+
+const resolveManagedConfig = async (
+  dir: string,
+): Promise<ManagedConfig | undefined> => {
+  const major = await detectPnpmMajorVersion(dir);
+
+  if (major === undefined || !(major in defaultConfigs)) {
+    return undefined;
+  }
+
+  return defaultConfigs[major as keyof typeof defaultConfigs];
+};
 
 const isSimpleValue = (value: unknown): value is SimpleValue =>
   typeof value === 'boolean' ||
@@ -120,7 +138,10 @@ const moveLeadingCommentToFirstItem = (
 const isManagedItem = (item: unknown) =>
   isPair(item) ? isManaged(item.value) : isManaged(item);
 
-const pruneUnmanagedSections = (root: YAMLMap<unknown, unknown>) => {
+const pruneUnmanagedSections = (
+  root: YAMLMap<unknown, unknown>,
+  defaultConfig: ManagedConfig,
+) => {
   root.items = root.items.filter((pair) => {
     if (Object.hasOwn(defaultConfig, keyOf(pair))) {
       return true;
@@ -311,6 +332,19 @@ export const patchPnpmWorkspace = async (
     };
   }
 
+  const defaultConfig = await resolveManagedConfig(dir);
+
+  if (!defaultConfig) {
+    log.warn(
+      'Could not determine which pnpm version this project targets; skipping pnpm-workspace.yaml.',
+    );
+    return {
+      ok: true,
+      fixable: false,
+      annotations: [],
+    };
+  }
+
   const doc: Document = parseDocument(pnpmWorkspaceFile);
 
   if (doc.errors.length) {
@@ -337,7 +371,7 @@ export const patchPnpmWorkspace = async (
   }
 
   stripOrphanedManagedComments(doc);
-  pruneUnmanagedSections(contents);
+  pruneUnmanagedSections(contents, defaultConfig);
 
   for (const [key, value] of Object.entries(defaultConfig)) {
     if (isSimpleValue(value)) {

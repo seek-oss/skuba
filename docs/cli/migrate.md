@@ -325,9 +325,10 @@ export const functionUnderTest = () => {
   return someFunction();
 };
 
+import { someFunction } from '@seek/package-b';
+
 // example.test.ts
 import { functionUnderTest } from './file.js';
-import { someFunction } from '@seek/package-b';
 
 vi.mock('@seek/package-b');
 

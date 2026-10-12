@@ -208,6 +208,40 @@ describe('autofix', () => {
       expectNoAutofix();
     });
 
+    it('pushes an applied upgrade when lint is clean', async () => {
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
+
+      await expect(
+        autofix({
+          ...params,
+          eslint: false,
+          oxfmt: false,
+          internal: false,
+          pendingChanges: true,
+        }),
+      ).resolves.toBeUndefined();
+
+      expect(runESLint).not.toHaveBeenCalled();
+      expect(runOxfmt).not.toHaveBeenCalled();
+      expect(internalLint).not.toHaveBeenCalled();
+      expect(Git.commitAllChanges).toHaveBeenCalledWith({
+        dir: expect.any(String),
+        message: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
+      });
+      expect(push).toHaveBeenCalledTimes(1);
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Pushing skuba upgrade...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
     it('skips push on empty commit', async () => {
       vi.mocked(Git.commitAllChanges).mockResolvedValue(undefined);
 
@@ -570,6 +604,40 @@ describe('autofix', () => {
       ).resolves.toBeUndefined();
 
       expectNoAutofix();
+    });
+
+    it('pushes an applied upgrade when lint is clean', async () => {
+      vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      await git.branch({ fs, dir, ref: 'feature', checkout: true });
+
+      await expect(
+        autofix({
+          ...params,
+          eslint: false,
+          oxfmt: false,
+          internal: false,
+          pendingChanges: true,
+        }),
+      ).resolves.toBeUndefined();
+
+      expect(runESLint).not.toHaveBeenCalled();
+      expect(runOxfmt).not.toHaveBeenCalled();
+      expect(internalLint).not.toHaveBeenCalled();
+      expect(GitHub.uploadAllFileChanges).toHaveBeenCalledWith({
+        branch: 'feature',
+        dir: expect.any(String),
+        messageHeadline: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
+      });
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Pushing skuba upgrade...
+        Pushed fix commit commit-sha.
+        "
+      `);
     });
 
     it('skips push when there are no changes', async () => {

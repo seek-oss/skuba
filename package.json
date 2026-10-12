@@ -88,7 +88,7 @@
     "normalize-package-data": "^9.0.0",
     "npm-which": "^3.0.1",
     "oxc-config-seek": "^1.0.0",
-    "oxfmt": "~0.71.0",
+    "oxfmt": "~0.72.0",
     "picomatch": "^4.0.0",
     "pnpm-plugin-skuba": "workspace:*",
     "publint": "~0.3.17",
@@ -132,7 +132,7 @@
   "engines": {
     "node": ">=22.18.0"
   },
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@11.8.0",
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",

@@ -24,3 +24,5 @@ The plugin writes an ESM `package.json`, and installs any `nodeModules` into the
 It supports ESM output and pnpm only. It leaves the rest of your rolldown config alone, and does not wrap CDK.
 
 `skuba build` also forwards a `--config`/`-c` flag through to rolldown, so a package can ship multiple bundles from separate config files, e.g. `skuba build --config rolldown.worker1.config.ts`.
+
+SEEKers can hand off the migration from `NodejsFunction` to `Rolldown.lambdaAsset` to the [CDK Lambda bundling migration skill](https://github.com/SEEK-Jobs/skuba-templates/blob/main/.agents/skills/migrate-cdk-lambda-bundling-to-rolldown/SKILL.md), which is also available via the [seek-ai-toolkit](https://github.com/SEEK-Jobs/seek-ai-toolkit).
