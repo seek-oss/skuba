@@ -18,17 +18,15 @@ beforeEach(() => {
   vol.reset();
 });
 
-const EXPECTED_SETTINGS = {
-  'editor.formatOnSave': true,
-  '[javascript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
-  '[typescript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
-};
-
 describe('migrateOxfmtVscode', () => {
   it('creates .vscode/settings.json when it does not exist', async () => {
     await migrateOxfmtVscode(process.cwd());
 
-    expect(readSettings()).toEqual(EXPECTED_SETTINGS);
+    expect(readSettings()).toEqual({
+      'editor.formatOnSave': true,
+      '[javascript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
+      '[typescript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
+    });
   });
 
   it('merges into an existing .vscode/settings.json', async () => {
@@ -45,22 +43,72 @@ describe('migrateOxfmtVscode', () => {
     await migrateOxfmtVscode(process.cwd());
 
     expect(readSettings()).toEqual({
-      ...EXPECTED_SETTINGS,
+      'editor.formatOnSave': true,
       '[typescript]': {
         'editor.tabSize': 2,
         'editor.defaultFormatter': 'oxc.oxc-vscode',
       },
+      '[javascript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
     });
   });
 
-  it('is idempotent when oxfmt is already configured', async () => {
+  it('replaces a wrong formatter value', async () => {
     vol.fromJSON(
-      { '.vscode/settings.json': JSON.stringify(EXPECTED_SETTINGS) },
+      {
+        '.vscode/settings.json': JSON.stringify({
+          '[typescript]': { 'editor.defaultFormatter': 'esbenp.prettier-vscode' },
+        }),
+      },
       process.cwd(),
     );
 
     await migrateOxfmtVscode(process.cwd());
 
-    expect(readSettings()).toEqual(EXPECTED_SETTINGS);
+    expect(readSettings()).toEqual({
+      'editor.formatOnSave': true,
+      '[typescript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
+      '[javascript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
+    });
+  });
+
+  it('is idempotent when oxfmt is already configured', async () => {
+    const settings = {
+      'editor.formatOnSave': true,
+      '[javascript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
+      '[typescript]': { 'editor.defaultFormatter': 'oxc.oxc-vscode' },
+    };
+
+    vol.fromJSON(
+      { '.vscode/settings.json': JSON.stringify(settings, null, 2) },
+      process.cwd(),
+    );
+
+    await migrateOxfmtVscode(process.cwd());
+
+    expect(readSettings()).toEqual(settings);
+  });
+
+  it('preserves JSONC comments in an existing file', async () => {
+    vol.fromJSON(
+      {
+        '.vscode/settings.json': [
+          '{',
+          '  // Use ESLint for code actions',
+          '  "[typescript]": {',
+          '    "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" }',
+          '  }',
+          '}',
+        ].join('\n'),
+      },
+      process.cwd(),
+    );
+
+    await migrateOxfmtVscode(process.cwd());
+
+    const raw = volToJson()['.vscode/settings.json'] as string;
+
+    expect(raw).toContain('// Use ESLint for code actions');
+    expect(raw).toContain('"editor.defaultFormatter": "oxc.oxc-vscode"');
+    expect(raw).toContain('"editor.formatOnSave": true');
   });
 });
