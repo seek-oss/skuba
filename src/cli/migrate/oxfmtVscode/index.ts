@@ -37,7 +37,7 @@ const applyToExisting = async (contents: string): Promise<string> => {
   }
 
   for (const lang of OXFMT_LANGUAGE_IDS) {
-    const escapedLang = lang.replace('[', '\\[').replace(']', '\\]');
+    const escapedLang = lang.replaceAll('[', '\\[').replaceAll(']', '\\]');
 
     const langPair = root.find({
       rule: {
