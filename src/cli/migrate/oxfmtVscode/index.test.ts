@@ -56,7 +56,9 @@ describe('migrateOxfmtVscode', () => {
     vol.fromJSON(
       {
         '.vscode/settings.json': JSON.stringify({
-          '[typescript]': { 'editor.defaultFormatter': 'esbenp.prettier-vscode' },
+          '[typescript]': {
+            'editor.defaultFormatter': 'esbenp.prettier-vscode',
+          },
         }),
       },
       process.cwd(),
