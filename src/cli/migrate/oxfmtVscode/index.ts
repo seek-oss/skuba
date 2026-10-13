@@ -30,7 +30,9 @@ const applyToExisting = async (contents: string): Promise<string> => {
 
   if (!formatOnSavePair) {
     toInsert.push('"editor.formatOnSave": true');
-  } else if (formatOnSavePair.field('value')?.text() !== 'true') {
+  }
+
+  if (formatOnSavePair && formatOnSavePair.field('value')?.text() !== 'true') {
     edits.push(formatOnSavePair.replace('"editor.formatOnSave": true'));
   }
 
@@ -48,28 +50,32 @@ const applyToExisting = async (contents: string): Promise<string> => {
       toInsert.push(
         `"${lang}": {\n    "editor.defaultFormatter": "oxc.oxc-vscode"\n  }`,
       );
-    } else {
-      const formatterPair = langPair.find({
-        rule: {
-          kind: 'pair',
-          has: { field: 'key', regex: '^"editor\\.defaultFormatter"$' },
-        },
-      });
+      continue;
+    }
 
-      if (!formatterPair) {
-        const langOpenBrace = langPair.find({ rule: { pattern: '{' } });
-        if (langOpenBrace) {
-          edits.push(
-            langOpenBrace.replace(
-              '{\n    "editor.defaultFormatter": "oxc.oxc-vscode",',
-            ),
-          );
-        }
-      } else if (formatterPair.field('value')?.text() !== '"oxc.oxc-vscode"') {
+    const formatterPair = langPair.find({
+      rule: {
+        kind: 'pair',
+        has: { field: 'key', regex: '^"editor\\.defaultFormatter"$' },
+      },
+    });
+
+    if (!formatterPair) {
+      const langOpenBrace = langPair.find({ rule: { pattern: '{' } });
+      if (langOpenBrace) {
         edits.push(
-          formatterPair.replace('"editor.defaultFormatter": "oxc.oxc-vscode"'),
+          langOpenBrace.replace(
+            '{\n    "editor.defaultFormatter": "oxc.oxc-vscode",',
+          ),
         );
       }
+      continue;
+    }
+
+    if (formatterPair.field('value')?.text() !== '"oxc.oxc-vscode"') {
+      edits.push(
+        formatterPair.replace('"editor.defaultFormatter": "oxc.oxc-vscode"'),
+      );
     }
   }
 
