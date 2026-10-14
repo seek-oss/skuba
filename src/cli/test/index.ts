@@ -28,6 +28,8 @@ export const test = async () => {
         await lint(hasDebugFlag(argv) ? ['--debug'] : [], undefined, true, {
           pendingChanges: true,
         });
+
+        process.exitCode = 1;
       }
     } catch (error) {
       logger.warn('Failed to upgrade skuba before tests.');
