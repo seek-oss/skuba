@@ -67,11 +67,11 @@ const runCommand = <T extends Options>(
   { streamStdio, ...execaOptions }: ExecOptions<T> = {} as T,
 ) => {
   const subprocess = execa(command, args, {
-    localDir: execaOptions?.localDir ?? import.meta.dirname,
+    localDir: import.meta.dirname,
     preferLocal: true,
     stdio: 'inherit',
     ...execaOptions,
-  });
+  } as Options);
 
   switch (streamStdio) {
     case 'yarn':
