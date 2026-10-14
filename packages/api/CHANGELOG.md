@@ -1,5 +1,11 @@
 # @skuba-lib/api
 
+## 3.0.1
+
+### Patch Changes
+
+- **deps:** execa ^10.0.0 ([#2529](https://github.com/seek-oss/skuba/pull/2529) [`41bf484`](https://github.com/seek-oss/skuba/commit/41bf484caf7c722bd0b220c3b9c46a732c5c939b))
+
 ## 3.0.0
 
 ### Major Changes
