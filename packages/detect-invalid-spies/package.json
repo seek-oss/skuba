@@ -50,7 +50,7 @@
     "test:ci": "pnpm skuba test --coverage"
   },
   "dependencies": {
-    "@ast-grep/napi": "~0.45.0",
+    "@ast-grep/napi": "~0.50.0",
     "fs-extra": "^11.0.0",
     "typescript": "~6.0.0"
   },
