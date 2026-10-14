@@ -8,6 +8,20 @@ import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
 import { copyFiles } from '../../utils/copy.js';
+import { isCiEnv } from '../../utils/env.js';
+
+/**
+ * simple-git v4 strips `GIT_*` environment variables from the child process
+ * unless they are explicitly allowed.
+ *
+ * In CI, `GIT_SSH_COMMAND` is retained so that custom SSH configuration (e.g.
+ * a specific deploy key) is honoured when cloning from GitHub over SSH.
+ */
+const createGit = (baseDir?: string) =>
+  simpleGit({
+    ...(baseDir ? { baseDir } : {}),
+    allowEnvironment: isCiEnv() ? ['GIT_SSH_COMMAND'] : [],
+  });
 
 interface GitHubProject {
   orgName: string;
@@ -46,7 +60,7 @@ export const downloadGitHubTemplate = async (
   s.start(`Downloading ${gitHubPath} from GitHub...`);
 
   try {
-    await simpleGit().clone(
+    await createGit().clone(
       `git@github.com:${gitHubPath}.git`,
       destinationDir,
       ['--depth=1', '--quiet'],
@@ -69,14 +83,14 @@ export const listPrivateTemplates = async (): Promise<string[]> => {
   const tempDir = path.join(os.tmpdir(), `skuba-templates-list-${Date.now()}`);
 
   try {
-    await simpleGit().clone(repoUrl, tempDir, [
+    await createGit().clone(repoUrl, tempDir, [
       '--depth=1',
       '--filter=tree:0',
       '--no-checkout',
       '--quiet',
     ]);
 
-    const output = await simpleGit(tempDir).raw([
+    const output = await createGit(tempDir).raw([
       'ls-tree',
       '--name-only',
       '-d',
@@ -101,7 +115,7 @@ export const downloadPrivateTemplate = async (
   const tempDir = `${destinationDir}_temp`;
 
   try {
-    await simpleGit().raw(['init', tempDir]);
+    await createGit().raw(['init', tempDir]);
 
     const sparseCheckoutPath = path.join(
       tempDir,
@@ -111,7 +125,7 @@ export const downloadPrivateTemplate = async (
     );
     await fs.promises.writeFile(sparseCheckoutPath, `${folderPath}/*\n`);
 
-    await simpleGit(tempDir)
+    await createGit(tempDir)
       .raw(['config', 'core.sparseCheckout', 'true'])
       .addRemote('origin', repoUrl)
       .raw(['pull', 'origin', 'main', '--depth', '1', '--quiet']);
