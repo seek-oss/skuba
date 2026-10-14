@@ -89,13 +89,6 @@ const invalidChoiceMessage = (choice: Choice) =>
     ? `Invalid ${choice.message} (e.g. ${choice.initial})`
     : `Invalid ${choice.message}`;
 
-/**
- * Maps a template field's `validate` result onto a clack error string.
- *
- * An empty value is required. A string result is the validator's own message.
- * `false` is a boolean failure with no message of its own, so the error names
- * the field and includes its example when one is set.
- */
 export const templateFieldError = (
   choice: Choice,
   value: string | undefined,
