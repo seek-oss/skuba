@@ -84,25 +84,41 @@ const handleCancel = <T>(value: T | typeof CANCEL_SYMBOL): T => {
   return value;
 };
 
-const toClackValidate =
-  (choice: Choice) =>
-  (value: string | undefined): string | undefined => {
-    if (!value) {
-      return 'Required';
-    }
+const invalidChoiceMessage = (choice: Choice) =>
+  choice.initial
+    ? `Invalid ${choice.message} (e.g. ${choice.initial})`
+    : `Invalid ${choice.message}`;
 
-    const result = choice.validate?.(value);
+/**
+ * Maps a template field's `validate` result onto a clack error string.
+ *
+ * An empty value is required. A string result is the validator's own message.
+ * `false` is a boolean failure with no message of its own, so the error names
+ * the field and includes its example when one is set.
+ */
+export const templateFieldError = (
+  choice: Choice,
+  value: string | undefined,
+): string | undefined => {
+  if (!value) {
+    return 'Required';
+  }
 
-    if (typeof result === 'string') {
-      return result;
-    }
+  const result = choice.validate?.(value);
 
-    if (result === false) {
-      return 'Required';
-    }
+  if (typeof result === 'string') {
+    return result;
+  }
 
-    return undefined;
-  };
+  if (result === false) {
+    return invalidChoiceMessage(choice);
+  }
+
+  return undefined;
+};
+
+const toClackValidate = (choice: Choice) => (value: string | undefined) =>
+  templateFieldError(choice, value);
 
 const validateOwnerName = (value: string | undefined) => {
   if (!value) {

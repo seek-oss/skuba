@@ -16,7 +16,7 @@ interface SeededFields {
   answers: Record<string, string>;
 }
 
-// Mirrors `toClackValidate`, where a string is an error message and a missing
+// Mirrors `templateFieldError`, where a string is an error message and a missing
 // result is a pass.
 const isValid = (choice: Choice, value: string) => {
   const result = choice.validate?.(value);
