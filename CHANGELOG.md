@@ -1,5 +1,34 @@
 # skuba
 
+## 16.4.1
+
+### Patch Changes
+
+- **init:** Explain why a template field failed validation ([#2641](https://github.com/seek-oss/skuba/pull/2641) [`d40672c`](https://github.com/seek-oss/skuba/commit/d40672c49f1416ceec648c72602fe2fe09ba1eaf))
+
+  A template `validate` function that returns `false` now reports the field as invalid, including its example when one is set.
+
+- **init:** Retain `GIT_SSH_COMMAND` when cloning private templates in CI ([#2636](https://github.com/seek-oss/skuba/pull/2636) [`8c9c7c7`](https://github.com/seek-oss/skuba/commit/8c9c7c75d1fb9f4561b407b0682fa26fa8a76728))
+
+- **deps:** execa ^10.0.0 ([#2529](https://github.com/seek-oss/skuba/pull/2529) [`41bf484`](https://github.com/seek-oss/skuba/commit/41bf484caf7c722bd0b220c3b9c46a732c5c939b))
+
+- **deps:** ejs ^7.0.0 ([#2639](https://github.com/seek-oss/skuba/pull/2639) [`7aef865`](https://github.com/seek-oss/skuba/commit/7aef865cb39c4763177152b1628a173058e41df4))
+
+- **deps:** @ast-grep/napi ~0.50.0 ([#2640](https://github.com/seek-oss/skuba/pull/2640) [`e4062a7`](https://github.com/seek-oss/skuba/commit/e4062a777cf12ba1af57546e7744c81bbac7d584))
+
+- **test:** Exit with a non-zero code after applying pending skuba upgrades in CI ([#2638](https://github.com/seek-oss/skuba/pull/2638) [`54c5104`](https://github.com/seek-oss/skuba/commit/54c5104ea76b175627e29a0daffc88f4883fa609))
+
+  When `skuba test` detects and applies pending skuba upgrades in CI, it now sets a non-zero exit code so the build fails
+
+- **migrate:** Add `skuba migrate oxfmt-vscode` command ([#2635](https://github.com/seek-oss/skuba/pull/2635) [`290cbb2`](https://github.com/seek-oss/skuba/commit/290cbb2770e192038cba0ce14027df55062d8f62))
+
+  Adds a new migration that configures `.vscode/settings.json` to use the [Oxc VS Code extension](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) as the default formatter for JavaScript and TypeScript files, with `editor.formatOnSave` enabled.
+
+  Configuring this at the project level is useful when working across multiple repos, since many projects still use Prettier and a global formatter setting would affect those repos too.
+
+- Updated dependencies:
+  - @skuba-lib/api@3.0.1
+
 ## 16.4.0
 
 ### Minor Changes
