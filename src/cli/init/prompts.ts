@@ -84,25 +84,34 @@ const handleCancel = <T>(value: T | typeof CANCEL_SYMBOL): T => {
   return value;
 };
 
-const toClackValidate =
-  (choice: Choice) =>
-  (value: string | undefined): string | undefined => {
-    if (!value) {
-      return 'Required';
-    }
+const invalidChoiceMessage = (choice: Choice) =>
+  choice.initial
+    ? `Invalid ${choice.message} (e.g. ${choice.initial})`
+    : `Invalid ${choice.message}`;
 
-    const result = choice.validate?.(value);
+export const templateFieldError = (
+  choice: Choice,
+  value: string | undefined,
+): string | undefined => {
+  if (!value) {
+    return 'Required';
+  }
 
-    if (typeof result === 'string') {
-      return result;
-    }
+  const result = choice.validate?.(value);
 
-    if (result === false) {
-      return 'Required';
-    }
+  if (typeof result === 'string') {
+    return result;
+  }
 
-    return undefined;
-  };
+  if (result === false) {
+    return invalidChoiceMessage(choice);
+  }
+
+  return undefined;
+};
+
+const toClackValidate = (choice: Choice) => (value: string | undefined) =>
+  templateFieldError(choice, value);
 
 const validateOwnerName = (value: string | undefined) => {
   if (!value) {
