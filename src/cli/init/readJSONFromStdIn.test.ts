@@ -3,9 +3,9 @@ import { Readable } from 'stream';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as z from 'zod/v4';
 
-import { log } from '../../utils/logging.js';
+import { log } from '../../utils/logging.ts';
 
-import { readJSONFromStdIn } from './readJSONFromStdIn.js';
+import { readJSONFromStdIn } from './readJSONFromStdIn.ts';
 
 const schema = z.object({
   name: z.string().describe('a name'),

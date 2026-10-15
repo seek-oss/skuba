@@ -1,8 +1,8 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryAddSeekPackageRegistry } from './addSeekPackageRegistry.js';
-import { tryPatchTsconfig } from './patchTsconfig.js';
-import { pruneDevDeps } from './pruneDevDeps.js';
+import { tryAddSeekPackageRegistry } from './addSeekPackageRegistry.ts';
+import { tryPatchTsconfig } from './patchTsconfig.ts';
+import { pruneDevDeps } from './pruneDevDeps.ts';
 
 export const patches: Patches = [
   {

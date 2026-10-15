@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { findLatestAllowedVersion } from '../../../../../../utils/findLatestAllowedVersion.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.ts';
+import { findLatestAllowedVersion } from '../../../../../../utils/findLatestAllowedVersion.ts';
+import { configForPackageManager } from '../../../../../../utils/packageManager.ts';
+import type { PatchConfig, PatchReturnType } from '../../index.ts';
 
-import { tryRemoveDatadogNodeOptionsHack } from './removeDatadogNodeOptionsHack.js';
+import { tryRemoveDatadogNodeOptionsHack } from './removeDatadogNodeOptionsHack.ts';
 
 vi.mock('fs-extra', () => ({
   default: memfs,
   ...memfs,
 }));
-vi.mock('../../../../../../utils/findLatestAllowedVersion.js');
-vi.mock('../../../../../../utils/exec.js');
+vi.mock('../../../../../../utils/findLatestAllowedVersion.ts');
+vi.mock('../../../../../../utils/exec.ts');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

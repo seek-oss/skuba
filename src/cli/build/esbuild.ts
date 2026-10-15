@@ -4,10 +4,10 @@ import { TsconfigPathsPlugin } from '@esbuild-plugins/tsconfig-paths';
 import { type BuildOptions, build } from 'esbuild';
 import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
-import { createLogger } from '../../utils/logging.js';
+import { createLogger } from '../../utils/logging.ts';
 
-import { parseTscArgs } from './args.js';
-import { getCustomConditions, readTsBuildConfig, tsc } from './tsc.js';
+import { parseTscArgs } from './args.ts';
+import { getCustomConditions, readTsBuildConfig, tsc } from './tsc.ts';
 
 export type EsbuildConfig = Pick<
   BuildOptions,

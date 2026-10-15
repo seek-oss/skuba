@@ -1,10 +1,10 @@
 import { inspect } from 'util';
 
-import { exec } from '../../../../../../utils/exec.js';
-import { log } from '../../../../../../utils/logging.js';
-import { migrateToESM } from '../../../../../migrate/esm/index.js';
-import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
-import type { PatchFunction } from '../../index.js';
+import { exec } from '../../../../../../utils/exec.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import { migrateToESM } from '../../../../../migrate/esm/index.ts';
+import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.ts';
+import type { PatchFunction } from '../../index.ts';
 
 const migrate: PatchFunction = async (config) => {
   const result = await patchPnpmWorkspace(config.mode);

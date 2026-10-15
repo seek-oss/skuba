@@ -11,39 +11,39 @@ import {
   hasDebugFlag,
   hasHelpFlag,
   hasNonInteractiveFlag,
-} from '../../utils/args.js';
-import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
-import { createInclusionFilter, findWorkspaceRoot } from '../../utils/dir.js';
-import { createExec, ensureCommands } from '../../utils/exec.js';
-import { pathExists } from '../../utils/fs.js';
-import { type Logger, createLogger } from '../../utils/logging.js';
-import { showLogoAndVersionInfo } from '../../utils/logo.js';
-import { getConsumerManifest } from '../../utils/manifest.js';
+} from '../../utils/args.ts';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.ts';
+import { createInclusionFilter, findWorkspaceRoot } from '../../utils/dir.ts';
+import { createExec, ensureCommands } from '../../utils/exec.ts';
+import { pathExists } from '../../utils/fs.ts';
+import { type Logger, createLogger } from '../../utils/logging.ts';
+import { showLogoAndVersionInfo } from '../../utils/logo.ts';
+import { getConsumerManifest } from '../../utils/manifest.ts';
 import {
   type PackageManager,
   configForPackageManager,
-} from '../../utils/packageManager.js';
+} from '../../utils/packageManager.ts';
 import {
   BASE_TEMPLATE_DIR,
   TEMPLATE_CONFIG_FILENAME,
   ensureTemplateConfigDeletion,
-} from '../../utils/template.js';
-import { runOxfmt } from '../adapter/oxfmt.js';
-import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
-import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
+} from '../../utils/template.ts';
+import { runOxfmt } from '../adapter/oxfmt.ts';
+import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.ts';
+import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.ts';
 
-import { getExistingRepoDefaults } from './existingRepo.js';
-import { getConfig } from './getConfig.js';
-import { initialiseRepo } from './git.js';
-import { logInitHelp } from './help.js';
-import { confirmExistingRepo } from './prompts.js';
-import { resumeTemplating } from './resumeTemplating.js';
-import type { InitConfig, Input } from './types.js';
+import { getExistingRepoDefaults } from './existingRepo.ts';
+import { getConfig } from './getConfig.ts';
+import { initialiseRepo } from './git.ts';
+import { logInitHelp } from './help.ts';
+import { confirmExistingRepo } from './prompts.ts';
+import { resumeTemplating } from './resumeTemplating.ts';
+import type { InitConfig, Input } from './types.ts';
 import {
   type RegisterWorkspaceResult,
   registerWorkspaceProject,
-} from './workspace.js';
-import { writePackageJson } from './writePackageJson.js';
+} from './workspace.ts';
+import { writePackageJson } from './writePackageJson.ts';
 
 const ROOT_OWNED_FILES = new Set([
   '.dockerignore',

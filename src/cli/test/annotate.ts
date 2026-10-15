@@ -2,7 +2,7 @@ import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 
-import { log } from '../../utils/logging.js';
+import { log } from '../../utils/logging.ts';
 
 export const createGitHubAnnotations = async (isOk: boolean) => {
   if (!GitHub.enabledFromEnvironment()) {

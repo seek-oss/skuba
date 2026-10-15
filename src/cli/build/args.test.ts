@@ -2,7 +2,7 @@ import path from 'path';
 
 import { describe, expect, it } from 'vitest';
 
-import { parseTscArgs } from './args.js';
+import { parseTscArgs } from './args.ts';
 
 describe('parseTscArgs', () => {
   const cwd = process.cwd();

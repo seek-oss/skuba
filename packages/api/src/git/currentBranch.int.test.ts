@@ -2,7 +2,7 @@ import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
-import { currentBranch } from './currentBranch.js';
+import { currentBranch } from './currentBranch.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,

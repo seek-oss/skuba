@@ -5,13 +5,13 @@ import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
 
-import { pathExists } from '../../../../src/utils/fs.js';
+import { pathExists } from '../../../../src/utils/fs.ts';
 
 import {
   extractDependencies,
   readPackageManagerFields,
   stageWorkspaceFiles,
-} from './pnpm.js';
+} from './pnpm.ts';
 
 describe('readPackageManagerFields', () => {
   let tmpDir: string;

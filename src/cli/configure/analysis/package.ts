@@ -1,7 +1,7 @@
 import { readPackageUp } from 'read-package-up';
 
-import { log } from '../../../utils/logging.js';
-import type { ReadResult } from '../types.js';
+import { log } from '../../../utils/logging.ts';
+import type { ReadResult } from '../types.ts';
 
 interface GetDestinationManifestProps {
   cwd?: string;

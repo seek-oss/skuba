@@ -3,8 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('find-up');
 
-import * as exec from './exec.js';
-import { detectPackageManager } from './packageManager.js';
+import * as exec from './exec.ts';
+import { detectPackageManager } from './packageManager.ts';
 
 type FindUpStringOverload = Extract<
   typeof findUp,

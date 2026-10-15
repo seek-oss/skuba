@@ -1,12 +1,12 @@
 import fnArgs from 'function-arguments';
 
-import { log } from '../utils/logging.js';
-import { isFunction, isObject } from '../utils/validation.js';
+import { log } from '../utils/logging.ts';
+import { isFunction, isObject } from '../utils/validation.ts';
 
 import {
   createRequestListenerFromFunction,
   serveRequestListener,
-} from './http.js';
+} from './http.ts';
 
 interface Args {
   availablePort?: number;

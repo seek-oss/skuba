@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../../../../testing/memfs.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.ts';
+import type { PatchConfig, PatchReturnType } from '../../index.ts';
 
-import { migrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.js';
+import { migrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.ts';
 
 vi.mock('fs-extra', () => ({
   default: memfs,

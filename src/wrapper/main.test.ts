@@ -4,8 +4,8 @@ import path from 'path';
 import request from 'supertest';
 import { afterEach, expect, test, vi } from 'vitest';
 
-import { main } from './main.js';
-import * as serverModule from './server.js';
+import { main } from './main.ts';
+import * as serverModule from './server.ts';
 
 vi.mock('../utils/logging');
 

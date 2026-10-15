@@ -4,9 +4,9 @@ import {
   defaultExclude,
 } from 'vitest/config';
 
-import { mergeRaw } from '../../cli/configure/processing/record.js';
+import { mergeRaw } from '../../cli/configure/processing/record.ts';
 
-import { GitHubReporter } from './reporters/github/index.js';
+import { GitHubReporter } from './reporters/github/index.ts';
 
 export const defaults = {
   coverage: {

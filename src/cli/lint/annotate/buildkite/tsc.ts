@@ -1,6 +1,6 @@
 import * as Buildkite from '@skuba-lib/api/buildkite';
 
-import type { StreamInterceptor } from '../../../lint/external.js';
+import type { StreamInterceptor } from '../../../lint/external.ts';
 
 export const createTscAnnotations = (
   tscOk: boolean,

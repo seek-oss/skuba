@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { editLifeCycleHooks } from './lifeCycleEdits.js';
+import { editLifeCycleHooks } from './lifeCycleEdits.ts';
 
 let tmpFile: string;
 let tmpModuleFile: string;

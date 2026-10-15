@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../testing/memfs.js';
-import { configForPackageManager } from '../../../utils/packageManager.js';
+import memfs, { vol } from '../../../testing/memfs.ts';
+import { configForPackageManager } from '../../../utils/packageManager.ts';
 import type {
   PatchConfig,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
+} from '../../lint/internalLints/upgrade/index.ts';
 
-import { addFileExtensions } from './addFileExtensions.js';
+import { addFileExtensions } from './addFileExtensions.ts';
 
 vi.mock('fs-extra', () => ({
   default: memfs,

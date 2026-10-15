@@ -12,19 +12,19 @@
 
 import path from 'path';
 
-import { parseProcessArgs } from './utils/args.js';
+import { parseProcessArgs } from './utils/args.ts';
 import {
   COMMAND_DIR,
   COMMAND_SET,
   type Command,
   commandToModule,
-} from './utils/command.js';
-import { isCiEnv } from './utils/env.js';
-import { handleCliError } from './utils/error.js';
-import { showHelp } from './utils/help.js';
-import { log } from './utils/logging.js';
-import { showLogoAndVersionInfo } from './utils/logo.js';
-import { isObject } from './utils/validation.js';
+} from './utils/command.ts';
+import { isCiEnv } from './utils/env.ts';
+import { handleCliError } from './utils/error.ts';
+import { showHelp } from './utils/help.ts';
+import { log } from './utils/logging.ts';
+import { showLogoAndVersionInfo } from './utils/logo.ts';
+import { isObject } from './utils/validation.ts';
 
 const THIRTY_MINUTES = 30 * 60 * 1000;
 

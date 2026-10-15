@@ -1,7 +1,7 @@
 import { setTimeout } from 'timers/promises';
 
-import { createTerseError } from './error.js';
-import { pluralise } from './logging.js';
+import { createTerseError } from './error.ts';
+import { pluralise } from './logging.ts';
 
 export const throwOnTimeout = async <T>(
   promise: PromiseLike<T>,

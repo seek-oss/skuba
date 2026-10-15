@@ -5,10 +5,10 @@ import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const BUILDKITE_AGENT_MOUNT =
   '/usr/bin/buildkite-agent:/usr/bin/buildkite-agent';

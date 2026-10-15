@@ -5,10 +5,10 @@ import fs from 'fs-extra';
 import ts from 'typescript';
 import * as z from 'zod';
 
-import { Git } from '../../../../../../index.js';
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { Git } from '../../../../../../index.ts';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const packageJsonSchema = z.looseObject({
   imports: z.record(z.string(), z.record(z.string(), z.string())).optional(),

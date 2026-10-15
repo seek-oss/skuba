@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { postFixVitestMigration } from './postFixVitestMigration.js';
+import { postFixVitestMigration } from './postFixVitestMigration.ts';
 
 const run = async (content: string) => {
   const result = await postFixVitestMigration('test.ts', content);

@@ -1,7 +1,7 @@
 import * as Buildkite from '@skuba-lib/api/buildkite';
 import { afterEach, expect, it, vi } from 'vitest';
 
-import { createBuildkiteAnnotations } from './annotate.js';
+import { createBuildkiteAnnotations } from './annotate.ts';
 
 vi.mock('@skuba-lib/api/buildkite');
 

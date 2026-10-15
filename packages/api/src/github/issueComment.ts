@@ -2,11 +2,11 @@ import type { Octokit } from '@octokit/rest' with {
   'resolution-mode': 'import',
 };
 
-import * as Git from '../git/index.js';
+import * as Git from '../git/index.ts';
 
-import { apiTokenFromEnvironment } from './environment.js';
-import { createRestClient } from './octokit.js';
-import { getPullRequestNumber } from './pullRequest.js';
+import { apiTokenFromEnvironment } from './environment.ts';
+import { createRestClient } from './octokit.ts';
+import { getPullRequestNumber } from './pullRequest.ts';
 
 const getUserId = async (client: Octokit): Promise<number> => {
   const { data } = await client.users.getAuthenticated();

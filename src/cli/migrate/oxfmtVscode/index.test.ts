@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../testing/memfs.js';
+import memfs, { vol } from '../../../testing/memfs.ts';
 
-import { migrateOxfmtVscode } from './index.js';
+import { migrateOxfmtVscode } from './index.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs,

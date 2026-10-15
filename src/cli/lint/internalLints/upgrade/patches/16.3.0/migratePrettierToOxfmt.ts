@@ -5,12 +5,12 @@ import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 import { defaults as seekOxfmtConfig } from 'oxc-config-seek/oxfmt';
 
-import { isErrorWithCode } from '../../../../../../utils/error.js';
-import { createExec, exec } from '../../../../../../utils/exec.js';
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { isErrorWithCode } from '../../../../../../utils/error.ts';
+import { createExec, exec } from '../../../../../../utils/exec.ts';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const GLOB_IGNORE = ['**/.git', '**/node_modules'];
 

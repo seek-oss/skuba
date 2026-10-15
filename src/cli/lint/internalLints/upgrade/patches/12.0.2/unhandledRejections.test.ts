@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
-import memfs, { vol } from '../../../../../../testing/memfs.js';
+import memfs, { vol } from '../../../../../../testing/memfs.ts';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -13,13 +13,13 @@ vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
 beforeEach(() => vol.reset());
 
-import type { PatchConfig } from '../../index.js';
+import type { PatchConfig } from '../../index.ts';
 
 import {
   IMPORT_REGEX,
   NAMED_EXPORT_REGEX,
   tryPatchUnhandledRejections,
-} from './unhandledRejections.js';
+} from './unhandledRejections.ts';
 
 const LISTENER_WITH_CALLBACK = `
 import { app } from 'src/app.js';

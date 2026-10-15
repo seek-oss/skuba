@@ -2,11 +2,11 @@ import path from 'path';
 
 import getPort from 'get-port';
 
-import { parseRunArgs } from '../../utils/args.js';
-import { createExec } from '../../utils/exec.js';
-import { getEntryPointFromManifest } from '../../utils/manifest.js';
-import { isIpPort } from '../../utils/validation.js';
-import { getCustomConditions } from '../build/tsc.js';
+import { parseRunArgs } from '../../utils/args.ts';
+import { createExec } from '../../utils/exec.ts';
+import { getEntryPointFromManifest } from '../../utils/manifest.ts';
+import { isIpPort } from '../../utils/validation.ts';
+import { getCustomConditions } from '../build/tsc.ts';
 
 export const start = async () => {
   const customConditions = getCustomConditions();

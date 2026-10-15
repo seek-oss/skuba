@@ -2,10 +2,10 @@ import path from 'node:path';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../testing/memfs.js';
-import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
+import memfs, { vol } from '../../../testing/memfs.ts';
+import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.ts';
 
-import { upgradeInfraPackages } from './upgrade.js';
+import { upgradeInfraPackages } from './upgrade.ts';
 
 vi.mock('@skuba-lib/api', async () => {
   const actual =
@@ -27,7 +27,7 @@ vi.mock('fs-extra', () => ({
   default: memfs,
 }));
 
-vi.mock('../../../utils/exec.js');
+vi.mock('../../../utils/exec.ts');
 
 vi.spyOn(console, 'error').mockImplementation(() => undefined);
 vi.spyOn(console, 'log').mockImplementation(() => undefined);

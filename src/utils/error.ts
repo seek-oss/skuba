@@ -2,8 +2,8 @@ import { inspect } from 'util';
 
 import type { ExecaError } from 'execa';
 
-import { log } from './logging.js';
-import { hasNumberProp, hasProp } from './validation.js';
+import { log } from './logging.ts';
+import { hasNumberProp, hasProp } from './validation.ts';
 
 /**
  * Creates an error that returns its plain `message` rather than a full stack

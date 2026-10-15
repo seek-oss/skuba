@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { randomIntBetween } from './port.js';
+import { randomIntBetween } from './port.ts';
 
 describe('randomIntBetween', () => {
   it('generates integers between min and max inclusive', () => {

@@ -6,12 +6,12 @@ import fs from 'fs-extra';
 import * as fleece from 'golden-fleece';
 import * as z from 'zod/v4';
 
-import { log } from '../../../utils/logging.js';
-import { runOxfmt } from '../../adapter/oxfmt.js';
-import { createDestinationFileReader } from '../../configure/analysis/project.js';
-import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.js';
+import { log } from '../../../utils/logging.ts';
+import { runOxfmt } from '../../adapter/oxfmt.ts';
+import { createDestinationFileReader } from '../../configure/analysis/project.ts';
+import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.ts';
 
-import type { PatchFunction, PatchReturnType } from './upgrade/index.js';
+import type { PatchFunction, PatchReturnType } from './upgrade/index.ts';
 
 const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
 

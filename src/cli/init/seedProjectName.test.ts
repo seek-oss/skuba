@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { Choice } from './prompts.js';
-import { seedProjectName } from './seedProjectName.js';
+import type { Choice } from './prompts.ts';
+import { seedProjectName } from './seedProjectName.ts';
 
 const serviceName: Choice = {
   name: 'serviceName',

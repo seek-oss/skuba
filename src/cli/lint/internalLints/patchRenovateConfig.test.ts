@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../testing/memfs.js';
+import memfs, { vol } from '../../../testing/memfs.ts';
 
-import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
-import type { PatchConfig } from './upgrade/index.js';
+import { tryPatchRenovateConfig } from './patchRenovateConfig.ts';
+import type { PatchConfig } from './upgrade/index.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs,

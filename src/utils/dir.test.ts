@@ -6,8 +6,8 @@ import {
   buildPatternToFilepathMap,
   crawlDirectory,
   createInclusionFilter,
-} from './dir.js';
-import { BASE_TEMPLATE_DIR } from './template.js';
+} from './dir.ts';
+import { BASE_TEMPLATE_DIR } from './template.ts';
 
 describe('buildPatternToFilepathMap', () => {
   it('deals with different levels of nesting', () =>

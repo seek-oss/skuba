@@ -1,13 +1,13 @@
 import { styleText } from 'node:util';
 
-import { hasDebugFlag } from '../../utils/args.js';
-import { log } from '../../utils/logging.js';
-import { getManifestProperties } from '../../utils/manifest.js';
+import { hasDebugFlag } from '../../utils/args.ts';
+import { log } from '../../utils/logging.ts';
+import { getManifestProperties } from '../../utils/manifest.ts';
 
-import { copyAssets } from './assets.js';
-import { type EsbuildConfig, esbuild } from './esbuild.js';
-import { rolldown } from './rolldown.js';
-import { readTsBuildConfig, tsc } from './tsc.js';
+import { copyAssets } from './assets.ts';
+import { type EsbuildConfig, esbuild } from './esbuild.ts';
+import { rolldown } from './rolldown.ts';
+import { readTsBuildConfig, tsc } from './tsc.ts';
 
 export const build = async (args = process.argv.slice(2)) => {
   // TODO: define a unified `package.json#/skuba` schema and parser so we don't

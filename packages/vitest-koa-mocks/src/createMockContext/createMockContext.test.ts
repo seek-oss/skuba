@@ -1,7 +1,7 @@
 import type { Context } from 'koa';
 import { describe, expect, it, vi } from 'vitest';
 
-import { createMockContext } from './createMockContext.js';
+import { createMockContext } from './createMockContext.ts';
 
 const STORE_URL = '/admin?id=1';
 const STORE_HOST = 'mystore.com';

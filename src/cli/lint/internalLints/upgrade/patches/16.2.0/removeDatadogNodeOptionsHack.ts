@@ -3,17 +3,17 @@ import { inspect } from 'util';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { findLatestAllowedVersion } from '../../../../../../utils/findLatestAllowedVersion.js';
-import { log } from '../../../../../../utils/logging.js';
+import { findLatestAllowedVersion } from '../../../../../../utils/findLatestAllowedVersion.ts';
+import { log } from '../../../../../../utils/logging.ts';
 import {
   collectLambdaFiles,
   removeDdTraceFromCdkNodeOptions,
   removeDdTraceFromServerlessNodeOptions,
   removeWholeLine,
-} from '../../../../../migrate/esm/datadogNodeOptions.js';
-import { upgradeInfraPackages } from '../../../../../migrate/nodeVersion/upgrade.js';
-import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+} from '../../../../../migrate/esm/datadogNodeOptions.ts';
+import { upgradeInfraPackages } from '../../../../../migrate/nodeVersion/upgrade.ts';
+import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const DATADOG_LAMBDA_JS_VERSION = '^12.140.0';
 

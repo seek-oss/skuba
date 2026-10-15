@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, it } from 'vitest';
 
-import { createTerseError } from './error.js';
+import { createTerseError } from './error.ts';
 
 describe('createTerseError', () => {
   it('creates a terse error for `util.inspect`', () => {

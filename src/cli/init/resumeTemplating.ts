@@ -5,20 +5,20 @@ import { log as clackLog } from '@clack/prompts';
 import fs from 'fs-extra';
 import * as z from 'zod/v4';
 
-import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
-import { createInclusionFilter } from '../../utils/dir.js';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.ts';
+import { createInclusionFilter } from '../../utils/dir.ts';
 import {
   BASE_TEMPLATE_DIR,
   type TemplateConfig,
   ensureTemplateConfigDeletion,
-} from '../../utils/template.js';
-import { hasStringProp } from '../../utils/validation.js';
-import { formatPackage } from '../configure/processing/package.js';
-import type { ReadResult } from '../configure/types.js';
+} from '../../utils/template.ts';
+import { hasStringProp } from '../../utils/validation.ts';
+import { formatPackage } from '../configure/processing/package.ts';
+import type { ReadResult } from '../configure/types.ts';
 
-import { getTemplateConfig } from './getConfig.js';
-import { runForm } from './prompts.js';
-import { readJSONFromStdIn } from './readJSONFromStdIn.js';
+import { getTemplateConfig } from './getConfig.ts';
+import { runForm } from './prompts.ts';
+import { readJSONFromStdIn } from './readJSONFromStdIn.ts';
 
 interface Props {
   manifest: ReadResult;

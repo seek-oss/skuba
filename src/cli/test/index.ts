@@ -1,14 +1,14 @@
 import { inspect, styleText } from 'util';
 
-import { hasDebugFlag } from '../../utils/args.js';
-import { isCiEnv } from '../../utils/env.js';
-import { createExec } from '../../utils/exec.js';
-import { childLogger, createLogger, log } from '../../utils/logging.js';
-import { throwOnTimeout } from '../../utils/wait.js';
-import { lint } from '../lint/index.js';
-import { upgradeSkuba } from '../lint/internalLints/upgrade/index.js';
+import { hasDebugFlag } from '../../utils/args.ts';
+import { isCiEnv } from '../../utils/env.ts';
+import { createExec } from '../../utils/exec.ts';
+import { childLogger, createLogger, log } from '../../utils/logging.ts';
+import { throwOnTimeout } from '../../utils/wait.ts';
+import { lint } from '../lint/index.ts';
+import { upgradeSkuba } from '../lint/internalLints/upgrade/index.ts';
 
-import { createAnnotations } from './annotate.js';
+import { createAnnotations } from './annotate.ts';
 
 export const test = async () => {
   const argv = process.argv.slice(2);

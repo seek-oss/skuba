@@ -1,4 +1,4 @@
-import { isCiEnv } from '../../../../src/utils/env.js';
+import { isCiEnv } from '../../../../src/utils/env.ts';
 
 /**
  * Returns the name of the build as seen in GitHub status checks.

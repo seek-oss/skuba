@@ -1,9 +1,9 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { configureTsConfigForESM } from './configureTsConfigForESM.js';
-import { patchApiDockerfiles } from './patchApiDockerfiles.js';
-import { rewriteSrcImports } from './rewriteSrcImports.js';
-import { updateLambdaConfigs } from './updateLambdaConfigs.js';
+import { configureTsConfigForESM } from './configureTsConfigForESM.ts';
+import { patchApiDockerfiles } from './patchApiDockerfiles.ts';
+import { rewriteSrcImports } from './rewriteSrcImports.ts';
+import { updateLambdaConfigs } from './updateLambdaConfigs.ts';
 
 export const patches: Patches = [
   {

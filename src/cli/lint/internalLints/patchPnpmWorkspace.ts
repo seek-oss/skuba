@@ -21,11 +21,11 @@ import {
   visit,
 } from 'yaml';
 
-import { createExec } from '../../../utils/exec.js';
-import { log } from '../../../utils/logging.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
-import { detectPnpmMajorVersion } from '../../../utils/pnpmVersion.js';
-import type { InternalLintResult } from '../internal.js';
+import { createExec } from '../../../utils/exec.ts';
+import { log } from '../../../utils/logging.ts';
+import { detectPackageManager } from '../../../utils/packageManager.ts';
+import { detectPnpmMajorVersion } from '../../../utils/pnpmVersion.ts';
+import type { InternalLintResult } from '../internal.ts';
 
 const lockFileUpdateTriggers = ['overrides'];
 

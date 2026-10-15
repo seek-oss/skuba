@@ -2,7 +2,7 @@ import path from 'path';
 
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { getCustomConditions } from './tsc.js';
+import { getCustomConditions } from './tsc.ts';
 
 describe('getCustomConditions', () => {
   beforeEach(() => {

@@ -4,9 +4,9 @@ import util from 'util';
 import { type Options, type ResultPromise, execa } from 'execa';
 import npmWhich from 'npm-which';
 
-import { isErrorWithCode } from './error.js';
-import { log } from './logging.js';
-import type { PackageManager } from './packageManager.js';
+import { isErrorWithCode } from './error.ts';
+import { log } from './logging.ts';
+import type { PackageManager } from './packageManager.ts';
 
 class YarnSpamFilter extends stream.Transform {
   silenced = false;

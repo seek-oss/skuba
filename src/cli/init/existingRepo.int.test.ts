@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { getExistingRepoDefaults } from './existingRepo.js';
+import { getExistingRepoDefaults } from './existingRepo.ts';
 
 const TEMP_ROOT = path.join(
   import.meta.dirname,

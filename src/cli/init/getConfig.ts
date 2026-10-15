@@ -4,25 +4,25 @@ import path from 'path';
 import { log as clackLog, note, spinner } from '@clack/prompts';
 import fs from 'fs-extra';
 
-import { copyFiles } from '../../utils/copy.js';
-import { isErrorWithCode } from '../../utils/error.js';
-import { pathExists } from '../../utils/fs.js';
-import { log } from '../../utils/logging.js';
-import { DEFAULT_PACKAGE_MANAGER } from '../../utils/packageManager.js';
-import { getRandomPort } from '../../utils/port.js';
+import { copyFiles } from '../../utils/copy.ts';
+import { isErrorWithCode } from '../../utils/error.ts';
+import { pathExists } from '../../utils/fs.ts';
+import { log } from '../../utils/logging.ts';
+import { DEFAULT_PACKAGE_MANAGER } from '../../utils/packageManager.ts';
+import { getRandomPort } from '../../utils/port.ts';
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
   type TemplateConfig,
   templateConfigSchema,
-} from '../../utils/template.js';
+} from '../../utils/template.ts';
 
-import type { ExistingRepoDefaults } from './existingRepo.js';
+import type { ExistingRepoDefaults } from './existingRepo.ts';
 import {
   downloadGitHubTemplate,
   downloadPrivateTemplate,
   listPrivateTemplates,
-} from './git.js';
+} from './git.ts';
 import {
   type BaseFields,
   type Choice,
@@ -33,10 +33,10 @@ import {
   promptBaseFields,
   runForm,
   shouldContinue,
-} from './prompts.js';
-import { readJSONFromStdIn } from './readJSONFromStdIn.js';
-import { seedProjectName } from './seedProjectName.js';
-import { type InitConfig, initConfigInputSchema } from './types.js';
+} from './prompts.ts';
+import { readJSONFromStdIn } from './readJSONFromStdIn.ts';
+import { seedProjectName } from './seedProjectName.ts';
+import { type InitConfig, initConfigInputSchema } from './types.ts';
 
 const confirmShouldContinue = async (choices: readonly Choice[]) => {
   note(
