@@ -64,14 +64,19 @@ type StreamStdioOptions = { streamStdio?: true | PackageManager };
 const runCommand = <T extends Options>(
   command: string,
   args: string[],
-  { streamStdio, ...execaOptions }: ExecOptions<T> = {} as T,
-) => {
-  const subprocess = execa(command, args, {
+  options: ExecOptions<T>,
+): ResultPromise<T> => {
+  const { streamStdio } = options;
+
+  const execaOptions = {
     localDir: import.meta.dirname,
     preferLocal: true,
     stdio: 'inherit',
-    ...execaOptions,
-  } as Options);
+    ...options,
+  };
+  delete execaOptions.streamStdio;
+
+  const subprocess = execa(command, args, execaOptions);
 
   switch (streamStdio) {
     case 'yarn':
@@ -103,7 +108,7 @@ export const createExec =
   (command, ...args) =>
     runCommand(command, args, opts);
 
-export const exec: Exec = (command, ...args) => runCommand(command, args);
+export const exec: Exec = (command, ...args) => runCommand(command, args, {});
 
 export const ensureCommands = async (...names: string[]) => {
   let success = true;
