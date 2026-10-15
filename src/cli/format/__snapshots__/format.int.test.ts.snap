@@ -99,7 +99,7 @@ Patch skipped: Replace import-x/order ESLint disables with oxfmt-ignore comments
 
 Patch skipped: Migrate default imports from @seek/logger to named createLogger imports - no default imports from @seek/logger upgrade-skuba
 
-Patch skipped: Strip .js and .ts extensions from subpath imports - no extensionless subpath imports found in package.json upgrade-skuba
+Patch skipped: Strip .js and .ts extensions from subpath imports and use .ts extensions for relative imports - no extensionless subpath imports found in package.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -247,7 +247,7 @@ Patch skipped: Replace import-x/order ESLint disables with oxfmt-ignore comments
 
 Patch skipped: Migrate default imports from @seek/logger to named createLogger imports - no default imports from @seek/logger upgrade-skuba
 
-Patch skipped: Strip .js and .ts extensions from subpath imports - no extensionless subpath imports found in package.json upgrade-skuba
+Patch skipped: Strip .js and .ts extensions from subpath imports and use .ts extensions for relative imports - no extensionless subpath imports found in package.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -369,7 +369,7 @@ Patch skipped: Replace import-x/order ESLint disables with oxfmt-ignore comments
 
 Patch skipped: Migrate default imports from @seek/logger to named createLogger imports - no default imports from @seek/logger upgrade-skuba
 
-Patch skipped: Strip .js and .ts extensions from subpath imports - no extensionless subpath imports found in package.json upgrade-skuba
+Patch skipped: Strip .js and .ts extensions from subpath imports and use .ts extensions for relative imports - no extensionless subpath imports found in package.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -486,7 +486,7 @@ Patch skipped: Replace import-x/order ESLint disables with oxfmt-ignore comments
 
 Patch skipped: Migrate default imports from @seek/logger to named createLogger imports - no default imports from @seek/logger upgrade-skuba
 
-Patch skipped: Strip .js and .ts extensions from subpath imports - no extensionless subpath imports found in package.json upgrade-skuba
+Patch skipped: Strip .js and .ts extensions from subpath imports and use .ts extensions for relative imports - no extensionless subpath imports found in package.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

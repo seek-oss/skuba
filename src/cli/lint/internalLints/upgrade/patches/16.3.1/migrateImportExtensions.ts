@@ -134,7 +134,7 @@ const findSpecifiers = (ast: SgNode) =>
   ast.findAll({
     rule: {
       kind: 'string_fragment',
-      regex: '^#',
+      regex: '^(#|\\.{1,2}/)',
       inside: {
         any: [
           { kind: 'string' },
@@ -147,6 +147,12 @@ const findSpecifiers = (ast: SgNode) =>
       },
     },
   });
+
+const fileExists = (file: string) =>
+  fs.promises.access(file).then(
+    () => true,
+    () => false,
+  );
 
 const parsePackageJson = async (
   root: string,
@@ -220,7 +226,7 @@ const migrateImports = (
   return migrated;
 };
 
-export const migrateSubpathImportExtensions: PatchFunction = async ({
+export const migrateImportExtensions: PatchFunction = async ({
   mode,
   dir = process.cwd(),
 }): Promise<PatchReturnType> => {
@@ -269,7 +275,7 @@ export const migrateSubpathImportExtensions: PatchFunction = async ({
       const fullPath = path.join(root, file);
       const contents = await fs.promises.readFile(fullPath, 'utf8');
 
-      if (!/['"`]#/.test(contents)) {
+      if (!/['"`](#|\.{1,2}\/)/.test(contents)) {
         return;
       }
 
@@ -280,6 +286,19 @@ export const migrateSubpathImportExtensions: PatchFunction = async ({
 
       for (const node of findSpecifiers(ast)) {
         const specifier = node.text();
+
+        if (!specifier.startsWith('#')) {
+          if (
+            specifier.endsWith('.js') &&
+            (await fileExists(
+              path.join(path.dirname(fullPath), `${specifier.slice(0, -3)}.ts`),
+            ))
+          ) {
+            edits.push(node.replace(`${specifier.slice(0, -3)}.ts`));
+          }
+          continue;
+        }
+
         const key = resolveImportKey(specifier, keys);
 
         if (!key || !owner.migratableKeys.has(key)) {
@@ -368,11 +387,11 @@ export const migrateSubpathImportExtensions: PatchFunction = async ({
   return { result: 'apply' };
 };
 
-export const tryMigrateSubpathImportExtensions: PatchFunction = async (
+export const tryMigrateImportExtensions: PatchFunction = async (
   config,
 ) => {
   try {
-    return await migrateSubpathImportExtensions(config);
+    return await migrateImportExtensions(config);
   } catch (err) {
     log.warn('Failed to strip .js and .ts extensions from subpath imports');
     log.subtle(inspect(err));

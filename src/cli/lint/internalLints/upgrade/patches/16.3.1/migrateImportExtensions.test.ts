@@ -5,9 +5,9 @@ import { configForPackageManager } from '../../../../../../utils/packageManager.
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import {
-  migrateSubpathImportExtensions,
+  migrateImportExtensions,
   resolveImportKey,
-} from './migrateSubpathImportExtensions.js';
+} from './migrateImportExtensions.js';
 
 vi.mock('fs-extra', () => ({
   default: memfs,
@@ -70,7 +70,7 @@ describe('resolveImportKey', () => {
   });
 });
 
-describe('migrateSubpathImportExtensions', () => {
+describe('migrateImportExtensions', () => {
   afterEach(() => {
     vi.resetAllMocks();
     vol.reset();
@@ -91,7 +91,7 @@ describe('migrateSubpathImportExtensions', () => {
     );
 
     await expect(
-      migrateSubpathImportExtensions({ ...baseArgs, mode: 'lint' }),
+      migrateImportExtensions({ ...baseArgs, mode: 'lint' }),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no extensionless subpath imports found in package.json',
@@ -113,7 +113,7 @@ describe('migrateSubpathImportExtensions', () => {
     );
 
     await expect(
-      migrateSubpathImportExtensions({ ...baseArgs, mode: 'lint' }),
+      migrateImportExtensions({ ...baseArgs, mode: 'lint' }),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no extensionless subpath imports found in package.json',
@@ -129,7 +129,7 @@ describe('migrateSubpathImportExtensions', () => {
     vol.fromJSON(files, process.cwd());
 
     await expect(
-      migrateSubpathImportExtensions({ ...baseArgs, mode: 'lint' }),
+      migrateImportExtensions({ ...baseArgs, mode: 'lint' }),
     ).resolves.toEqual({ result: 'apply' } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual(files);
@@ -151,6 +151,7 @@ const g = await import('#src/g.js');
 type H = typeof import('#src/h.js');
 const notAnImport = '#src/i.js';
 `,
+        'src/e.ts': '',
         'src/index.test.ts': `import { vi } from 'vitest';
 
 vi.mock('#src/a.js', async () => ({
@@ -161,7 +162,7 @@ vi.mock('#src/a.js', async () => ({
       process.cwd(),
     );
 
-    await expect(migrateSubpathImportExtensions(baseArgs)).resolves.toEqual({
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
@@ -178,6 +179,7 @@ vi.mock('#src/a.js', async () => ({
         }
       }
       ",
+        "src/e.ts": "",
         "src/index.test.ts": "import { vi } from 'vitest';
 
       vi.mock('#src/a', async () => ({
@@ -189,7 +191,7 @@ vi.mock('#src/a.js', async () => ({
       import '#src/register';
       export { c } from '#src/c';
       export * from '#src/d';
-      import { e } from './e.js';
+      import { e } from './e.ts';
       import { f } from 'f/f.js';
 
       const g = await import('#src/g');
@@ -198,6 +200,35 @@ vi.mock('#src/a.js', async () => ({
       ",
       }
     `);
+  });
+
+  it('should only rewrite relative .js imports that resolve to a .ts file', async () => {
+    const files = {
+      'package.json': packageJson(),
+      'src/index.ts': `import { a } from './a.js';
+import { b } from '../lib/b.js';
+import { c } from './c.js';
+import { D } from './D.js';
+import { e } from './e.mjs';
+`,
+      'src/a.ts': '',
+      'lib/b.ts': '',
+      'src/c.js': '',
+      'src/D.tsx': '',
+    };
+
+    vol.fromJSON(files, process.cwd());
+
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()['src/index.ts']).toBe(`import { a } from './a.ts';
+import { b } from '../lib/b.ts';
+import { c } from './c.js';
+import { D } from './D.js';
+import { e } from './e.mjs';
+`);
   });
 
   it('should keep other extensions and add subpath imports for them', async () => {
@@ -212,7 +243,7 @@ import { a } from '#src/a.js';
       process.cwd(),
     );
 
-    await expect(migrateSubpathImportExtensions(baseArgs)).resolves.toEqual({
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
@@ -257,7 +288,7 @@ import { c } from '#src/c.tsx';
       process.cwd(),
     );
 
-    await expect(migrateSubpathImportExtensions(baseArgs)).resolves.toEqual({
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
@@ -308,7 +339,7 @@ import { c } from '#lib/utils/c.js';
       process.cwd(),
     );
 
-    await expect(migrateSubpathImportExtensions(baseArgs)).resolves.toEqual({
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
@@ -371,7 +402,7 @@ import schema from '#src/generated/schema.graphql';
       process.cwd(),
     );
 
-    await expect(migrateSubpathImportExtensions(baseArgs)).resolves.toEqual({
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
@@ -422,7 +453,7 @@ import { a } from '#src/a.js';
       process.cwd(),
     );
 
-    await expect(migrateSubpathImportExtensions(baseArgs)).resolves.toEqual({
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
@@ -483,7 +514,7 @@ import { a } from '#src/a.js';
       process.cwd(),
     );
 
-    await expect(migrateSubpathImportExtensions(baseArgs)).resolves.toEqual({
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
@@ -539,7 +570,7 @@ vi.mock('#src/data.json', () => ({ default: {} }));
       process.cwd(),
     );
 
-    await expect(migrateSubpathImportExtensions(baseArgs)).resolves.toEqual({
+    await expect(migrateImportExtensions(baseArgs)).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
@@ -588,10 +619,10 @@ import { a } from '#src/a.js';
       process.cwd(),
     );
 
-    await migrateSubpathImportExtensions(baseArgs);
+    await migrateImportExtensions(baseArgs);
 
     await expect(
-      migrateSubpathImportExtensions({ ...baseArgs, mode: 'lint' }),
+      migrateImportExtensions({ ...baseArgs, mode: 'lint' }),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no extensionless subpath imports found in package.json',
