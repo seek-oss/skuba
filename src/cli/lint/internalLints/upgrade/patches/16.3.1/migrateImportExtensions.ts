@@ -387,9 +387,7 @@ export const migrateImportExtensions: PatchFunction = async ({
   return { result: 'apply' };
 };
 
-export const tryMigrateImportExtensions: PatchFunction = async (
-  config,
-) => {
+export const tryMigrateImportExtensions: PatchFunction = async (config) => {
   try {
     return await migrateImportExtensions(config);
   } catch (err) {
