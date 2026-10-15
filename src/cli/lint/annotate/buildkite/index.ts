@@ -1,14 +1,14 @@
 import * as Buildkite from '@skuba-lib/api/buildkite';
 
-import type { ESLintOutput } from '../../../adapter/eslint.js';
-import type { OxfmtResult } from '../../../adapter/oxfmt.js';
-import type { StreamInterceptor } from '../../../lint/external.js';
-import type { InternalLintResult } from '../../internal.js';
+import type { ESLintOutput } from '../../../adapter/eslint.ts';
+import type { OxfmtResult } from '../../../adapter/oxfmt.ts';
+import type { StreamInterceptor } from '../../../lint/external.ts';
+import type { InternalLintResult } from '../../internal.ts';
 
-import { createEslintAnnotations } from './eslint.js';
-import { createInternalAnnotations } from './internal.js';
-import { createOxfmtAnnotations } from './oxfmt.js';
-import { createTscAnnotations } from './tsc.js';
+import { createEslintAnnotations } from './eslint.ts';
+import { createInternalAnnotations } from './internal.ts';
+import { createOxfmtAnnotations } from './oxfmt.ts';
+import { createTscAnnotations } from './tsc.ts';
 
 export const createBuildkiteAnnotations = async (
   internal: InternalLintResult,

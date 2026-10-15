@@ -10,13 +10,13 @@ import type {
   Vitest,
 } from 'vitest/node';
 
-import { log } from '../../../../utils/logging.js';
-import { throwOnTimeout } from '../../../../utils/wait.js';
+import { log } from '../../../../utils/logging.ts';
+import { throwOnTimeout } from '../../../../utils/wait.ts';
 
 import {
   type AnnotationEntry,
   generateAnnotationEntries,
-} from './annotations.js';
+} from './annotations.ts';
 
 /**
  * Reports Vitest results to GitHub as a check run per project.

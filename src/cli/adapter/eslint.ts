@@ -3,7 +3,7 @@ import path from 'path';
 
 import { type ESLint, type Linter, loadESLint } from 'eslint';
 
-import { type Logger, pluralise } from '../../utils/logging.js';
+import { type Logger, pluralise } from '../../utils/logging.ts';
 
 const symbolForResult = (result: ESLint.LintResult) => {
   if (result.errorCount) {

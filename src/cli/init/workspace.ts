@@ -4,8 +4,8 @@ import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 import picomatch from 'picomatch';
 
-import { isErrorWithCode } from '../../utils/error.js';
-import { registerAstGrepLanguages } from '../lint/internalLints/registerAstGrepLanguages.js';
+import { isErrorWithCode } from '../../utils/error.ts';
+import { registerAstGrepLanguages } from '../lint/internalLints/registerAstGrepLanguages.ts';
 
 interface RegisterWorkspaceProjectProps {
   workspaceRoot: string;

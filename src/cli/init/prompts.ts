@@ -12,18 +12,18 @@ import {
   text,
 } from '@clack/prompts';
 
-import { pathExistsSync } from '../../utils/fs.js';
-import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
+import { pathExistsSync } from '../../utils/fs.ts';
+import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.ts';
 
-import type { ExistingRepoDefaults } from './existingRepo.js';
-import { DEFAULT_RENOVATE_PRESET } from './types.js';
+import type { ExistingRepoDefaults } from './existingRepo.ts';
+import { DEFAULT_RENOVATE_PRESET } from './types.ts';
 import {
   type Platform,
   isGitHubOrg,
   isGitHubRepo,
   isGitHubTeam,
   isProjectName,
-} from './validation.js';
+} from './validation.ts';
 
 export interface Choice {
   name: string;

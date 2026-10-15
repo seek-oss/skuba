@@ -2,13 +2,13 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { copyFile } from '../../utils/copy.js';
-import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir.js';
-import { type Logger, log } from '../../utils/logging.js';
+import { copyFile } from '../../utils/copy.ts';
+import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir.ts';
+import { type Logger, log } from '../../utils/logging.ts';
 import {
   getEntryPointFromManifest,
   getManifestProperties,
-} from '../../utils/manifest.js';
+} from '../../utils/manifest.ts';
 
 export const copyAssets = async (
   destinationDir: string,

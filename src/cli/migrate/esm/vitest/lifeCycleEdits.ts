@@ -2,10 +2,10 @@ import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 import ts from 'typescript';
 
-import { log } from '../../../../utils/logging.js';
-import { readTsConfig } from '../../../build/tsc.js';
+import { log } from '../../../../utils/logging.ts';
+import { readTsConfig } from '../../../build/tsc.ts';
 
-import type { FileContent } from './vitest.js';
+import type { FileContent } from './vitest.ts';
 
 export const getLifeCycleHooks = (root: SgNode) =>
   root.findAll({

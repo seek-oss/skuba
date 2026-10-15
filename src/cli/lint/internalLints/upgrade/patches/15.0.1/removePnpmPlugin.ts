@@ -5,11 +5,11 @@ import { type Edit, parseAsync } from '@ast-grep/napi';
 import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
 
-import { exec } from '../../../../../../utils/exec.js';
-import { log } from '../../../../../../utils/logging.js';
-import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
-import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { exec } from '../../../../../../utils/exec.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.ts';
+import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 export const removePnpmPlugin: PatchFunction = async ({
   mode,

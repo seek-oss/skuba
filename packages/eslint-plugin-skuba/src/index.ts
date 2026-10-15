@@ -1,6 +1,6 @@
 import type { TSESLint } from '@typescript-eslint/utils';
 
-import noSyncInPromiseIterable from './rules/no-sync-in-promise-iterable.js';
+import noSyncInPromiseIterable from './rules/no-sync-in-promise-iterable.ts';
 
 const skuba = {
   meta: {

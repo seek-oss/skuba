@@ -1,4 +1,4 @@
-import { exec } from '../../utils/exec.js';
+import { exec } from '../../utils/exec.ts';
 
 const hasConfigFlag = (args: string[]) =>
   args.some(

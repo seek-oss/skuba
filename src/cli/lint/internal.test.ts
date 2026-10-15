@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { internalLint } from './internal.js';
+import { internalLint } from './internal.ts';
 
 describe('internalLint', () => {
   beforeEach(() => {

@@ -1,7 +1,7 @@
 import { coerce } from 'semver';
 import * as z from 'zod/v4';
 
-import { getConsumerManifest } from './manifest.js';
+import { getConsumerManifest } from './manifest.ts';
 
 const packageManagerEntrySchema = z.object({
   name: z.string(),

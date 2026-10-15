@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 // Uncomment the following line when there's an intentionally skipped test.
 // /* eslint-disable jest/no-disabled-tests */
 
-import './index.js';
+import './index.ts';
 
 /**
  * Ensure compatibility between our lint command and new syntax features.

@@ -6,7 +6,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 
 import newGit from '../../../../integration/git/new.json' with { type: 'json' };
 
-import { commitAllChanges } from './commitAllChanges.js';
+import { commitAllChanges } from './commitAllChanges.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,

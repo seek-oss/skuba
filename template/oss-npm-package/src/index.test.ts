@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { log } from './index.js';
+import { log } from './index.ts';
 
 describe('app', () => {
   it('defines a log function', () => {

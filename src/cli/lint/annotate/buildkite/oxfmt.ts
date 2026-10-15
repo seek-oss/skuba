@@ -1,6 +1,6 @@
 import * as Buildkite from '@skuba-lib/api/buildkite';
 
-import type { OxfmtResult } from '../../../adapter/oxfmt.js';
+import type { OxfmtResult } from '../../../adapter/oxfmt.ts';
 
 const annotationBody = (oxfmt: Extract<OxfmtResult, { ok: false }>): string =>
   (oxfmt.errors ?? [])

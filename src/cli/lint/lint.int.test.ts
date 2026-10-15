@@ -8,12 +8,12 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
-import type { Logger } from '../../utils/logging.js';
-import { getSkubaVersion } from '../../utils/version.js';
+import type { Logger } from '../../utils/logging.ts';
+import { getSkubaVersion } from '../../utils/version.ts';
 
-import { refreshConfigFiles } from './internalLints/refreshConfigFiles.js';
+import { refreshConfigFiles } from './internalLints/refreshConfigFiles.ts';
 
-import { lint } from './index.js';
+import { lint } from './index.ts';
 
 vi.setConfig({
   testTimeout: 30_000,

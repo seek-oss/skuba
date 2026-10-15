@@ -1,8 +1,8 @@
 import { inspect } from 'util';
 
-import { log } from '../../../../../../utils/logging.js';
-import { upgradeInfraPackages } from '../../../../../migrate/nodeVersion/upgrade.js';
-import type { PatchFunction } from '../../index.js';
+import { log } from '../../../../../../utils/logging.ts';
+import { upgradeInfraPackages } from '../../../../../migrate/nodeVersion/upgrade.ts';
+import type { PatchFunction } from '../../index.ts';
 
 const AWS_SDK_CLIENT_MOCK_VITEST_VERSION = '8.0.0';
 

@@ -3,7 +3,7 @@ import { describe, expect, it, test } from 'vitest';
 import {
   generateIgnoreFileSimpleVariants,
   mergeWithConfigFile,
-} from './configFile.js';
+} from './configFile.ts';
 
 describe('generateIgnoreFileSimpleVariants', () => {
   it.each([

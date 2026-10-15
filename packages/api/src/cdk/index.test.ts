@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { normaliseTemplate } from './index.js';
+import { normaliseTemplate } from './index.ts';
 
 describe('normaliseTemplate', () => {
   it('replaces S3 key hashes with x characters of equal length', () => {

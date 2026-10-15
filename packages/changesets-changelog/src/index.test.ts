@@ -2,7 +2,7 @@ import { parseChangesetFile as parse } from '@changesets/parse';
 import type { ModCompWithPackage } from '@changesets/types';
 import { afterEach, describe, expect, it, test, vi } from 'vitest';
 
-import changelogFunctions from './index.js';
+import changelogFunctions from './index.ts';
 
 const getReleaseLine = changelogFunctions.getReleaseLine;
 const getDependencyReleaseLine = changelogFunctions.getDependencyReleaseLine;

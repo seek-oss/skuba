@@ -1,12 +1,12 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryMigrateImportOrderEslintDisables } from './migrateImportOrderEslintDisables.js';
-import { tryMigratePnpmV11 } from './migratePnpmV11.js';
-import { tryMigratePrettierToOxfmt } from './migratePrettierToOxfmt.js';
-import { tryMigrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.js';
-import { tryPatchAttwNode16 } from './patchAttwNode16.js';
-import { tryPatchSeekLoggerCreateLogger } from './patchSeekLoggerCreateLogger.js';
-import { tryUpgradeAwsSdkClientMockVitest } from './upgradeAwsSdkClientMockVitest.js';
+import { tryMigrateImportOrderEslintDisables } from './migrateImportOrderEslintDisables.ts';
+import { tryMigratePnpmV11 } from './migratePnpmV11.ts';
+import { tryMigratePrettierToOxfmt } from './migratePrettierToOxfmt.ts';
+import { tryMigrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.ts';
+import { tryPatchAttwNode16 } from './patchAttwNode16.ts';
+import { tryPatchSeekLoggerCreateLogger } from './patchSeekLoggerCreateLogger.ts';
+import { tryUpgradeAwsSdkClientMockVitest } from './upgradeAwsSdkClientMockVitest.ts';
 
 export const patches: Patches = [
   {

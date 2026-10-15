@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import { upgradeInfraPackages } from '../../../../../migrate/nodeVersion/upgrade.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import { configForPackageManager } from '../../../../../../utils/packageManager.ts';
+import { upgradeInfraPackages } from '../../../../../migrate/nodeVersion/upgrade.ts';
+import type { PatchConfig, PatchReturnType } from '../../index.ts';
 
-import { tryUpgradeAwsSdkClientMockVitest } from './upgradeAwsSdkClientMockVitest.js';
+import { tryUpgradeAwsSdkClientMockVitest } from './upgradeAwsSdkClientMockVitest.ts';
 
-vi.mock('../../../../../migrate/nodeVersion/upgrade.js', () => ({
+vi.mock('../../../../../migrate/nodeVersion/upgrade.ts', () => ({
   upgradeInfraPackages: vi.fn(),
 }));
 

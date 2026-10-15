@@ -9,12 +9,12 @@ import type {
 } from 'rolldown';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createExec } from '../../../../src/utils/exec.js';
-import { pathExists } from '../../../../src/utils/fs.js';
+import { createExec } from '../../../../src/utils/exec.ts';
+import { pathExists } from '../../../../src/utils/fs.ts';
 
-import { lambdaAsset } from './lambdaAsset.js';
+import { lambdaAsset } from './lambdaAsset.ts';
 
-vi.mock('../../../../src/utils/exec.js', () => ({ createExec: vi.fn() }));
+vi.mock('../../../../src/utils/exec.ts', () => ({ createExec: vi.fn() }));
 
 const install = vi.fn();
 const emitFile = vi.fn();

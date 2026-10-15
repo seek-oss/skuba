@@ -5,13 +5,13 @@ import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
 import { SemVer, coerce, lt, valid } from 'semver';
 
-import { log } from '../../../../../../utils/logging.js';
+import { log } from '../../../../../../utils/logging.ts';
 import {
   getConsumerManifest,
   getSkubaManifest,
-} from '../../../../../../utils/manifest.js';
-import { installPnpmPlugin } from '../../../../../init/installPnpmPlugin.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+} from '../../../../../../utils/manifest.ts';
+import { installPnpmPlugin } from '../../../../../init/installPnpmPlugin.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 export const migrateToPnpmConfig: PatchFunction = async ({
   mode,

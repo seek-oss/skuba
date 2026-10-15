@@ -1,13 +1,13 @@
 import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { globFiles } from '../../../../../../utils/glob.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import type { PatchConfig, PatchReturnType } from '../../index.ts';
 
-import { tryPatchApiTokenFromEnvironment } from './patchApiTokenFromEnvironment.js';
+import { tryPatchApiTokenFromEnvironment } from './patchApiTokenFromEnvironment.ts';
 
 vi.mock('fs-extra');
-vi.mock('../../../../../../utils/glob.js');
+vi.mock('../../../../../../utils/glob.ts');
 
 describe('patchApiTokenFromEnvironment', () => {
   afterEach(() => vi.resetAllMocks());

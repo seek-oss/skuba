@@ -2,9 +2,9 @@ import { styleText } from 'node:util';
 
 import { isAgent } from 'std-env';
 
-import { log } from './logging.js';
-import { detectPackageManager } from './packageManager.js';
-import { getSkubaVersionInfo } from './version.js';
+import { log } from './logging.ts';
+import { detectPackageManager } from './packageManager.ts';
+import { getSkubaVersionInfo } from './version.ts';
 
 const LOGO = styleText(
   'blueBright',

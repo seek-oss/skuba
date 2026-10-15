@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { exec } from '../../utils/exec.js';
+import { exec } from '../../utils/exec.ts';
 
-import { rolldown } from './rolldown.js';
+import { rolldown } from './rolldown.ts';
 
-vi.mock('../../utils/exec.js', () => ({
+vi.mock('../../utils/exec.ts', () => ({
   exec: vi.fn(),
 }));
 

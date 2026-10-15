@@ -3,16 +3,16 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../utils/glob.js';
-import { log } from '../../../utils/logging.js';
+import { globFiles } from '../../../utils/glob.ts';
+import { log } from '../../../utils/logging.ts';
 import {
   formatPackage,
   parsePackage,
-} from '../../configure/processing/package.js';
+} from '../../configure/processing/package.ts';
 import type {
   PatchFunction,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
+} from '../../lint/internalLints/upgrade/index.ts';
 
 const PACKAGES_EXCLUDED_FROM_TYPE_MODULE = ['eslint-config-skuba'];
 

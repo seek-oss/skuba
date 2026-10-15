@@ -3,9 +3,9 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 import * as z from 'zod';
 
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const pnpmConfigSchema = z.looseObject({
   pnpm: z

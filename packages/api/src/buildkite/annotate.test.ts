@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import * as execModule from '../../../../src/utils/exec.js';
-import { log } from '../../../../src/utils/logging.js';
+import * as execModule from '../../../../src/utils/exec.ts';
+import { log } from '../../../../src/utils/logging.ts';
 
-import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate.js';
+import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate.ts';
 
 const exec = vi.spyOn(execModule, 'exec');
 const hasCommand = vi.spyOn(execModule, 'hasCommand');

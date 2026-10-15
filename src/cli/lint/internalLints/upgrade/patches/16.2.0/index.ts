@@ -1,9 +1,9 @@
-import type { Patches } from '../../index.js';
-import { tryRemovePnpmPlugin } from '../15.0.1/removePnpmPlugin.js';
-import { tryRemovePnpmConfigPackageJson } from '../15.3.0/removePnpmConfigPackageJson.js';
+import type { Patches } from '../../index.ts';
+import { tryRemovePnpmPlugin } from '../15.0.1/removePnpmPlugin.ts';
+import { tryRemovePnpmConfigPackageJson } from '../15.3.0/removePnpmConfigPackageJson.ts';
 
-import { tryMountBuildkiteAgent } from './mountBuildkiteAgent.js';
-import { tryRemoveDatadogNodeOptionsHack } from './removeDatadogNodeOptionsHack.js';
+import { tryMountBuildkiteAgent } from './mountBuildkiteAgent.ts';
+import { tryRemoveDatadogNodeOptionsHack } from './removeDatadogNodeOptionsHack.ts';
 
 export const patches: Patches = [
   {

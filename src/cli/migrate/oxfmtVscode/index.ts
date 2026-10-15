@@ -4,8 +4,8 @@ import { type Edit, parseAsync } from '@ast-grep/napi';
 import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
-import { log } from '../../../utils/logging.js';
-import { registerAstGrepLanguages } from '../../lint/internalLints/registerAstGrepLanguages.js';
+import { log } from '../../../utils/logging.ts';
+import { registerAstGrepLanguages } from '../../lint/internalLints/registerAstGrepLanguages.ts';
 
 const VSCODE_SETTINGS_PATH = '.vscode/settings.json';
 

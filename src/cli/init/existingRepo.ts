@@ -2,10 +2,10 @@ import path from 'path';
 
 import * as Git from '@skuba-lib/api/git';
 
-import { createDestinationFileReader } from '../configure/analysis/project.js';
+import { createDestinationFileReader } from '../configure/analysis/project.ts';
 
-import { isGitHubOrg, isGitHubTeam } from './validation.js';
-import { readWorkspaceGlobs } from './workspace.js';
+import { isGitHubOrg, isGitHubTeam } from './validation.ts';
+import { readWorkspaceGlobs } from './workspace.ts';
 
 export interface ExistingRepoDefaults {
   /** Absolute path of the workspace root. */

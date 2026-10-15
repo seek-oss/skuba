@@ -6,10 +6,10 @@ import { mkdtemp, readFile, rm, writeFile } from 'fs-extra';
 import { format } from 'oxfmt';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import oxfmtConfig from '../../../oxfmt.config.js';
-import type { Logger } from '../../utils/logging.js';
+import oxfmtConfig from '../../../oxfmt.config.ts';
+import type { Logger } from '../../utils/logging.ts';
 
-import { type OxfmtResult, runOxfmt } from './oxfmt.js';
+import { type OxfmtResult, runOxfmt } from './oxfmt.ts';
 
 const originalCwd = process.cwd();
 

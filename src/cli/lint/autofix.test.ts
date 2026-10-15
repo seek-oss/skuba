@@ -3,17 +3,17 @@ import { simpleGit } from 'simple-git';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import newGit from '../../../integration/git/new.json' with { type: 'json' };
-import memfs, { fs, vol } from '../../testing/memfs.js';
-import { runESLint } from '../adapter/eslint.js';
-import { runOxfmt } from '../adapter/oxfmt.js';
-import { createDestinationFileReader } from '../configure/analysis/project.js';
+import memfs, { fs, vol } from '../../testing/memfs.ts';
+import { runESLint } from '../adapter/eslint.ts';
+import { runOxfmt } from '../adapter/oxfmt.ts';
+import { createDestinationFileReader } from '../configure/analysis/project.ts';
 
 import {
   AUTOFIX_IGNORE_FILES_BASE,
   RENOVATE_AUTHOR,
   autofix,
-} from './autofix.js';
-import { internalLint } from './internal.js';
+} from './autofix.ts';
+import { internalLint } from './internal.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs,

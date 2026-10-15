@@ -5,9 +5,9 @@ import fs from 'fs-extra';
 import { rolldown } from 'rolldown';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { pathExists } from '../../../../src/utils/fs.js';
+import { pathExists } from '../../../../src/utils/fs.ts';
 
-import { lambdaAsset } from './lambdaAsset.js';
+import { lambdaAsset } from './lambdaAsset.ts';
 
 const REPO_ROOT = path.resolve(import.meta.dirname, '../../../..');
 

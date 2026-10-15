@@ -1,9 +1,9 @@
 import stream from 'stream';
 
-import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint.js';
-import { runOxfmtInNewProcess } from './oxfmt.js';
-import { runTscInNewProcess } from './tsc.js';
-import type { Input } from './types.js';
+import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint.ts';
+import { runOxfmtInNewProcess } from './oxfmt.ts';
+import { runTscInNewProcess } from './tsc.ts';
+import type { Input } from './types.ts';
 
 const tscPrefixRegex = /^(.*?tsc\s+│.*?\s)/gm;
 

@@ -1,5 +1,5 @@
-import { log } from '../../utils/logging.js';
-import { getSkubaVersion } from '../../utils/version.js';
+import { log } from '../../utils/logging.ts';
+import { getSkubaVersion } from '../../utils/version.ts';
 
 export const version = async () => {
   const skubaVersion = await getSkubaVersion();

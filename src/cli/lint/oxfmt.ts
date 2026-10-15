@@ -1,9 +1,9 @@
 import { styleText } from 'node:util';
 
-import { createLogger } from '../../utils/logging.js';
-import { runOxfmt } from '../adapter/oxfmt.js';
+import { createLogger } from '../../utils/logging.ts';
+import { runOxfmt } from '../adapter/oxfmt.ts';
 
-import type { Input } from './types.js';
+import type { Input } from './types.ts';
 
 const LOG_PREFIX = styleText('cyan', 'Oxfmt  │');
 

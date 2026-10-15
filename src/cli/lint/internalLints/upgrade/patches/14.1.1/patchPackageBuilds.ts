@@ -5,14 +5,14 @@ import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import { getOwnerAndRepo } from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
-import { createExec, exec } from '../../../../../../utils/exec.js';
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import { detectPackageManager } from '../../../../../../utils/packageManager.js';
-import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
-import { tryRefreshConfigFiles } from '../../../refreshConfigFiles.js';
-import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { createExec, exec } from '../../../../../../utils/exec.ts';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import { detectPackageManager } from '../../../../../../utils/packageManager.ts';
+import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.ts';
+import { tryRefreshConfigFiles } from '../../../refreshConfigFiles.ts';
+import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const replaceAssetsField = (
   ast: SgNode,

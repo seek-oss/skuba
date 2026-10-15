@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../testing/memfs.js';
+import memfs, { vol } from '../../../testing/memfs.ts';
 
-import { isLikelyPackage } from './checks.js';
+import { isLikelyPackage } from './checks.ts';
 
 vi.mock('node:fs', () => ({
   default: memfs,

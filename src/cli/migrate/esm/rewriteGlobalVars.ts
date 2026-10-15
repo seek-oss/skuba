@@ -3,10 +3,10 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../utils/glob.js';
-import { log } from '../../../utils/logging.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
-import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
+import { globFiles } from '../../../utils/glob.ts';
+import { log } from '../../../utils/logging.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
+import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.ts';
 
 export const hasDirNameRegex = /__dirname\b/g;
 export const hasDirNameVariableRegex = /const __dirname =/g;

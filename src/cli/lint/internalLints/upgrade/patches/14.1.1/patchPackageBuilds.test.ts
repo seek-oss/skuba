@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../../../../testing/memfs.js';
-import * as execModule from '../../../../../../utils/exec.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import * as checks from '../../../../../migrate/nodeVersion/checks.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.ts';
+import * as execModule from '../../../../../../utils/exec.ts';
+import { configForPackageManager } from '../../../../../../utils/packageManager.ts';
+import * as checks from '../../../../../migrate/nodeVersion/checks.ts';
+import type { PatchConfig, PatchReturnType } from '../../index.ts';
 
-import { patchPackageBuilds } from './patchPackageBuilds.js';
+import { patchPackageBuilds } from './patchPackageBuilds.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs,

@@ -5,11 +5,11 @@ import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
 
-import { exec } from '../../../utils/exec.js';
-import { globFiles } from '../../../utils/glob.js';
-import { log } from '../../../utils/logging.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
-import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
+import { exec } from '../../../utils/exec.ts';
+import { globFiles } from '../../../utils/glob.ts';
+import { log } from '../../../utils/logging.ts';
+import { detectPackageManager } from '../../../utils/packageManager.ts';
+import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.ts';
 
 const packageVersionRegex = (packageName: string) =>
   new RegExp(`"\\b${packageName}\\b"\\s*:\\s*"([^"]+)"`, 'g');

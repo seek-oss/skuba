@@ -3,9 +3,9 @@ import path from 'path';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
-import { type Identity, commit } from './commit.js';
-import { findRoot } from './findRoot.js';
-import { type ChangedFile, getChangedFiles } from './getChangedFiles.js';
+import { type Identity, commit } from './commit.ts';
+import { findRoot } from './findRoot.ts';
+import { type ChangedFile, getChangedFiles } from './getChangedFiles.ts';
 
 interface CommitAllParameters {
   dir: string;

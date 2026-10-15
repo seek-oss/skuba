@@ -1,7 +1,7 @@
 import http from 'http';
 import util from 'util';
 
-import { startServer } from './server.js';
+import { startServer } from './server.ts';
 
 /**
  * Create an HTTP request listener based on the supplied function.

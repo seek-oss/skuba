@@ -4,9 +4,9 @@ import { inspect } from 'util';
 import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const SEEK_REGISTRY = '@seek:registry=https://npm.cloudsmith.io/seek/npm/';
 const SEEK_ORG = 'SEEK-Jobs';

@@ -1,6 +1,6 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryPatchDockerfileCIVariable } from './patchDockerfileCIVariable.js';
+import { tryPatchDockerfileCIVariable } from './patchDockerfileCIVariable.ts';
 
 export const patches: Patches = [
   {

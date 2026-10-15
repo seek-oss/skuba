@@ -1,6 +1,6 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryMigrateTsdown } from './migrateTsdown.js';
+import { tryMigrateTsdown } from './migrateTsdown.ts';
 
 export const patches: Patches = [
   {

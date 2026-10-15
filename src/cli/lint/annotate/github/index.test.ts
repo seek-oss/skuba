@@ -2,17 +2,17 @@ import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
-import { log } from '../../../../utils/logging.js';
-import type { ESLintOutput } from '../../../adapter/eslint.js';
-import type { OxfmtResult } from '../../../adapter/oxfmt.js';
-import type { StreamInterceptor } from '../../../lint/external.js';
-import type { InternalLintResult } from '../../internal.js';
+import { log } from '../../../../utils/logging.ts';
+import type { ESLintOutput } from '../../../adapter/eslint.ts';
+import type { OxfmtResult } from '../../../adapter/oxfmt.ts';
+import type { StreamInterceptor } from '../../../lint/external.ts';
+import type { InternalLintResult } from '../../internal.ts';
 
-import { createEslintAnnotations } from './eslint.js';
-import { createOxfmtAnnotations } from './oxfmt.js';
-import { createTscAnnotations } from './tsc.js';
+import { createEslintAnnotations } from './eslint.ts';
+import { createOxfmtAnnotations } from './oxfmt.ts';
+import { createTscAnnotations } from './tsc.ts';
 
-import { createGitHubAnnotations } from './index.js';
+import { createGitHubAnnotations } from './index.ts';
 
 vi.mock('../../../../utils/logging');
 vi.mock('@skuba-lib/api/git');

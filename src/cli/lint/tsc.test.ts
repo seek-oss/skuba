@@ -4,13 +4,13 @@ import { stripVTControlCharacters } from 'node:util';
 import { type Options, execa } from 'execa';
 import { beforeEach, expect, test, vi } from 'vitest';
 
-import { createExec } from '../../utils/exec.js';
+import { createExec } from '../../utils/exec.ts';
 
-import { runTscInNewProcess } from './tsc.js';
+import { runTscInNewProcess } from './tsc.ts';
 
 const subprocessInput = vi.hoisted(() => ({ script: '' }));
 
-vi.mock('../../utils/exec.js', () => ({
+vi.mock('../../utils/exec.ts', () => ({
   createExec: vi.fn((options: Options) =>
     vi.fn(() =>
       execa(process.execPath, ['-e', subprocessInput.script], options),

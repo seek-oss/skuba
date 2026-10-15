@@ -1,7 +1,7 @@
 import { execa } from 'execa';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { findLatestAllowedVersion } from './findLatestAllowedVersion.js';
+import { findLatestAllowedVersion } from './findLatestAllowedVersion.ts';
 
 vi.mock('execa');
 

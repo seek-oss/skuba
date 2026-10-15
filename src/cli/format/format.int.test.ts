@@ -7,7 +7,7 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
-import { format } from './index.js';
+import { format } from './index.ts';
 
 vi.setConfig({ testTimeout: 15_000 });
 
@@ -30,8 +30,8 @@ vi.spyOn(git, 'listRemotes').mockResolvedValue([
 ]);
 
 // `createExec` is left intact so Oxfmt can actually format the fixtures.
-vi.mock('../../utils/exec.js', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('../../utils/exec.js')>()),
+vi.mock('../../utils/exec.ts', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../utils/exec.ts')>()),
   exec: vi.fn(),
 }));
 

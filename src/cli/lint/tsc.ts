@@ -1,8 +1,8 @@
 import { styleText } from 'node:util';
 
-import { createExec } from '../../utils/exec.js';
+import { createExec } from '../../utils/exec.ts';
 
-import type { Input } from './types.js';
+import type { Input } from './types.ts';
 
 export const runTscInNewProcess = async ({
   debug,
