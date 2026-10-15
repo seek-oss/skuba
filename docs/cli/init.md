@@ -94,6 +94,45 @@ git push --set-upstream origin main
 
 You can now proceed to the [next steps](#next-steps).
 
+### Adding to an existing repository
+
+If you run `skuba init` from inside an existing pnpm workspace (detected via a
+root `pnpm-workspace.yaml`), it offers to scaffold the new project as an
+additional workspace project rather than a standalone repository. Any template
+works in this mode, whether it's a package or an application such as a Lambda
+worker or an API. Because detection is based on your location, `skuba init` asks
+you to confirm before switching modes; the prompt defaults to `No`, so press
+Enter (or answer `No`) to create a standalone repository instead.
+
+Yarn/npm workspaces and plain Git repositories are not offered this mode and
+keep the standalone behaviour.
+
+This mode asks for a project name and a project directory relative to the
+workspace root. `repoName` keeps naming the repository that hosts the project.
+
+In this mode `skuba init`:
+
+- Skips `git init`, remote configuration and the `git push --set-upstream`
+  guidance; the existing repository is reused.
+- Leaves configuration that the workspace root owns in place rather than
+  duplicating it into the project: `.gitignore`, `.prettierignore`,
+  `.prettierrc.js`, `eslint.config.js`, `.dockerignore`, `.npmrc`, `.nvmrc`,
+  Renovate config, and the `.github` and `.vscode` directories.
+- Registers the project in the root `pnpm-workspace.yaml` when it isn't already
+  matched by an existing glob, and installs dependencies against the root
+  lockfile. The edit is applied through the file's syntax tree, so surrounding
+  keys, comments and formatting are preserved. Only pnpm workspaces are
+  supported in this mode.
+- Answers the template field that names the project—`serviceName` for services
+  and `moduleName` for packages—from the project name instead of asking for it
+  twice. Where a template validates the field, such as `private-npm-package`
+  requiring an `@seek/` scope, the project name pre-fills the prompt rather than
+  replacing it.
+- Commits just the new project's files.
+
+Running `skuba init` outside of a repository (or answering `No` to the prompt)
+keeps the standalone behaviour described above.
+
 ### Non-interactive execution
 
 `skuba init` is interactive by default.

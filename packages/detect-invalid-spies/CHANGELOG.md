@@ -1,5 +1,17 @@
 # @skuba-lib/detect-invalid-spies
 
+## 1.1.3
+
+### Patch Changes
+
+- **deps:** @ast-grep/napi ~0.50.0 ([#2640](https://github.com/seek-oss/skuba/pull/2640) [`e4062a7`](https://github.com/seek-oss/skuba/commit/e4062a777cf12ba1af57546e7744c81bbac7d584))
+
+## 1.1.2
+
+### Patch Changes
+
+- **deps:** Replace `fast-glob` with Node.js `fs.glob` ([#2603](https://github.com/seek-oss/skuba/pull/2603) [`52acb5a`](https://github.com/seek-oss/skuba/commit/52acb5a9ac9bf045fad92f5e2b593c683e24b975))
+
 ## 1.1.1
 
 ### Patch Changes

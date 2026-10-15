@@ -22,6 +22,16 @@ Arguments are passed through to the Vitest CLI:
 skuba test --coverage path/to/file.test.ts
 ```
 
+### Automatic upgrades
+
+When running in CI, `skuba test` attempts to upgrade skuba before running tests.
+This applies the latest [patches] so they are in place even when tests run before lint.
+
+Applied changes are committed and pushed when [GitHub autofixes] are enabled.
+That push still happens when the follow-up lint is clean.
+
+Make sure GitHub autofixes are enabled so these changes are committed and pushed automatically.
+
 ### Annotations
 
 <!--
@@ -35,4 +45,6 @@ for example, the display name `integration` will result in the title `skuba/test
 
 See our [Jest guide] for a more detailed configuration breakdown. -->
 
+[github autofixes]: ../deep-dives/github.md#github-autofixes
+[patches]: lint.md#patches
 [vitest]: https://vitest.dev

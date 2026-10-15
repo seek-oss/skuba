@@ -123,9 +123,112 @@ If your project depends on other packages that require build scripts, add them t
 
 ```yaml
 allowBuilds:
-  - esbuild # Managed by skuba
-  - my-trusted-package
+  esbuild: true # Managed by skuba
+  my-trusted-package: true
 ```
+
+---
+
+## Upgrading to pnpm v11
+
+**skuba** moves projects from pnpm v10 to [pnpm v11] through an [upgrade patch].
+Running `pnpm skuba format` applies pnpm's [`pnpm-v10-to-v11` codemod],
+which rewrites the mechanical configuration changes,
+then reapplies the **skuba**-managed settings in `pnpm-workspace.yaml`.
+
+The rest of this section covers the changes that the codemod cannot make for you.
+
+### Node.js 22 or newer is required
+
+pnpm v11 drops Node.js 18, 19, 20 and 21, and is distributed as pure ESM.
+Run [`skuba migrate node24`](../cli/migrate.md#skuba-migrate-node24) first if your project is still on Node.js 20.
+
+### Build scripts must be allowlisted
+
+`strictDepBuilds` now defaults to `true`,
+so `pnpm install` fails rather than warns when a dependency wants to run a lifecycle script that is not in [`allowBuilds`](#allow-builds).
+
+`allowBuilds` also replaces the older `onlyBuiltDependencies`, `onlyBuiltDependenciesFile`, `neverBuiltDependencies`, `ignoredBuiltDependencies` and `ignoreDepScripts` settings, which have all been removed.
+Unlike those settings, it is a map of package name patterns to booleans rather than a list.
+
+### Other supply chain defaults are now on
+
+| Setting                   | New default |
+| ------------------------- | ----------- |
+| `blockExoticSubdeps`      | `true`      |
+| `minimumReleaseAge`       | `1440`      |
+| `optimisticRepeatInstall` | `true`      |
+| `verifyDepsBeforeRun`     | `install`   |
+
+**skuba** raises `minimumReleaseAge` to `4320` (72 hours) and sets `trustPolicy: no-downgrade`.
+See [Security controls](#security-controls) for how to grant exemptions.
+
+**skuba** picks the managed settings to write based on the pnpm major version your project pins through `packageManager` or `devEngines.packageManager`,
+so a project that stays on pnpm v10 keeps its v10 settings.
+A project that pins no pnpm version at all is left alone.
+
+### `.npmrc` is auth and registry only
+
+pnpm no longer reads other settings from `.npmrc`, `package.json#pnpm`, or `npm_config_*` environment variables.
+Move any remaining settings into `pnpm-workspace.yaml` with camelCase keys,
+and rename any `npm_config_*` variables you set in CI, Dockerfiles or shell profiles to `pnpm_config_*`.
+
+### Removed settings
+
+- `packageManagerStrictVersion`, `packageManagerStrict` and `managePackageManagerVersions` are replaced by [`pmOnFail`], which **skuba** sets to `error`.
+  The `COREPACK_ENABLE_STRICT` environment variable is no longer honoured.
+- `ignorePatchFailures` is gone; a patch that fails to apply now throws.
+- `allowNonAppliedPatches` is renamed to `allowUnusedPatches`.
+- `auditConfig.ignoreCves` is renamed to `auditConfig.ignoreGhsas`, so each `CVE-YYYY-NNNNN` entry needs to be swapped for its `GHSA-xxxx-xxxx-xxxx` equivalent.
+- `pnpm server` is gone, `pnpm install -g` requires `pnpm add -g <pkg>`, and `pnpm link <pkg>` only accepts paths.
+
+### Scripts shadow built-in commands
+
+If your `package.json` declares a script named `clean`, `setup`, `deploy` or `rebuild`,
+`pnpm <name>` now runs your script instead of the built-in command.
+Use `pnpm pm <name>` when you want the built-in.
+
+### pnpmfiles can be ESM
+
+`.pnpmfile.mjs` takes priority over `.pnpmfile.cjs` when both are present, and only one is loaded.
+[`pnpm-plugin-skuba`] now ships an ESM `pnpmfile.mjs`, so bump it to its latest version alongside the pnpm upgrade.
+
+### Lambdas and `NodejsFunction`
+
+`skuba format` **skips** the pnpm v11 upgrade in projects that use `NodejsFunction` from `aws-cdk-lib/aws-lambda-nodejs`,
+whether it is imported directly or through the `aws_lambda_nodejs` namespace:
+
+```console
+Patch skipped: Migrate pnpm v10 to v11 - aws-cdk-lib NodejsFunction cannot bundle its dependencies under pnpm v11
+```
+
+Such projects stay on pnpm v10 until they move off the construct, and keep receiving the pnpm v10 managed settings.
+
+`NodejsFunction` bundles at `cdk synth` time,
+and when you pass `bundling.nodeModules` it runs `pnpm install` in its output directory to produce a real `node_modules`.
+Before that install, CDK unconditionally writes an **empty** `pnpm-workspace.yaml` into the output directory so that pnpm does not walk up to your repository root.
+
+Under pnpm v10's defaults this was harmless.
+Now that `strictDepBuilds` is on, any dependency with a lifecycle script has to appear in `allowBuilds` —
+and those entries live in the very `pnpm-workspace.yaml` that CDK has just overwritten:
+
+```console
+ERR_PNPM_INSTALL_SCRIPTS_NOT_ALLOWED  cpu-features@1.x.x is not allowed to run install scripts
+```
+
+The construct offers no hook late enough to fix this.
+`commandHooks.beforeInstall` runs _before_ CDK writes the empty `pnpm-workspace.yaml`, so anything it writes is discarded ([aws/aws-cdk#37898]).
+pnpm makes this harder still by exporting its strict build and trust policy settings to child processes as environment variables without the matching `allowBuilds` and `trustPolicyExclude` allowlists ([pnpm/pnpm#10988]),
+so a nested install inherits the strictness but not the exemptions.
+
+Rather than reimplement `allowBuilds` handling in an `afterBundling` hook,
+bundle your Lambdas yourself with [`Rolldown.lambdaAsset`] and hand the output directory to `aws_lambda.Code.fromAsset`.
+The plugin stages your real `pnpm-workspace.yaml`, `.npmrc`, pnpmfile, `patches` directory and lockfile into the output directory before installing,
+so pnpm v11's defaults are satisfied.
+It also decouples bundling from `cdk synth`: your Lambda is built once by `skuba build`.
+
+SEEKers can hand this migration off to the [CDK Lambda bundling migration skill],
+which replaces `NodejsFunction` with `Rolldown.lambdaAsset` and is also available via the [seek-ai-toolkit].
 
 ---
 
@@ -138,7 +241,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 2. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@10.34.6",
+   "packageManager": "pnpm@11.8.0",
    ```
 
 3. Install pnpm
@@ -208,18 +311,18 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     <!-- prettier-ignore -->
     ```diff
       FROM --platform=arm64 node:20-alpine AS dev-deps
-    
+
     + RUN --mount=type=bind,source=package.json,target=package.json \
     +     corepack enable pnpm && corepack install
-    
+
     + RUN --mount=type=bind,source=package.json,target=package.json \
     +     pnpm config set store-dir /root/.pnpm-store
-    
+
       WORKDIR /workdir
-    
+
     - COPY package.json yarn.lock ./
     - COPY packages/foo/package.json packages/foo/
-    
+
     - RUN --mount=type=secret,id=npm,dst=/workdir/.npmrc \
     -     yarn install --frozen-lockfile --ignore-optional --non-interactive
     + RUN --mount=type=bind,source=package.json,target=package.json \
@@ -268,23 +371,23 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     - ###
     -
       FROM ${BASE_IMAGE} AS build
-    
+
       COPY . .
-    
+
     - RUN yarn build
     + RUN pnpm install --offline
     + RUN pnpm build
     + RUN pnpm prune --prod
-    
+
       ###
-    
+
       FROM --platform=arm64 gcr.io/distroless/nodejs20-debian12 AS runtime
       WORKDIR /workdir
-    
+
       COPY --from=build /workdir/lib lib
     - COPY --from=deps /workdir/node_modules node_modules
     + COPY --from=build /workdir/node_modules node_modules
-    
+
       ENV NODE_ENV=production
     ```
 
@@ -387,8 +490,18 @@ This page may be [edited on GitHub].
 
 [`pnpm-workspace.yaml`]: https://pnpm.io/pnpm-workspace_yaml
 [`Dockerfile.dev-deps`]: https://github.com/seek-oss/skuba/blob/main/template/koa-rest-api/Dockerfile.dev-deps
+[`pmOnFail`]: https://pnpm.io/settings#pmonfail
 [`pnpm fetch`]: https://pnpm.io/cli/fetch
+[`pnpm-plugin-skuba`]: https://github.com/seek-oss/skuba/tree/main/packages/pnpm-plugin-skuba
+[`pnpm-v10-to-v11` codemod]: https://pnpm.io/migration
+[`Rolldown.lambdaAsset`]: ../development-api/rolldown.md#lambdaasset
+[aws/aws-cdk#37898]: https://github.com/aws/aws-cdk/issues/37898
 [bind mount]: https://docs.docker.com/engine/reference/builder/#run---mounttypebind
+[CDK Lambda bundling migration skill]: https://github.com/SEEK-Jobs/skuba-templates/blob/main/.agents/skills/migrate-cdk-lambda-bundling-to-rolldown/SKILL.md
+[pnpm v11]: https://pnpm.io/blog/releases/11.0
+[pnpm/pnpm#10988]: https://github.com/pnpm/pnpm/issues/10988
+[seek-ai-toolkit]: https://github.com/SEEK-Jobs/seek-ai-toolkit
+[upgrade patch]: ../cli/lint.md#patches
 [contribute a change]: https://seek-oss.github.io/skuba/CONTRIBUTING.html#i-want-to-contribute-a-change
 [edited on GitHub]: https://github.com/seek-oss/skuba/edit/main/docs/deep-dives/pnpm.md
 [install guide]: https://pnpm.io/installation

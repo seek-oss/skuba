@@ -1,11 +1,22 @@
+import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
 import { getSkubaVersion } from '../../../../utils/version.js';
+import { runOxfmt } from '../../../adapter/oxfmt.js';
 
 import { type Patches, upgradeSkuba } from './index.js';
+
+vi.mock('@skuba-lib/api/git', () => ({
+  findRoot: vi.fn(),
+  getChangedFiles: vi.fn(),
+}));
+
+vi.mock('../../../adapter/oxfmt.js', () => ({
+  runOxfmt: vi.fn().mockResolvedValue({ ok: true }),
+}));
 
 vi.mock('../../../../utils/manifest');
 vi.mock('../../../../utils/version');
@@ -47,6 +58,10 @@ beforeEach(() => {
   vi.clearAllMocks();
 
   patchesByVersion.clear();
+  vi.mocked(Git.findRoot).mockReset();
+  vi.mocked(Git.getChangedFiles).mockReset();
+  vi.mocked(runOxfmt).mockReset();
+  vi.mocked(runOxfmt).mockResolvedValue({ ok: true });
 });
 
 describe('upgradeSkuba in format mode', () => {
@@ -118,8 +133,59 @@ describe('upgradeSkuba in format mode', () => {
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
       fixable: false,
+      upgraded: true,
     });
     expect(mockUpgrade.apply).toHaveBeenCalledTimes(2);
+    expect(runOxfmt).not.toHaveBeenCalled();
+  });
+
+  it('formats added and modified files in the worktree after the upgrade', async () => {
+    const mockUpgrade = {
+      apply: vi.fn().mockImplementation(() => ({ result: 'apply' })),
+      description: 'mock',
+    };
+
+    patchesByVersion.set('13.1.1', [mockUpgrade]);
+
+    vi.mocked(getConsumerManifest).mockResolvedValue({
+      packageJson: {
+        skuba: {
+          version: '13.0.0',
+        },
+        _id: 'test',
+        name: 'some-api',
+        readme: '',
+        version: '1.0.0',
+      },
+      path: '/package.json',
+    });
+
+    vi.mocked(getSkubaVersion).mockResolvedValue('13.1.1');
+
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
+      { isDirectory: () => true, name: '13.1.1' },
+    ] as never);
+
+    vi.mocked(Git.findRoot).mockResolvedValue('/repo');
+    vi.mocked(Git.getChangedFiles).mockResolvedValue([
+      { path: 'dirty.ts', state: 'modified' },
+      { path: 'src/listen.ts', state: 'added' },
+      { path: 'removed.ts', state: 'deleted' },
+    ]);
+
+    await expect(upgradeSkuba('format', log)).resolves.toEqual({
+      ok: true,
+      fixable: false,
+      upgraded: true,
+    });
+
+    expect(runOxfmt).toHaveBeenCalledTimes(1);
+    expect(runOxfmt).toHaveBeenCalledWith(
+      'format',
+      undefined,
+      ['dirty.ts', 'src/listen.ts'],
+      '/repo',
+    );
   });
 
   it('should update the consumer manifest version', async () => {
@@ -153,6 +219,7 @@ describe('upgradeSkuba in format mode', () => {
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
       fixable: false,
+      upgraded: true,
     });
 
     expect(fs.promises.writeFile).toHaveBeenCalledWith(
@@ -196,6 +263,7 @@ describe('upgradeSkuba in format mode', () => {
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
       fixable: false,
+      upgraded: true,
     });
 
     expect(fs.promises.writeFile).toHaveBeenCalledWith(

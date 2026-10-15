@@ -29,6 +29,12 @@ vi.spyOn(git, 'listRemotes').mockResolvedValue([
   { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
 ]);
 
+// `createExec` is left intact so Oxfmt can actually format the fixtures.
+vi.mock('../../utils/exec.js', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../utils/exec.js')>()),
+  exec: vi.fn(),
+}));
+
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
 const BASE_PATH = path.join(

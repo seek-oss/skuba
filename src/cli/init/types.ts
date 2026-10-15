@@ -39,6 +39,13 @@ export const initConfigInputSchema = z.object({
         .string()
         .describe('Name of the repository to create, without the org prefix.')
         .meta({ examples: ['my-repo'] }),
+      projectName: z
+        .string()
+        .optional()
+        .describe(
+          'Name of the project and its package. Defaults to `repoName`; set this when the repository hosts multiple projects.',
+        )
+        .meta({ examples: ['my-worker'] }),
       platformName: z
         .union([z.literal('amd64'), z.literal('arm64')])
         .describe("Target CPU architecture for the project's compute."),
@@ -88,6 +95,7 @@ const initConfigSchema = initConfigInputSchema
       .object({
         ownerName: z.string(),
         repoName: z.string(),
+        projectName: z.string(),
         defaultBranch: z.string(),
 
         // Derived from ownerName

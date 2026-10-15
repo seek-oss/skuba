@@ -1,5 +1,253 @@
 # skuba
 
+## 16.4.1
+
+### Patch Changes
+
+- **init:** Explain why a template field failed validation ([#2641](https://github.com/seek-oss/skuba/pull/2641) [`d40672c`](https://github.com/seek-oss/skuba/commit/d40672c49f1416ceec648c72602fe2fe09ba1eaf))
+
+  A template `validate` function that returns `false` now reports the field as invalid, including its example when one is set.
+
+- **init:** Retain `GIT_SSH_COMMAND` when cloning private templates in CI ([#2636](https://github.com/seek-oss/skuba/pull/2636) [`8c9c7c7`](https://github.com/seek-oss/skuba/commit/8c9c7c75d1fb9f4561b407b0682fa26fa8a76728))
+
+- **deps:** execa ^10.0.0 ([#2529](https://github.com/seek-oss/skuba/pull/2529) [`41bf484`](https://github.com/seek-oss/skuba/commit/41bf484caf7c722bd0b220c3b9c46a732c5c939b))
+
+- **deps:** ejs ^7.0.0 ([#2639](https://github.com/seek-oss/skuba/pull/2639) [`7aef865`](https://github.com/seek-oss/skuba/commit/7aef865cb39c4763177152b1628a173058e41df4))
+
+- **deps:** @ast-grep/napi ~0.50.0 ([#2640](https://github.com/seek-oss/skuba/pull/2640) [`e4062a7`](https://github.com/seek-oss/skuba/commit/e4062a777cf12ba1af57546e7744c81bbac7d584))
+
+- **test:** Exit with a non-zero code after applying pending skuba upgrades in CI ([#2638](https://github.com/seek-oss/skuba/pull/2638) [`54c5104`](https://github.com/seek-oss/skuba/commit/54c5104ea76b175627e29a0daffc88f4883fa609))
+
+  When `skuba test` detects and applies pending skuba upgrades in CI, it now sets a non-zero exit code so the build fails
+
+- **migrate:** Add `skuba migrate oxfmt-vscode` command ([#2635](https://github.com/seek-oss/skuba/pull/2635) [`290cbb2`](https://github.com/seek-oss/skuba/commit/290cbb2770e192038cba0ce14027df55062d8f62))
+
+  Adds a new migration that configures `.vscode/settings.json` to use the [Oxc VS Code extension](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) as the default formatter for JavaScript and TypeScript files, with `editor.formatOnSave` enabled.
+
+  Configuring this at the project level is useful when working across multiple repos, since many projects still use Prettier and a global formatter setting would affect those repos too.
+
+- Updated dependencies:
+  - @skuba-lib/api@3.0.1
+
+## 16.4.0
+
+### Minor Changes
+
+- **deps:** Replace `@inquirer/prompts` with `@clack/prompts` ([#2564](https://github.com/seek-oss/skuba/pull/2564) [`c887c8d`](https://github.com/seek-oss/skuba/commit/c887c8d437ba8c266581b1584b9120136cbbd8ba))
+
+  This internal change only affects the `skuba init` interactive prompts.
+
+- **lint:** Replace Prettier with Oxfmt ([#2557](https://github.com/seek-oss/skuba/pull/2557) [`438204c`](https://github.com/seek-oss/skuba/commit/438204c41e65c7390032f3dfc556e9256dad8cdc))
+
+  `skuba lint` and `skuba format` now use Oxfmt instead of Prettier. Benchmarks show Oxfmt to be up to 30x faster.
+
+  Oxfmt may format some code differently from Prettier, so you may see diffs in existing files particularly in `package.json` files.
+
+  skuba will attempt to auto-migrate your Prettier configuration to Oxfmt. Any manual calls to `prettier` in any scripts will need to be manually replaced with `oxfmt`.
+
+  Prettier `overrides` are not automatically migrated. If your configuration applies different options to certain files, port them across to Oxfmt's [`overrides`](https://oxc.rs/docs/guide/usage/formatter/config-file-reference.html) yourself.
+
+  Update your VS Code settings to use the [Oxc](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) extension instead of Prettier:
+
+  ```diff
+   {
+     "[typescript]": {
+       "editor.codeActionsOnSave": {
+         "source.fixAll.eslint": "explicit"
+       },
+  -    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  +    "editor.defaultFormatter": "oxc.oxc-vscode",
+  +    "editor.formatOnSave": true
+     }
+   }
+  ```
+
+  You may need to reload the IDE for formatting to work after the migration is complete.
+
+  `oxfmt` and `oxc-config-seek` are now hoisted in place of `prettier`.
+
+- **lint:** Disable `import-x/order` ([#2557](https://github.com/seek-oss/skuba/pull/2557) [`438204c`](https://github.com/seek-oss/skuba/commit/438204c41e65c7390032f3dfc556e9256dad8cdc))
+
+  As part of our transition to Oxfmt and Oxlint, import order is now handled by Oxfmt. Keeping `import-x/order` enabled conflicts with Oxfmt's `sortImports` setting.
+
+  `skuba format` rewrites `eslint-disable` comments for `import-x/order` (and legacy `import/order`) to `oxfmt-ignore`, so intentional import order is preserved. Oxfmt only honours a comment whose body is exactly `oxfmt-ignore`, so any `-- reason` is moved to a separate comment above it:
+
+  ```diff
+  - // eslint-disable-next-line import-x/order -- Mock import must be at top for jest.mock() hoisting
+  + // Mock import must be at top for jest.mock() hoisting
+  + // oxfmt-ignore
+    import { mocked } from './mocked.js';
+  ```
+
+  To restore the previous behavior, you can add the following rule to your ESLint config:
+
+  ```javascript
+  {
+    'import-x/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+        }
+        'newlines-between': 'always'
+        pathGroups: [
+          {
+            group: 'external',
+            pattern: 'src',
+            position: 'after',
+          },
+          {
+            group: 'external',
+            pattern: 'src/**',
+            position: 'after',
+          },
+        ]
+        pathGroupsExcludedImportTypes: ['builtin'],
+      },
+    ],
+  }
+  ```
+
+- **init:** Support scaffolding into an existing repository ([#2547](https://github.com/seek-oss/skuba/pull/2547) [`dc61c18`](https://github.com/seek-oss/skuba/commit/dc61c18eddf7efd58dc47c557ddf181296cf69ca))
+
+  `skuba init` now detects when it is run from inside an existing pnpm workspace and offers to scaffold the new project as an additional workspace project rather than a standalone repo. Any template works in this mode, whether it's a package or an application such as a Lambda worker or an API. Because detection is location-based, it asks you to confirm before switching modes.
+
+  In this mode, `skuba init`:
+
+  - Skips `git init`, remote and push setup
+  - Leaves root-owned config to the workspace root: `.gitignore`, `.prettierignore`, `.prettierrc.js`, `eslint.config.js`, `.dockerignore`, `.npmrc`, `.nvmrc`, Renovate, `.github` and `.vscode`
+  - Registers the project in the root `pnpm-workspace.yaml` when it isn't already covered, preserving surrounding keys, comments and formatting
+  - Installs against the root lockfile
+  - Prompts for a project name, which answers the template field that names the project (`serviceName` for services, `moduleName` for packages) rather than asking for the same thing twice. Where a template validates that field, the project name pre-fills the prompt instead of replacing it.
+
+  Only pnpm workspaces (detected via a root `pnpm-workspace.yaml`) are supported in this mode. Yarn/npm workspaces and plain Git repositories keep the standalone behaviour, and running `skuba init` outside of a repository is unchanged.
+
+- **Rolldown:** Add `Rolldown.lambdaAsset` plugin ([#2543](https://github.com/seek-oss/skuba/pull/2543) [`dcffd07`](https://github.com/seek-oss/skuba/commit/dcffd078b42feec6938572ba9e97d1ab91776bfa))
+
+  A new rolldown plugin that prepares a bundle output directory for deployment as a Lambda function, so CDK can pick it up with a plain `aws_lambda.Code.fromAsset`.
+
+  ```ts
+  // rolldown.config.ts
+  import { defineConfig } from 'rolldown';
+  import { Rolldown } from 'skuba';
+
+  export default defineConfig({
+    input: { index: 'src/lambda.ts' },
+    output: { dir: 'lib' },
+    external: ['sharp'],
+    plugins: [Rolldown.lambdaAsset({ nodeModules: ['sharp'] })],
+  });
+  ```
+
+  The plugin writes an ESM `package.json`, and installs any `nodeModules` into the output directory with pnpm, copying across your workspace config and patches. The generated `package.json` forwards your package manager pin by copying across the `packageManager` and `devEngines` fields of your workspace root `package.json`, so the install runs on the same pnpm version as your project. Install-only files, including `.npmrc`, are stripped from the output afterwards. It can also copy extra `assets` into the output directory alongside your bundle.
+
+  It supports ESM output and pnpm only. It leaves the rest of your rolldown config alone, and does not wrap CDK.
+
+  `skuba build` also forwards a `--config`/`-c` flag through to rolldown, so a package can ship multiple bundles from separate config files, e.g. `skuba build --config rolldown.worker1.config.ts`.
+
+  SEEKers can hand off the migration from `NodejsFunction` to `Rolldown.lambdaAsset` to the [CDK Lambda bundling migration skill](https://github.com/SEEK-Jobs/skuba-templates/blob/main/.agents/skills/migrate-cdk-lambda-bundling-to-rolldown/SKILL.md), which is also available via the [seek-ai-toolkit](https://github.com/SEEK-Jobs/seek-ai-toolkit).
+
+- **deps:** vitest v5.0.0 ([#2575](https://github.com/seek-oss/skuba/pull/2575) [`5bc2247`](https://github.com/seek-oss/skuba/commit/5bc22473ce166a07c62dbcb36a46d0d9f5a33d1e))
+
+  This release contains breaking changes. Please see the [vitest v5.0.0 release notes](https://vitest.dev/blog/vitest-5.html) for more information.
+
+- **deps:** @changesets/cli ^3.0.0 ([#2562](https://github.com/seek-oss/skuba/pull/2562) [`8375293`](https://github.com/seek-oss/skuba/commit/837529382e899f1145d651ebb1588273fec3245b))
+
+- **deps:** tsdown ~0.23.0 ([#2574](https://github.com/seek-oss/skuba/pull/2574) [`8d3c9a7`](https://github.com/seek-oss/skuba/commit/8d3c9a77467c8ffb5fb0c8302dc81a4f873583fc))
+
+  This release contains breaking changes, please see the [release notes](https://github.com/rolldown/tsdown/releases/tag/v0.23.0) for details.
+
+  `skuba format` rewrites `attw: true` to `attw: { profile: 'node16' }` so packages keep node16-compatible attw checks instead of picking up tsdown's new `esm-only` default.
+
+- **lint:** Migrate default `createLogger` imports from `@seek/logger` to named imports ([#2585](https://github.com/seek-oss/skuba/pull/2585) [`55aa6cd`](https://github.com/seek-oss/skuba/commit/55aa6cd0317c1d59487b1eea4a0bee38c686f33c))
+
+  `skuba format` now rewrites default imports of `createLogger` from `@seek/logger` to named imports, including mixed named imports:
+
+  ```diff
+  - import createLogger from '@seek/logger';
+  + import { createLogger } from '@seek/logger';
+
+  - import createLogger, { type Logger } from '@seek/logger';
+  + import { createLogger, type Logger } from '@seek/logger';
+  ```
+
+- **lint:** Run pnpm codemod to upgrade to pnpm v11 ([#2388](https://github.com/seek-oss/skuba/pull/2388) [`acf31c2`](https://github.com/seek-oss/skuba/commit/acf31c299439dea623e7406cbbe6e4b486ba1723))
+
+  The migration is skipped in projects using `aws-cdk-lib` `NodejsFunction`. The construct writes an empty `pnpm-workspace.yaml` into its bundling output directory before running `pnpm install`, which discards the `allowBuilds` allowlist that pnpm v11 requires. Affected projects stay on pnpm v10; see the [pnpm deep dive](https://seek-oss.github.io/skuba/deep-dives/pnpm.html#lambdas-and-nodejsfunction) for the recommended alternative.
+
+  The skuba-managed settings written to `pnpm-workspace.yaml` are now chosen based on the pnpm major version a project pins via `packageManager` or `devEngines.packageManager`, so projects that stay on pnpm v10 keep their v10 settings. Projects that do not pin pnpm are left alone.
+
+- **test:** Upgrade skuba in CI before running tests ([#2598](https://github.com/seek-oss/skuba/pull/2598) [`dd5ce1d`](https://github.com/seek-oss/skuba/commit/dd5ce1dde13e90f0ab9463f8e8dc2e9d4f7e1d14))
+
+  `skuba test` applies skuba patches in CI before Vitest runs, then commits and pushes those changes when GitHub autofixes are enabled. The push still happens when the follow-up lint is clean.
+
+- **test:** Annotate individual test failures on GitHub check runs ([#2575](https://github.com/seek-oss/skuba/pull/2575) [`5bc2247`](https://github.com/seek-oss/skuba/commit/5bc22473ce166a07c62dbcb36a46d0d9f5a33d1e))
+
+  `Vitest.mergePreset` now registers a reporter that creates a `skuba/test` check run per Vitest project when running in CI with a GitHub API token. Test failures are annotated against the offending lines, so they show up in the **Checks** and **Files changed** tabs of a pull request.
+
+  This restores functionality that was previously available when Jest was used as test runner.
+
+### Patch Changes
+
+- **deps:** Drop direct dependencies on `concurrently` and `npm-run-path` ([#2602](https://github.com/seek-oss/skuba/pull/2602) [`c490d44`](https://github.com/seek-oss/skuba/commit/c490d443166a107cc80a88ae8538327add910283))
+
+- **template/\*:** Switch to repoName for custom conditions templating ([#2565](https://github.com/seek-oss/skuba/pull/2565) [`f9f0911`](https://github.com/seek-oss/skuba/commit/f9f09115aa7e5d7171a9bc826f4b1a89ad3f4781))
+
+- **deps:** Remove `npm-registry-fetch` dependency ([#2607](https://github.com/seek-oss/skuba/pull/2607) [`28a7c7e`](https://github.com/seek-oss/skuba/commit/28a7c7e187ee42475702e77e92bccccf13885c51))
+
+- **deps:** @octokit/types ^17.0.0 ([#2548](https://github.com/seek-oss/skuba/pull/2548) [`222af24`](https://github.com/seek-oss/skuba/commit/222af245efc4e843e5297c088122464bd10b4609))
+
+- **deps:** @octokit/types ^18.0.0 ([#2579](https://github.com/seek-oss/skuba/pull/2579) [`dd96c23`](https://github.com/seek-oss/skuba/commit/dd96c234af4f1da44d8c10a7a10bb94e57cb352c))
+
+- **deps:** simple-git ^4.0.0 ([#2586](https://github.com/seek-oss/skuba/pull/2586) [`93a6207`](https://github.com/seek-oss/skuba/commit/93a620721970b6ed537d5183ffc150e71b022c26))
+
+- **deps:** Replace `fast-glob` with Node.js `fs.glob` ([#2603](https://github.com/seek-oss/skuba/pull/2603) [`52acb5a`](https://github.com/seek-oss/skuba/commit/52acb5a9ac9bf045fad92f5e2b593c683e24b975))
+
+- **template/oss-npm-package:** Pin tsdown `attw` to `{ profile: 'node16' }` so new packages keep node16-compatible checks instead of tsdown's `esm-only` default. ([#2574](https://github.com/seek-oss/skuba/pull/2574) [`8d3c9a7`](https://github.com/seek-oss/skuba/commit/8d3c9a77467c8ffb5fb0c8302dc81a4f873583fc))
+
+- **deps:** vite 8 ([#2634](https://github.com/seek-oss/skuba/pull/2634) [`cbaf058`](https://github.com/seek-oss/skuba/commit/cbaf05887f2bbdbd973f8ca1507f1c5bf4850175))
+
+- **lint:** Sort skuba-managed entries in `pnpm-workspace.yaml` ([#2592](https://github.com/seek-oss/skuba/pull/2592) [`1da1387`](https://github.com/seek-oss/skuba/commit/1da13874b33ceaea33587503d0d333bae7b8335c))
+
+  Within each skuba-managed setting such as `publicHoistPattern` and `allowBuilds`, skuba-managed entries are now sorted alphabetically at the top, and any entries you've added are kept in their original order below them.
+
+  ```yaml
+  publicHoistPattern:
+    - eslint-config-skuba # Managed by skuba
+    - remark-lint-*
+    - '@vitest/*' # Managed by skuba
+    - esbuild # Managed by skuba
+    # hoisted for Storybook
+    - '*storybook*'
+    - eslint # Managed by skuba
+    - '@types*' # Managed by skuba
+  ```
+
+  is rewritten to:
+
+  ```yaml
+  publicHoistPattern:
+    - '@types*' # Managed by skuba
+    - '@vitest/*' # Managed by skuba
+    - esbuild # Managed by skuba
+    - eslint # Managed by skuba
+    - eslint-config-skuba # Managed by skuba
+    - remark-lint-*
+    # hoisted for Storybook
+    - '*storybook*'
+  ```
+
+  `pnpm-workspace.yaml` is now patched with the [`yaml`](https://github.com/eemeli/yaml) package, so user comments and quoting are preserved more reliably.
+
+  Your next `skuba lint` may report that `pnpm-workspace.yaml` is out of date. Run `skuba format` to reorder it.
+
+- **template/oss-npm-package:** Migrate to changesets/action action v2 ([#2580](https://github.com/seek-oss/skuba/pull/2580) [`f35cea0`](https://github.com/seek-oss/skuba/commit/f35cea056795337e703cf6f78317c9aa051b5888))
+- Updated dependencies:
+  - @skuba-lib/changesets-changelog@2.0.0
+  - @skuba-lib/api@3.0.0
+  - eslint-config-skuba@10.0.0
+  - pnpm-plugin-skuba@4.0.0
+
 ## 16.3.0
 
 ### Minor Changes

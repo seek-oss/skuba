@@ -63,11 +63,11 @@
   "engines": {
     "node": ">=22.14.0"
   },
-  "packageManager": "pnpm@10.34.6",
+  "packageManager": "pnpm@11.8.0",
   "skuba": {
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "16.3.0"
+    "version": "16.4.0"
   }
 }
