@@ -47,6 +47,57 @@ const findCdkNodejsFunction = async (dir: string): Promise<boolean> => {
   return matches.some(Boolean);
 };
 
+const PACKAGE_MANAGER_FIELD_REGEX =
+  /^(\s*"packageManager"\s*:\s*")(pnpm@[^"]*)(")/m;
+
+/**
+ * The codemod only updates the root `package.json`. Align the `pnpm@` pin in
+ * any nested `package.json` files with the root so out-of-date versions are
+ * not left behind.
+ */
+const syncNestedPackageManagers = async (dir: string) => {
+  let rootContents: string;
+  try {
+    rootContents = await fs.promises.readFile(
+      path.join(dir, 'package.json'),
+      'utf8',
+    );
+  } catch {
+    return;
+  }
+
+  const rootPackageManager =
+    PACKAGE_MANAGER_FIELD_REGEX.exec(rootContents)?.[2];
+
+  if (!rootPackageManager) {
+    return;
+  }
+
+  const packageJsonFiles = await globFiles(['**/package.json'], {
+    cwd: dir,
+    exclude: ['**/.git', '**/node_modules'],
+  });
+
+  await Promise.all(
+    packageJsonFiles
+      .filter((file) => path.normalize(file) !== 'package.json')
+      .map(async (file) => {
+        const filepath = path.join(dir, file);
+        const contents = await fs.promises.readFile(filepath, 'utf8');
+
+        const updated = contents.replace(
+          PACKAGE_MANAGER_FIELD_REGEX,
+          (_match, prefix: string, _current: string, suffix: string) =>
+            `${prefix}${rootPackageManager}${suffix}`,
+        );
+
+        if (updated !== contents) {
+          await fs.promises.writeFile(filepath, updated, 'utf8');
+        }
+      }),
+  );
+};
+
 export const migratePnpmV11 = async ({
   mode,
   packageManager,
@@ -85,6 +136,8 @@ export const migratePnpmV11 = async ({
     'pnpm-v10-to-v11',
     '--no-interactive',
   );
+
+  await syncNestedPackageManagers(dir);
 
   await patchPnpmWorkspace(mode);
 

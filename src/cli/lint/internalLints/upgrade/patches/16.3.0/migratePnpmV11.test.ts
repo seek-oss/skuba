@@ -154,4 +154,41 @@ const worker = new Cdk.NodejsFunction(this, 'worker', {});
     );
     expect(execMock).toHaveBeenCalledTimes(1);
   });
+
+  it('should align packageManager in nested package.json files with the root', async () => {
+    vol.fromJSON(
+      {
+        'package.json': '{\n  "packageManager": "pnpm@11.1.0+sha512-abc"\n}\n',
+        'packages/a/package.json':
+          '{\n  "name": "a",\n  "packageManager": "pnpm@10.26.1"\n}\n',
+        'packages/b/package.json': '{\n  "name": "b"\n}\n',
+        'packages/c/package.json':
+          '{\n  "name": "c",\n  "packageManager": "yarn@4.0.0"\n}\n',
+        'node_modules/dep/package.json':
+          '{\n  "packageManager": "pnpm@9.0.0"\n}\n',
+      },
+      process.cwd(),
+    );
+
+    await migratePnpmV11({
+      mode: 'format',
+      packageManager: { command: 'pnpm' },
+    });
+
+    const read = (file: string) =>
+      vol.promises.readFile(`${process.cwd()}/${file}`, 'utf8');
+
+    await expect(read('packages/a/package.json')).resolves.toBe(
+      '{\n  "name": "a",\n  "packageManager": "pnpm@11.1.0+sha512-abc"\n}\n',
+    );
+    await expect(read('packages/b/package.json')).resolves.toBe(
+      '{\n  "name": "b"\n}\n',
+    );
+    await expect(read('packages/c/package.json')).resolves.toBe(
+      '{\n  "name": "c",\n  "packageManager": "yarn@4.0.0"\n}\n',
+    );
+    await expect(read('node_modules/dep/package.json')).resolves.toBe(
+      '{\n  "packageManager": "pnpm@9.0.0"\n}\n',
+    );
+  });
 });
