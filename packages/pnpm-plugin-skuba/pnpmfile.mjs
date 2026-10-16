@@ -13,6 +13,7 @@ import { defaultConfig as pnpmV11Config } from './pnpmfile.v11.mjs';
 export const defaultConfigs = {
   10: pnpmV10Config,
   11: pnpmV11Config,
+  12: pnpmV11Config,
 };
 
 export const defaultConfig = pnpmV11Config;
