@@ -1,5 +1,11 @@
 # pnpm-plugin-skuba
 
+## 4.0.1
+
+### Patch Changes
+
+- Add support for pnpm 12 ([#2646](https://github.com/seek-oss/skuba/pull/2646) [`11061c0`](https://github.com/seek-oss/skuba/commit/11061c0054e766e38491fa76543b03f1904331d1))
+
 ## 4.0.0
 
 ### Major Changes
