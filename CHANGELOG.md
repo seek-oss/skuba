@@ -1,5 +1,15 @@
 # skuba
 
+## 16.4.2
+
+### Patch Changes
+
+- **lint:** Update `packageManager` in nested `package.json` files during the pnpm v11 migration ([#2648](https://github.com/seek-oss/skuba/pull/2648) [`3b3f110`](https://github.com/seek-oss/skuba/commit/3b3f1109b69411528efeceda2654abb2f3728c34))
+
+- **deps:** oxfmt ~0.73.0 ([#2650](https://github.com/seek-oss/skuba/pull/2650) [`40b23ce`](https://github.com/seek-oss/skuba/commit/40b23cec9db27404c585a99da6eaa2172f559766))
+- Updated dependencies:
+  - pnpm-plugin-skuba@4.0.1
+
 ## 16.4.1
 
 ### Patch Changes
