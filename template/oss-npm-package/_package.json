@@ -42,7 +42,7 @@
     "@types/node": "^24.10.2",
     "skuba": "*"
   },
-  "packageManager": "pnpm@12.11.2",
+  "packageManager": "pnpm@12.14.0",
   "engines": {
     "node": ">=22.14.0"
   },
