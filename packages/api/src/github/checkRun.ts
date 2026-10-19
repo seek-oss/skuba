@@ -63,6 +63,13 @@ interface CreateCheckRunParameters {
   conclusion: 'failure' | 'success';
 
   /**
+   * A URL that links to the full details of the check, such as a CI build.
+   *
+   * Defaults to the homepage of the GitHub App that created the check run.
+   */
+  detailsUrl?: string;
+
+  /**
    * The name of the check. For example, "code-coverage".
    */
   name: string;
@@ -94,6 +101,7 @@ interface CreateCheckRunParameters {
 export const createCheckRun = async ({
   annotations,
   conclusion,
+  detailsUrl,
   name,
   summary,
   text,
@@ -110,6 +118,7 @@ export const createCheckRun = async ({
 
   await client.checks.create({
     conclusion,
+    details_url: detailsUrl,
     head_sha: commitId,
     name,
     output: {

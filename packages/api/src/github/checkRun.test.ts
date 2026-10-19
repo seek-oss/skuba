@@ -128,7 +128,8 @@ describe('createCheckRun', () => {
     );
   });
 
-  it('should pass the conclusion, name and text directly to create check run', async () => {
+  it('should pass the conclusion, detailsUrl, name and text directly to create check run', async () => {
+    const detailsUrl = 'https://example.com/build/23';
     const text = 'Something happened.';
 
     await createCheckRun({
@@ -136,6 +137,7 @@ describe('createCheckRun', () => {
       summary,
       annotations,
       conclusion,
+      detailsUrl,
       text,
       title,
     });
@@ -143,6 +145,7 @@ describe('createCheckRun', () => {
     expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         conclusion,
+        details_url: detailsUrl,
         name,
         output: expect.objectContaining({ text }),
       }),

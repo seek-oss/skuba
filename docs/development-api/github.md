@@ -37,6 +37,7 @@ const main = async () => {
   await GitHub.createCheckRun({
     annotations,
     conclusion: 'failure',
+    detailsUrl: process.env.BUILDKITE_BUILD_URL,
     name: 'skuba/lint',
     summary: '`skuba/lint` found issues that require triage.',
     title: 'Build #123 failed',
