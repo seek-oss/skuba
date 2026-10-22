@@ -1,15 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { pathExists } from '../../../utils/fs.js';
-import { log } from '../../../utils/logging.js';
+import { pathExists } from '../../../utils/fs.ts';
+import { log } from '../../../utils/logging.ts';
 
-import { noSkubaTemplateJs } from './noSkubaTemplateJs.js';
+import { noSkubaTemplateJs } from './noSkubaTemplateJs.ts';
 
 const stdoutMock = vi.fn();
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
-vi.mock('../../../utils/fs.js', () => ({
+vi.mock('../../../utils/fs.ts', () => ({
   pathExists: vi.fn(),
 }));
 

@@ -4,15 +4,15 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { ReadResult } from '../configure/types.js';
+import type { ReadResult } from '../configure/types.ts';
 
-import { resumeTemplating } from './resumeTemplating.js';
+import { resumeTemplating } from './resumeTemplating.ts';
 
-vi.mock('./readJSONFromStdIn.js', () => ({
+vi.mock('./readJSONFromStdIn.ts', () => ({
   readJSONFromStdIn: vi.fn(),
 }));
 
-const { readJSONFromStdIn } = await import('./readJSONFromStdIn.js');
+const { readJSONFromStdIn } = await import('./readJSONFromStdIn.ts');
 
 const TEMP_ROOT = path.join(
   import.meta.dirname,

@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { exec } from '../../../../../../utils/exec.js';
-import type { PatchReturnType } from '../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.ts';
+import { exec } from '../../../../../../utils/exec.ts';
+import type { PatchReturnType } from '../../index.ts';
 
-import { migratePnpmV11 } from './migratePnpmV11.js';
+import { migratePnpmV11 } from './migratePnpmV11.ts';
 
-vi.mock('../../../../../../utils/exec.js');
+vi.mock('../../../../../../utils/exec.ts');
 vi.mock('fs-extra', () => ({
   default: memfs,
   ...memfs,
@@ -18,7 +18,7 @@ vi.mock('@skuba-lib/api/git', async () => ({
 }));
 import * as Git from '@skuba-lib/api/git';
 
-vi.mock('../../../patchPnpmWorkspace.js');
+vi.mock('../../../patchPnpmWorkspace.ts');
 
 const findRoot = vi.mocked(Git.findRoot);
 const execMock = vi.mocked(exec);

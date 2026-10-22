@@ -5,19 +5,19 @@ import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
-import { createExec, exec } from '../../../../utils/exec.js';
-import { globFiles } from '../../../../utils/glob.js';
-import { log } from '../../../../utils/logging.js';
-import { getConsumerManifest } from '../../../../utils/manifest.js';
+import { createExec, exec } from '../../../../utils/exec.ts';
+import { globFiles } from '../../../../utils/glob.ts';
+import { log } from '../../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../../utils/manifest.ts';
 import {
   type PackageManagerConfig,
   detectPackageManager,
-} from '../../../../utils/packageManager.js';
-import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
+} from '../../../../utils/packageManager.ts';
+import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.ts';
 
-import { editLifeCycleHooks } from './lifeCycleEdits.js';
-import { postFixVitestMigration } from './postFixVitestMigration.js';
-import { scaffoldVitestConfig } from './vitestConfig.js';
+import { editLifeCycleHooks } from './lifeCycleEdits.ts';
+import { postFixVitestMigration } from './postFixVitestMigration.ts';
+import { scaffoldVitestConfig } from './vitestConfig.ts';
 
 export type FileContent = {
   file: string;

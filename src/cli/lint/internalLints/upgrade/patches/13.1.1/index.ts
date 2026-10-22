@@ -1,7 +1,7 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryPatchRootTsConfig } from './patchRootTsconfig.js';
-import { tryUpgradeNode } from './upgradeNode.js';
+import { tryPatchRootTsConfig } from './patchRootTsconfig.ts';
+import { tryUpgradeNode } from './upgradeNode.ts';
 
 export const patches: Patches = [
   {

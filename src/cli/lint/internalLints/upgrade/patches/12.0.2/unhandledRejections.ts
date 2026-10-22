@@ -3,11 +3,11 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { isErrorWithCode } from '../../../../../../utils/error.js';
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import { runOxfmt } from '../../../../../adapter/oxfmt.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { isErrorWithCode } from '../../../../../../utils/error.ts';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import { runOxfmt } from '../../../../../adapter/oxfmt.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const addListener = (identifier: string) =>
   `

@@ -1,5 +1,5 @@
-import { resolveComposeAddress } from './compose.js';
-import { type SocketAddress, pollSocket } from './socket.js';
+import { resolveComposeAddress } from './compose.ts';
+import { type SocketAddress, pollSocket } from './socket.ts';
 
 /**
  * Wait for a resource to start listening on a socket address.

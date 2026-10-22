@@ -2,32 +2,32 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 const exec = vi.hoisted(() => vi.fn());
 
-vi.mock('../../utils/env.js', async () => ({
-  ...(await vi.importActual('../../utils/env.js')),
+vi.mock('../../utils/env.ts', async () => ({
+  ...(await vi.importActual('../../utils/env.ts')),
   isCiEnv: vi.fn(),
 }));
 
-vi.mock('../../utils/exec.js', () => ({
+vi.mock('../../utils/exec.ts', () => ({
   createExec: () => exec,
 }));
 
-vi.mock('../lint/index.js', () => ({
+vi.mock('../lint/index.ts', () => ({
   lint: vi.fn(),
 }));
 
-vi.mock('../lint/internalLints/upgrade/index.js', () => ({
+vi.mock('../lint/internalLints/upgrade/index.ts', () => ({
   upgradeSkuba: vi.fn(),
 }));
 
-vi.mock('./annotate.js', () => ({
+vi.mock('./annotate.ts', () => ({
   createAnnotations: vi.fn().mockResolvedValue(undefined),
 }));
 
-import { isCiEnv } from '../../utils/env.js';
-import { lint } from '../lint/index.js';
-import { upgradeSkuba } from '../lint/internalLints/upgrade/index.js';
+import { isCiEnv } from '../../utils/env.ts';
+import { lint } from '../lint/index.ts';
+import { upgradeSkuba } from '../lint/internalLints/upgrade/index.ts';
 
-import { test } from './index.js';
+import { test } from './index.ts';
 
 const originalArgv = process.argv;
 

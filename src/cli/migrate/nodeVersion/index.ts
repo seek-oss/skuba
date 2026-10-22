@@ -3,12 +3,12 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
 
-import { globFiles } from '../../../utils/glob.js';
-import { log } from '../../../utils/logging.js';
-import { createDestinationFileReader } from '../../configure/analysis/project.js';
+import { globFiles } from '../../../utils/glob.ts';
+import { log } from '../../../utils/logging.ts';
+import { createDestinationFileReader } from '../../configure/analysis/project.ts';
 
-import { isLikelyPackage } from './checks.js';
-import { tryUpgradeInfraPackages } from './upgrade.js';
+import { isLikelyPackage } from './checks.ts';
+import { tryUpgradeInfraPackages } from './upgrade.ts';
 
 type FileSelector =
   | { files: string; file?: never }

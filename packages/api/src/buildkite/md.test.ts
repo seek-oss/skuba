@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { md } from './md.js';
+import { md } from './md.ts';
 
 describe('terminal', () => {
   it.each`

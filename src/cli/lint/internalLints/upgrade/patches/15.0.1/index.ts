@@ -1,6 +1,6 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryRemovePnpmPlugin } from './removePnpmPlugin.js';
+import { tryRemovePnpmPlugin } from './removePnpmPlugin.ts';
 
 export const patches: Patches = [
   {

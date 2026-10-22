@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.ts';
+import { configForPackageManager } from '../../../../../../utils/packageManager.ts';
+import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.ts';
+import type { PatchConfig, PatchReturnType } from '../../index.ts';
 
-import { removePnpmPlugin } from './removePnpmPlugin.js';
+import { removePnpmPlugin } from './removePnpmPlugin.ts';
 
-vi.mock('../../../../../../utils/exec.js', () => ({
+vi.mock('../../../../../../utils/exec.ts', () => ({
   exec: vi.fn(),
   createExec: vi.fn().mockImplementation(() => vi.fn()),
 }));

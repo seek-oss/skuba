@@ -1,7 +1,7 @@
 import latestVersion from 'latest-version';
 
-import { getSkubaManifest } from './manifest.js';
-import { withTimeout } from './wait.js';
+import { getSkubaManifest } from './manifest.ts';
+import { withTimeout } from './wait.ts';
 
 const latestSkubaVersion = async (): Promise<string | null> => {
   try {

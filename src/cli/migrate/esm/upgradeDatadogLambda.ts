@@ -1,9 +1,9 @@
 import { inspect } from 'util';
 
-import { findLatestAllowedVersion } from '../../../utils/findLatestAllowedVersion.js';
-import { log } from '../../../utils/logging.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
-import { upgradeInfraPackages } from '../nodeVersion/upgrade.js';
+import { findLatestAllowedVersion } from '../../../utils/findLatestAllowedVersion.ts';
+import { log } from '../../../utils/logging.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
+import { upgradeInfraPackages } from '../nodeVersion/upgrade.ts';
 
 const upgradeDatadogLambda: PatchFunction = async (opts) => {
   const version = await findLatestAllowedVersion(

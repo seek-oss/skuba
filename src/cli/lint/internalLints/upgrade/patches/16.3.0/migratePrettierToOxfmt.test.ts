@@ -5,20 +5,20 @@ import { mkdtemp, outputFile, pathExists, readFile, rm } from 'fs-extra';
 import { defaults as seekOxfmtConfig } from 'oxc-config-seek/oxfmt';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import * as execModule from '../../../../../../utils/exec.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import * as execModule from '../../../../../../utils/exec.ts';
+import { configForPackageManager } from '../../../../../../utils/packageManager.ts';
+import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.ts';
+import type { PatchConfig, PatchReturnType } from '../../index.ts';
 
 import {
   buildOxfmtConfigTs,
   migratePrettierToOxfmt,
-} from './migratePrettierToOxfmt.js';
+} from './migratePrettierToOxfmt.ts';
 
-vi.mock('../../../../../../utils/exec.js', async () => {
+vi.mock('../../../../../../utils/exec.ts', async () => {
   const actual = await vi.importActual<
-    typeof import('../../../../../../utils/exec.js')
-  >('../../../../../../utils/exec.js');
+    typeof import('../../../../../../utils/exec.ts')
+  >('../../../../../../utils/exec.ts');
 
   return {
     ...actual,
@@ -26,7 +26,7 @@ vi.mock('../../../../../../utils/exec.js', async () => {
   };
 });
 
-vi.mock('../../../patchPnpmWorkspace.js', () => ({
+vi.mock('../../../patchPnpmWorkspace.ts', () => ({
   patchPnpmWorkspace: vi.fn(),
 }));
 

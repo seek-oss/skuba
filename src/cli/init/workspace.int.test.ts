@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { readWorkspaceGlobs, registerWorkspaceProject } from './workspace.js';
+import { readWorkspaceGlobs, registerWorkspaceProject } from './workspace.ts';
 
 const TEMP_ROOT = path.join(
   import.meta.dirname,

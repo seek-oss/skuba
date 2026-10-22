@@ -1,4 +1,4 @@
-import { isObject } from '../../../utils/validation.js';
+import { isObject } from '../../../utils/validation.ts';
 
 export const parseObject = (
   input: string | undefined,

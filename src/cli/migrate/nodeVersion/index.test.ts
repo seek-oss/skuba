@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../testing/memfs.js';
+import memfs, { vol } from '../../../testing/memfs.ts';
 
-import { nodeVersionMigration } from './index.js';
+import { nodeVersionMigration } from './index.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs,

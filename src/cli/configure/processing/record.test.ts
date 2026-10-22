@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getFirstDefined, merge, mergeRaw } from './record.js';
+import { getFirstDefined, merge, mergeRaw } from './record.ts';
 
 describe('getFirstDefined', () => {
   it('handles no input', () => expect(getFirstDefined({}, [])).toBeUndefined());

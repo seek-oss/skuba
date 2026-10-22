@@ -3,8 +3,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import * as z from 'zod/v4';
 
-import { projectTypeSchema } from './manifest.js';
-import { packageManagerSchema } from './packageManager.js';
+import { projectTypeSchema } from './manifest.ts';
+import { packageManagerSchema } from './packageManager.ts';
 
 export const TEMPLATE_NAMES = ['greeter', 'oss-npm-package'] as const;
 

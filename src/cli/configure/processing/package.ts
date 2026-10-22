@@ -1,9 +1,9 @@
 import normalizeData from 'normalize-package-data';
 import { format } from 'oxfmt';
 
-import type { PackageJson } from '../types.js';
+import type { PackageJson } from '../types.ts';
 
-import { parseObject } from './json.js';
+import { parseObject } from './json.ts';
 
 const normalizeDataWithoutThrowing = (rawData: PackageJson) => {
   try {

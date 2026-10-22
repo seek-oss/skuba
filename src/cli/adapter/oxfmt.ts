@@ -2,9 +2,9 @@ import { stripVTControlCharacters } from 'node:util';
 
 import { ExecaError } from 'execa';
 
-import { isCiEnv } from '../../utils/env.js';
-import { createExec } from '../../utils/exec.js';
-import type { Logger } from '../../utils/logging.js';
+import { isCiEnv } from '../../utils/env.ts';
+import { createExec } from '../../utils/exec.ts';
+import type { Logger } from '../../utils/logging.ts';
 
 export type OxfmtError = {
   path: string;

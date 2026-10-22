@@ -1,7 +1,7 @@
 import type { Edit, SgNode } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../utils/glob.js';
+import { globFiles } from '../../../utils/glob.ts';
 
 const DD_TRACE_INITIALIZE = '--import dd-trace/initialize.mjs';
 

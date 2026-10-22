@@ -2,10 +2,10 @@ import type { Endpoints } from '@octokit/types';
 import git, { type ReadCommitResult } from 'isomorphic-git';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createCheckRun } from './checkRun.js';
-import { createRestClient } from './octokit.js';
+import { createCheckRun } from './checkRun.ts';
+import { createRestClient } from './octokit.ts';
 
-import type * as GitHub from './index.js';
+import type * as GitHub from './index.ts';
 
 type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];

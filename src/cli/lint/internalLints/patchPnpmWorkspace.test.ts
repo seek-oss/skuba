@@ -1,23 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../testing/memfs.js';
-import { createExec } from '../../../utils/exec.js';
-import { detectPnpmMajorVersion } from '../../../utils/pnpmVersion.js';
+import memfs, { vol } from '../../../testing/memfs.ts';
+import { createExec } from '../../../utils/exec.ts';
+import { detectPnpmMajorVersion } from '../../../utils/pnpmVersion.ts';
 
 import {
   patchPnpmWorkspace,
   tryPatchPnpmWorkspace,
-} from './patchPnpmWorkspace.js';
+} from './patchPnpmWorkspace.ts';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-vi.mock('../../../utils/exec.js', () => ({
+vi.mock('../../../utils/exec.ts', () => ({
   createExec: vi.fn().mockImplementation(() => vi.fn()),
 }));
 
-vi.mock('../../../utils/logging.js');
+vi.mock('../../../utils/logging.ts');
 
-vi.mock('../../../utils/pnpmVersion.js');
+vi.mock('../../../utils/pnpmVersion.ts');
 
 vi.mock('fs-extra', () => ({
   ...memfs,

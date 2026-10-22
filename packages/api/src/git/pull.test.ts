@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fastForwardBranch } from './pull.js';
+import { fastForwardBranch } from './pull.ts';
 
 vi.mock('isomorphic-git');
 

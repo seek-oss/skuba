@@ -8,7 +8,7 @@ RuleTester.describe = test.describe;
 RuleTester.it = test.it;
 RuleTester.itOnly = test.it.only;
 
-import rule from './no-sync-in-promise-iterable.js';
+import rule from './no-sync-in-promise-iterable.ts';
 
 const ruleTester = new RuleTester({
   languageOptions: {

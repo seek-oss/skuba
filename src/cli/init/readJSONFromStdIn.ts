@@ -1,6 +1,6 @@
 import type * as z from 'zod/v4';
 
-import { log } from '../../utils/logging.js';
+import { log } from '../../utils/logging.ts';
 
 /** Prints a JSON Schema of our expected input format to stdout. */
 const printInputSchemaHint = (schema: z.ZodType, detail: string) => {

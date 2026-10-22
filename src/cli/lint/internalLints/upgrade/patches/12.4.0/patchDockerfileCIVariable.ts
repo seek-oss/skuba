@@ -2,9 +2,9 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const pnpmInstallTestRegex = /^RUN pnpm install.*--prod/m;
 const pnpmInstallReplaceRegex = /^RUN pnpm install.*--prod/gm;

@@ -1,9 +1,9 @@
 import http from 'http';
 
-import { isFunction, isIpPort, isObject } from '../utils/validation.js';
+import { isFunction, isIpPort, isObject } from '../utils/validation.ts';
 
-import { serveRequestListener } from './http.js';
-import { startServer } from './server.js';
+import { serveRequestListener } from './http.ts';
+import { startServer } from './server.ts';
 
 // Express compatibility
 interface FunctionConfig extends http.RequestListener {

@@ -4,15 +4,15 @@ import { inspect } from 'util';
 import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
-import { exec } from '../../../../../../utils/exec.js';
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
+import { exec } from '../../../../../../utils/exec.ts';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.ts';
 import type {
   PatchConfig,
   PatchFunction,
   PatchReturnType,
-} from '../../index.js';
+} from '../../index.ts';
 
 /**
  * `aws-cdk-lib`'s `NodejsFunction` writes an empty `pnpm-workspace.yaml` into

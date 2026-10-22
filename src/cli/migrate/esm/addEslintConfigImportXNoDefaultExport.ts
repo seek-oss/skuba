@@ -4,13 +4,13 @@ import { inspect } from 'util';
 import { type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../utils/glob.js';
-import { log } from '../../../utils/logging.js';
+import { globFiles } from '../../../utils/glob.ts';
+import { log } from '../../../utils/logging.ts';
 import type {
   PatchFunction,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
-import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
+} from '../../lint/internalLints/upgrade/index.ts';
+import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.ts';
 
 const ESLINT_CONFIG_GLOB = ['**/eslint.config.js'];
 

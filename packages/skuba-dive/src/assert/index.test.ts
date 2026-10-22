@@ -6,7 +6,7 @@ import {
   numberProp,
   object,
   stringProp,
-} from './index.js';
+} from './index.ts';
 
 describe('nullish', () => {
   it.each([

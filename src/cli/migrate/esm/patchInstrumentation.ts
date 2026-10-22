@@ -5,11 +5,11 @@ import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
-import { createExec } from '../../../utils/exec.js';
-import { globFiles } from '../../../utils/glob.js';
-import { log } from '../../../utils/logging.js';
-import { getConsumerManifest } from '../../../utils/manifest.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+import { createExec } from '../../../utils/exec.ts';
+import { globFiles } from '../../../utils/glob.ts';
+import { log } from '../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../utils/manifest.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
 
 export const patchInstrumentation: PatchFunction = async ({
   mode,

@@ -4,11 +4,11 @@ import { inspect } from 'util';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { createExec } from '../../../../../../utils/exec.js';
-import { globFiles } from '../../../../../../utils/glob.js';
-import { log } from '../../../../../../utils/logging.js';
-import { detectPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { createExec } from '../../../../../../utils/exec.ts';
+import { globFiles } from '../../../../../../utils/glob.ts';
+import { log } from '../../../../../../utils/logging.ts';
+import { detectPackageManager } from '../../../../../../utils/packageManager.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 const FIELD_REMAPPING = {
   external: 'neverBundle',

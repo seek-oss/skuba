@@ -1,7 +1,7 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryMigrateToESM } from './migrateToESM.js';
-import { tryRemovePnpmConfigPackageJson } from './removePnpmConfigPackageJson.js';
+import { tryMigrateToESM } from './migrateToESM.ts';
+import { tryRemovePnpmConfigPackageJson } from './removePnpmConfigPackageJson.ts';
 
 export const patches: Patches = [
   {

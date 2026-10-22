@@ -1,7 +1,7 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryMigrateToPnpmConfig } from './migrateToPnpmConfig.js';
-import { tryPatchPackageBuilds } from './patchPackageBuilds.js';
+import { tryMigrateToPnpmConfig } from './migrateToPnpmConfig.ts';
+import { tryPatchPackageBuilds } from './patchPackageBuilds.ts';
 
 export const patches: Patches = [
   {

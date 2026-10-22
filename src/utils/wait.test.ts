@@ -2,7 +2,7 @@ import { setTimeout as sleep } from 'timers/promises';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import * as wait from './wait.js';
+import * as wait from './wait.ts';
 
 vi.mock('timers/promises');
 

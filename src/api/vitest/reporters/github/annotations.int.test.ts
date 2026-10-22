@@ -12,7 +12,7 @@ import {
 import {
   type AnnotationEntry,
   generateAnnotationEntries,
-} from './annotations.js';
+} from './annotations.ts';
 
 const fixturesDir = path.join(import.meta.dirname, 'fixtures');
 

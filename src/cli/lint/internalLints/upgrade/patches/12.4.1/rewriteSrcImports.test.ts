@@ -1,9 +1,9 @@
 import { dedent } from 'ts-dedent';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig } from '../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.ts';
+import { configForPackageManager } from '../../../../../../utils/packageManager.ts';
+import type { PatchConfig } from '../../index.ts';
 
 import {
   hasImportRegex,
@@ -15,7 +15,7 @@ import {
   isFileEmpty,
   replaceSrcImport,
   tryRewriteSrcImports,
-} from './rewriteSrcImports.js';
+} from './rewriteSrcImports.ts';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

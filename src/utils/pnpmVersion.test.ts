@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { ReadResult } from '../cli/configure/types.js';
+import type { ReadResult } from '../cli/configure/types.ts';
 
-import { getConsumerManifest } from './manifest.js';
-import { detectPnpmMajorVersion } from './pnpmVersion.js';
+import { getConsumerManifest } from './manifest.ts';
+import { detectPnpmMajorVersion } from './pnpmVersion.ts';
 
-vi.mock('./manifest.js');
+vi.mock('./manifest.ts');
 
 const getConsumerManifestMock = vi.mocked(getConsumerManifest);
 

@@ -7,8 +7,8 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
-import { copyFiles } from '../../utils/copy.js';
-import { isCiEnv } from '../../utils/env.js';
+import { copyFiles } from '../../utils/copy.ts';
+import { isCiEnv } from '../../utils/env.ts';
 
 /**
  * simple-git v4 strips `GIT_*` environment variables from the child process

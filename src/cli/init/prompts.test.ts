@@ -4,8 +4,8 @@ import {
   BASE_PROMPT_DEFAULTS,
   type Choice,
   templateFieldError,
-} from './prompts.js';
-import { DEFAULT_RENOVATE_PRESET } from './types.js';
+} from './prompts.ts';
+import { DEFAULT_RENOVATE_PRESET } from './types.ts';
 
 describe('templateFieldError', () => {
   const queue: Choice = {

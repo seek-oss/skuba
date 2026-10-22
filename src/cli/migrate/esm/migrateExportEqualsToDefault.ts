@@ -4,10 +4,10 @@ import { inspect } from 'util';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../utils/glob.js';
-import { log } from '../../../utils/logging.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
-import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
+import { globFiles } from '../../../utils/glob.ts';
+import { log } from '../../../utils/logging.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
+import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.ts';
 
 const transformExportEqualsToDefault = (ast: SgNode): Edit[] => {
   const match = ast.find({

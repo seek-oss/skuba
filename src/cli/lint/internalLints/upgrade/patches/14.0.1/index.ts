@@ -1,6 +1,6 @@
-import type { Patches } from '../../index.js';
+import type { Patches } from '../../index.ts';
 
-import { tryPatchBuildTsConfig } from './patchBuildTsconfig.js';
+import { tryPatchBuildTsConfig } from './patchBuildTsconfig.ts';
 
 export const patches: Patches = [
   {

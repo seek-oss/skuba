@@ -2,19 +2,19 @@ import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { log } from '../../../../utils/logging.js';
-import { getConsumerManifest } from '../../../../utils/manifest.js';
-import { getSkubaVersion } from '../../../../utils/version.js';
-import { runOxfmt } from '../../../adapter/oxfmt.js';
+import { log } from '../../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../../utils/manifest.ts';
+import { getSkubaVersion } from '../../../../utils/version.ts';
+import { runOxfmt } from '../../../adapter/oxfmt.ts';
 
-import { type Patches, upgradeSkuba } from './index.js';
+import { type Patches, upgradeSkuba } from './index.ts';
 
 vi.mock('@skuba-lib/api/git', () => ({
   findRoot: vi.fn(),
   getChangedFiles: vi.fn(),
 }));
 
-vi.mock('../../../adapter/oxfmt.js', () => ({
+vi.mock('../../../adapter/oxfmt.ts', () => ({
   runOxfmt: vi.fn().mockResolvedValue({ ok: true }),
 }));
 
@@ -32,22 +32,22 @@ const { patchesByVersion } = vi.hoisted(() => ({
 // which Vitest runs our tests and test files. The getters let each test set its
 // own patches, as a mocked module is only instantiated once.
 /* eslint-disable no-restricted-syntax */
-vi.mock('./patches/12.0.2/index.js', () => ({
+vi.mock('./patches/12.0.2/index.ts', () => ({
   get patches() {
     return patchesByVersion.get('12.0.2') ?? [];
   },
 }));
-vi.mock('./patches/12.1.1/index.js', () => ({
+vi.mock('./patches/12.1.1/index.ts', () => ({
   get patches() {
     return patchesByVersion.get('12.1.1') ?? [];
   },
 }));
-vi.mock('./patches/13.1.1/index.js', () => ({
+vi.mock('./patches/13.1.1/index.ts', () => ({
   get patches() {
     return patchesByVersion.get('13.1.1') ?? [];
   },
 }));
-vi.mock('./patches/14.0.1/index.js', () => ({
+vi.mock('./patches/14.0.1/index.ts', () => ({
   get patches() {
     return patchesByVersion.get('14.0.1') ?? [];
   },

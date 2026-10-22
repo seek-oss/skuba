@@ -4,9 +4,9 @@ import { findUp } from 'find-up';
 import fs from 'fs-extra';
 import type { EmittedAsset, NormalizedOutputOptions, Plugin } from 'rolldown';
 
-import { createExec } from '../../../../src/utils/exec.js';
-import { pathExists } from '../../../../src/utils/fs.js';
-import { log } from '../../../../src/utils/logging.js';
+import { createExec } from '../../../../src/utils/exec.ts';
+import { pathExists } from '../../../../src/utils/fs.ts';
+import { log } from '../../../../src/utils/logging.ts';
 
 import {
   PNPM_INSTALL_COMMAND,
@@ -16,7 +16,7 @@ import {
   extractDependencies,
   readPackageManagerFields,
   stageWorkspaceFiles,
-} from './pnpm.js';
+} from './pnpm.ts';
 
 const PLUGIN_NAME = 'skuba:lambda-asset';
 

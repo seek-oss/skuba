@@ -3,10 +3,10 @@ import path from 'path';
 import { execa } from 'execa';
 import getPort from 'get-port';
 
-import { parseRunArgs } from '../../utils/args.js';
-import { createExec } from '../../utils/exec.js';
-import { isIpPort } from '../../utils/validation.js';
-import { getCustomConditions } from '../build/tsc.js';
+import { parseRunArgs } from '../../utils/args.ts';
+import { createExec } from '../../utils/exec.ts';
+import { isIpPort } from '../../utils/validation.ts';
+import { getCustomConditions } from '../build/tsc.ts';
 
 export const longRunning = true;
 

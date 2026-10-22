@@ -2,9 +2,9 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { globFiles } from '../../../utils/glob.js';
-import { log } from '../../../utils/logging.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+import { globFiles } from '../../../utils/glob.ts';
+import { log } from '../../../utils/logging.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
 
 export const migrateVocab: PatchFunction = async ({ mode }) => {
   const vocabFilePaths = await globFiles(['**/vocab.config.js'], {

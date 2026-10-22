@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { getOwnerAndRepo } from './remote.js';
+import { getOwnerAndRepo } from './remote.ts';
 
 vi.mock('isomorphic-git');
 

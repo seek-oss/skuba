@@ -3,9 +3,9 @@ import { inspect } from 'util';
 import { parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { log } from '../../../../../../utils/logging.js';
-import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { log } from '../../../../../../utils/logging.ts';
+import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.ts';
+import type { PatchFunction, PatchReturnType } from '../../index.ts';
 
 export const patchRootConfig: PatchFunction = async ({
   mode,

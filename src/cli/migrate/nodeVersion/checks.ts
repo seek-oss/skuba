@@ -1,6 +1,6 @@
-import { log } from '../../../utils/logging.js';
-import { getConsumerManifest } from '../../../utils/manifest.js';
-import type { SkubaPackageJson } from '../../init/writePackageJson.js';
+import { log } from '../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../utils/manifest.ts';
+import type { SkubaPackageJson } from '../../init/writePackageJson.ts';
 
 export const isLikelyPackage = async (
   currentPath: string,

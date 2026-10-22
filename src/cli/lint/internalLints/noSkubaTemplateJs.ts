@@ -1,9 +1,9 @@
 import path from 'path';
 
-import { pathExists } from '../../../utils/fs.js';
-import type { Logger } from '../../../utils/logging.js';
-import { getConsumerManifest } from '../../../utils/manifest.js';
-import type { InternalLintResult } from '../internal.js';
+import { pathExists } from '../../../utils/fs.ts';
+import type { Logger } from '../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../utils/manifest.ts';
+import type { InternalLintResult } from '../internal.ts';
 
 export const noSkubaTemplateJs = async (
   _mode: 'format' | 'lint',

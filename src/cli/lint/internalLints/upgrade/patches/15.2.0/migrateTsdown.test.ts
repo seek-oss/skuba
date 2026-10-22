@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import memfs, { vol } from '../../../../../../testing/memfs.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.ts';
+import { configForPackageManager } from '../../../../../../utils/packageManager.ts';
+import type { PatchConfig, PatchReturnType } from '../../index.ts';
 
-import { migrateTsdown } from './migrateTsdown.js';
+import { migrateTsdown } from './migrateTsdown.ts';
 
-vi.mock('../../../../../../utils/exec.js', () => ({
+vi.mock('../../../../../../utils/exec.ts', () => ({
   createExec: () => vi.fn(),
 }));
 

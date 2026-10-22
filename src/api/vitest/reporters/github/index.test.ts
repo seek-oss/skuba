@@ -9,9 +9,9 @@ import type {
   Vitest,
 } from 'vitest/node';
 
-import { log } from '../../../../utils/logging.js';
+import { log } from '../../../../utils/logging.ts';
 
-import { GitHubReporter } from './index.js';
+import { GitHubReporter } from './index.ts';
 
 vi.mock('@skuba-lib/api/git');
 vi.mock('../../../../utils/logging');

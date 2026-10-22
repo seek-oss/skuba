@@ -1,4 +1,4 @@
-import type { Choice } from './prompts.js';
+import type { Choice } from './prompts.ts';
 
 /**
  * Template fields that name the project itself rather than its repository.
