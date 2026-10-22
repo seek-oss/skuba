@@ -29,13 +29,20 @@ const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
 const isStaleAutofixPush = (error: unknown): boolean => {
   // simple-git includes Git's porcelain push output in its error message.
-  if (
-    error instanceof Error &&
-    /^\s*![^\n]*\[rejected\][^\n]*\((?:non-fast-forward|fetch first)\)\s*$/m.test(
-      error.message,
-    )
-  ) {
-    return true;
+  if (error instanceof Error) {
+    const failures = error.message
+      .split(/\r?\n/)
+      .filter((line) => /^\s*!/.test(line));
+    if (
+      failures.length > 0 &&
+      failures.every((line) =>
+        /^\s*![^\n]*\[rejected\][^\n]*\((?:non-fast-forward|fetch first)\)\s*$/.test(
+          line,
+        ),
+      )
+    ) {
+      return true;
+    }
   }
 
   // GitHub's expectedHeadOid guard rejects an outdated build atomically.

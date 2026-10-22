@@ -448,6 +448,21 @@ describe('autofix', () => {
       expect(stdout()).not.toContain('The remote branch has newer commits.');
     });
 
+    it('keeps diagnostics when a native push also contains an unrelated ref failure', async () => {
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      push.mockRejectedValue(
+        new Error(
+          'To example.git\n!\trefs/heads/dev:refs/heads/dev\t[rejected] (non-fast-forward)\n!\trefs/tags/v1:refs/tags/v1\t[remote rejected] (hook declined)',
+        ),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expect(stdout()).toContain('Failed to push fix commit.');
+      expect(stdout()).toContain('hook declined');
+      expect(stdout()).not.toContain('The remote branch has newer commits.');
+    });
+
     it('will ignore .npmrc if it has auth secrets', async () => {
       vi.mocked(Git.getChangedFiles).mockResolvedValue([
         {
