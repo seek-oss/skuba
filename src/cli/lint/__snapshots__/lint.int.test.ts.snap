@@ -153,6 +153,7 @@ ESLint │
 Oxfmt  │ Checking formatting...
 Oxfmt  │ 
 Oxfmt  │ a/a/a.ts (<ms>ms)
+Oxfmt  │ 
 Oxfmt  │   x Unexpected token
 Oxfmt  │    ,-[d.js:1:1]
 Oxfmt  │  1 | }
