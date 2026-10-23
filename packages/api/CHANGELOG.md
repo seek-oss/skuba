@@ -1,5 +1,11 @@
 # @skuba-lib/api
 
+## 3.1.0
+
+### Minor Changes
+
+- **GitHub.createCheckRun:** Support `detailsUrl` parameter ([#2655](https://github.com/seek-oss/skuba/pull/2655) [`5428f79`](https://github.com/seek-oss/skuba/commit/5428f797079c0eb10dbd85634a968362494cc050))
+
 ## 3.0.1
 
 ### Patch Changes
