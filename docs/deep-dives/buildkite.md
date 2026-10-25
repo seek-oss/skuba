@@ -56,7 +56,7 @@ steps:
   - command: pnpm lint
     plugins:
       - ...
-      - docker-compose#v5.15.0:
+      - docker-compose#v5.16.0:
           mount-buildkite-agent: true
           propagate-environment: true
           run: app
