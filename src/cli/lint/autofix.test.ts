@@ -413,6 +413,56 @@ describe('autofix', () => {
       `);
     });
 
+    it.each(['non-fast-forward', 'fetch first'])(
+      'explains a stale native Git push (%s) without a stack trace',
+      async (reason) => {
+        vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+        push.mockRejectedValue(
+          new Error(
+            `To example.git\n!\trefs/heads/dev:refs/heads/dev\t[rejected] (${reason})\nDone\nerror: failed to push some refs`,
+          ),
+        );
+
+        await expect(autofix(params)).resolves.toBeUndefined();
+
+        expect(push).toHaveBeenCalledTimes(1);
+        expect(stdout()).toContain('The remote branch has newer commits.');
+        expect(stdout()).toContain(
+          'Run lint on the latest commit to generate a new autofix.',
+        );
+        expect(stdout()).not.toContain('write access');
+        expect(stdout()).not.toContain('Error:');
+      },
+    );
+
+    it('keeps diagnostics for a remote rejection unrelated to stale commits', async () => {
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      push.mockRejectedValue(
+        new Error('! [remote rejected] dev -> dev (Internal Server Error)'),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expect(stdout()).toContain('Failed to push fix commit.');
+      expect(stdout()).toContain('Internal Server Error');
+      expect(stdout()).not.toContain('The remote branch has newer commits.');
+    });
+
+    it('keeps diagnostics when a native push also contains an unrelated ref failure', async () => {
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      push.mockRejectedValue(
+        new Error(
+          'To example.git\n!\trefs/heads/dev:refs/heads/dev\t[rejected] (non-fast-forward)\n!\trefs/tags/v1:refs/tags/v1\t[remote rejected] (hook declined)',
+        ),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expect(stdout()).toContain('Failed to push fix commit.');
+      expect(stdout()).toContain('hook declined');
+      expect(stdout()).not.toContain('The remote branch has newer commits.');
+    });
+
     it('will ignore .npmrc if it has auth secrets', async () => {
       vi.mocked(Git.getChangedFiles).mockResolvedValue([
         {
@@ -784,6 +834,43 @@ describe('autofix', () => {
         Error: Badness!
         ..."
       `);
+    });
+
+    it('explains a stale GitHub API commit without a stack trace', async () => {
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
+      vi.mocked(GitHub.uploadAllFileChanges).mockRejectedValue(
+        Object.assign(
+          new Error(
+            'Expected branch to point to old-sha but it did not. Pull and try again.',
+          ),
+          { errors: [{ type: 'STALE_DATA', path: ['createCommitOnBranch'] }] },
+        ),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expect(GitHub.uploadAllFileChanges).toHaveBeenCalledTimes(1);
+      expect(stdout()).toContain('The remote branch has newer commits.');
+      expect(stdout()).not.toContain('write access');
+      expect(stdout()).not.toContain('Error:');
+    });
+
+    it('keeps diagnostics when a stale response also contains an unrelated API error', async () => {
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
+      vi.mocked(GitHub.uploadAllFileChanges).mockRejectedValue(
+        Object.assign(new Error('Additional permission failure'), {
+          errors: [
+            { type: 'STALE_DATA', path: ['createCommitOnBranch'] },
+            { type: 'FORBIDDEN', path: ['createCommitOnBranch'] },
+          ],
+        }),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expect(stdout()).toContain('Failed to push fix commit.');
+      expect(stdout()).toContain('Additional permission failure');
+      expect(stdout()).not.toContain('The remote branch has newer commits.');
     });
 
     it('will ignore .npmrc if it has auth secrets', async () => {
