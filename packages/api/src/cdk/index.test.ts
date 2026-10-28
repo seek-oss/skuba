@@ -1,6 +1,16 @@
-import { describe, expect, it } from 'vitest';
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
-import { normaliseTemplate } from './index.js';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
+import { ensureAssetPlaceholders, normaliseTemplate } from './index.js';
 
 describe('normaliseTemplate', () => {
   it('replaces S3 key hashes with x characters of equal length', () => {
@@ -71,6 +81,50 @@ describe('normaliseTemplate', () => {
   it('returns a parsed object not a string', () => {
     expect(typeof normaliseTemplate({ Key: 'some-stable-value' })).toBe(
       'object',
+    );
+  });
+});
+
+describe('ensureAssetPlaceholders', () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = mkdtempSync(path.join(os.tmpdir(), 'skuba-cdk-'));
+  });
+
+  afterEach(() => {
+    rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it('creates placeholder handlers for missing directories', () => {
+    ensureAssetPlaceholders(['dist/worker', 'dist/other'], { cwd: tmpDir });
+
+    for (const dir of ['dist/worker', 'dist/other']) {
+      expect(
+        readFileSync(path.join(tmpDir, dir, 'index.js'), 'utf8'),
+      ).toContain('export const handler');
+    }
+  });
+
+  it('leaves existing directories untouched', () => {
+    const assetDir = path.join(tmpDir, 'dist/worker');
+    mkdirSync(assetDir, { recursive: true });
+    writeFileSync(path.join(assetDir, 'index.js'), 'real bundle');
+
+    ensureAssetPlaceholders(['dist/worker'], { cwd: tmpDir });
+
+    expect(readFileSync(path.join(assetDir, 'index.js'), 'utf8')).toBe(
+      'real bundle',
+    );
+  });
+
+  it('supports absolute paths', () => {
+    const assetDir = path.join(tmpDir, 'abs');
+
+    ensureAssetPlaceholders([assetDir]);
+
+    expect(readFileSync(path.join(assetDir, 'index.js'), 'utf8')).toContain(
+      'export const handler',
     );
   });
 });

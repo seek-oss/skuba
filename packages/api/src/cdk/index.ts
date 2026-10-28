@@ -1,3 +1,6 @@
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+
 const normaliseTemplateJsonString = (json: string): string =>
   json
     .replace(
@@ -25,3 +28,21 @@ const normaliseTemplateJsonString = (json: string): string =>
 
 export const normaliseTemplate = (template: object): unknown =>
   JSON.parse(normaliseTemplateJsonString(JSON.stringify(template)));
+
+const PLACEHOLDER_HANDLER = 'export const handler = () => {};\n';
+
+export const ensureAssetPlaceholders = (
+  dirs: readonly string[],
+  { cwd = process.cwd() }: { cwd?: string } = {},
+): void => {
+  for (const dir of dirs) {
+    const assetDir = path.resolve(cwd, dir);
+
+    if (existsSync(assetDir)) {
+      continue;
+    }
+
+    mkdirSync(assetDir, { recursive: true });
+    writeFileSync(path.join(assetDir, 'index.js'), PLACEHOLDER_HANDLER);
+  }
+};
