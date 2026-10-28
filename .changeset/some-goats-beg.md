@@ -25,5 +25,5 @@ import { build } from 'rolldown';
 
 import config from '../rolldown.config.js';
 
-beforeAll(() => build(config));
+beforeAll(() => build(config as BuildOptions));
 ```
