@@ -81,6 +81,22 @@ export interface LambdaAssetOptions {
   depsLockFilePath?: string;
 }
 
+/**
+ * Whether to emit a stub Lambda asset for tests, such as CDK snapshot tests.
+ *
+ * Set `ENVIRONMENT=test` in your test config (e.g. Vitest's `test.env`) so CDK
+ * stack tests can build the real rolldown config and get a directory for
+ * `Code.fromAsset` without bundling, installing `nodeModules` or copying
+ * `assets`.
+ */
+const isTestMode = (): boolean => process.env.ENVIRONMENT === 'test';
+
+const TEST_MODE_STUB = [
+  `// Placeholder emitted by ${PLUGIN_NAME} when ENVIRONMENT=test.`,
+  'export const handler = () => {};',
+  '',
+].join('\n');
+
 const resolveOutputDir = (
   { dir, file }: NormalizedOutputOptions,
   cwd: string,
@@ -233,6 +249,11 @@ const stripInstallFiles = async (
  *
  * The result can be handed to CDK as `aws_lambda.Code.fromAsset(outputDir)`.
  *
+ * When `ENVIRONMENT=test`, the plugin emits a
+ * stub asset instead: each entry module is replaced with a placeholder handler,
+ * and `nodeModules` and `assets` are skipped. This lets CDK stack tests build
+ * the rolldown config cheaply and deterministically before synthesising.
+ *
  * @example
  * ```js
  * // rolldown.config.mjs
@@ -261,7 +282,11 @@ export const lambdaAsset = ({
   // that outputs sharing a directory do not install twice.
   const prepared = new Set<string>();
 
+  // Resolved ids of entry modules to stub out in `testMode`.
+  const stubbedEntries = new Set<string>();
+
   let cwd = process.cwd();
+  let testMode = false;
 
   return {
     name: PLUGIN_NAME,
@@ -269,11 +294,50 @@ export const lambdaAsset = ({
     async buildStart(options) {
       cwd = options.cwd;
       prepared.clear();
+      stubbedEntries.clear();
+      testMode = isTestMode();
 
-      if (assets.length) {
+      if (assets.length && !testMode) {
         const projectRoot = path.resolve(cwd, projectRootOption ?? '.');
         await emitAssets((file) => this.emitFile(file), projectRoot, assets);
       }
+    },
+
+    resolveId: {
+      order: 'pre',
+      async handler(source, importer, extraOptions) {
+        if (!testMode || !extraOptions.isEntry) {
+          return null;
+        }
+
+        // Keep the real id where possible so chunk names match a real build.
+        // Fall back to a path that need not exist, as the stub supplies the
+        // module's contents.
+        const resolved = await this.resolve(source, importer, {
+          ...extraOptions,
+          skipSelf: true,
+        });
+
+        const id =
+          resolved && !resolved.external
+            ? resolved.id
+            : path.resolve(cwd, source);
+
+        stubbedEntries.add(id);
+
+        return { id };
+      },
+    },
+
+    load: {
+      order: 'pre',
+      handler(id) {
+        if (!stubbedEntries.has(id)) {
+          return null;
+        }
+
+        return { code: TEST_MODE_STUB, moduleType: 'js' };
+      },
     },
 
     async writeBundle(outputOptions) {
@@ -286,7 +350,7 @@ export const lambdaAsset = ({
 
       const projectRoot = path.resolve(cwd, projectRootOption ?? '.');
 
-      if (!nodeModules.length) {
+      if (!nodeModules.length || testMode) {
         await writeOutputPackageJson(outputDir);
         return;
       }

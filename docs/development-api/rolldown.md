@@ -279,3 +279,57 @@ Set [`output.cleanDir: true`](https://rolldown.rs/reference/OutputOptions.cleanD
 
 The plugin removes pnpm's `node_modules` metadata after each install, as it records machine-local paths and timestamps that would otherwise change your CDK asset hash on every build.
 This means each install re-links from your local pnpm store rather than short-circuiting, which costs a little time but keeps the asset reproducible.
+
+### Testing with CDK
+
+`aws_lambda.Code.fromAsset` requires its directory to exist at synth time, so CDK stack tests would otherwise need a full build first.
+When `ENVIRONMENT` is `test`, the plugin emits a stub asset instead.
+Set it in your Vitest config if you have not already:
+
+```ts
+// vitest.config.ts
+import { Vitest } from 'skuba';
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig(
+  Vitest.mergePreset({
+    test: {
+      env: {
+        ENVIRONMENT: 'test',
+      },
+    },
+  }),
+);
+```
+
+Then build your real rolldown config from the stack test before synthesising:
+
+```ts
+// infra/appStack.test.ts
+import { Template } from 'aws-cdk-lib/assertions';
+import { build } from 'rolldown';
+import { Cdk } from 'skuba';
+
+import config from '../rolldown.config.js';
+
+beforeAll(() => build(config));
+
+test('stack', () => {
+  // ...
+
+  const template = Template.fromStack(stack);
+
+  expect(Cdk.normaliseTemplate(template.toJSON())).toMatchSnapshot();
+});
+```
+
+When `ENVIRONMENT=test`, the plugin:
+
+- Replaces each entry module with a placeholder handler, so your source is never read or bundled and the build is near-instant.
+  Chunk names still follow your `input`, so `lib/index.js` and the `index.handler` string line up with a real build.
+- Skips the `nodeModules` install and `assets` copy.
+- Still writes the output directory and its `package.json`.
+
+The check happens when each build starts, so it does not matter whether `ENVIRONMENT` is set before or after your config is imported.
+The stub is identical on every run, so the CDK asset hash does not churn as your handler code changes.
+It overwrites any real bundle in `output.dir`, so make sure `ENVIRONMENT=test` never reaches your deployment build, and rebuild before deploying if you run tests and deployments from the same checkout.
