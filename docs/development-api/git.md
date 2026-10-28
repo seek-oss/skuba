@@ -129,17 +129,45 @@ const headCommitMessage = await Git.getHeadCommitMessage({ dir });
 Extracts the owner and repository names from CI environment variables,
 falling back to local Git remotes.
 
-Currently, only GitHub repository URLs are supported:
+Currently, only GitHub repository URLs and slugs are supported:
 
 ```console
 git@github.com:seek-oss/skuba.git
 https://github.com/seek-oss/skuba.git
+https://github.com/seek-oss/skuba
+seek-oss/skuba
 ```
 
 ```typescript
 import { Git } from 'skuba';
 
-const { owner, repo } = await getOwnerAndRepo({ dir });
+const { owner, repo } = await Git.getOwnerAndRepo({ dir });
+```
+
+---
+
+## getOwnerAndRepoFromUrl
+
+Parses a GitHub repository URL or `owner/repo` slug into its owner and
+repository names.
+
+Currently, only GitHub repository URLs and slugs are supported:
+
+```console
+git@github.com:seek-oss/skuba.git
+https://github.com/seek-oss/skuba.git
+https://github.com/seek-oss/skuba
+seek-oss/skuba
+```
+
+Returns `undefined` when the input is not a recognised GitHub repository.
+
+```typescript
+import { Git } from 'skuba';
+
+const parsed = Git.getOwnerAndRepoFromUrl('git@github.com:seek-oss/skuba.git');
+
+// { owner: 'seek-oss', repo: 'skuba' }
 ```
 
 ---
