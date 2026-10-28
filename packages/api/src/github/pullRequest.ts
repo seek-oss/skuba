@@ -18,6 +18,22 @@ interface GetPullRequestParameters {
 }
 
 /**
+ * Tries `BUILDKITE_PULL_REQUEST`, then the pull request number in `GITHUB_REF`.
+ *
+ * Returns `undefined` when neither variable names a pull request.
+ */
+export const getPullRequestNumberFromEnvironment = (
+  env: Record<string, string | undefined> = process.env,
+) => {
+  const number = Number(
+    env.BUILDKITE_PULL_REQUEST ??
+      env.GITHUB_REF?.replace(/^refs\/pull\/(\d+)\/.*$/, '$1'),
+  );
+
+  return Number.isSafeInteger(number) ? number : undefined;
+};
+
+/**
  * Gets the number of the current pull request.
  *
  * This tries to extract the pull request from common CI environment variables,
@@ -32,12 +48,9 @@ export const getPullRequestNumber = async (
 
   const dir = process.cwd();
 
-  const number = Number(
-    env.BUILDKITE_PULL_REQUEST ??
-      env.GITHUB_REF?.replace(/^refs\/pull\/(\d+)\/.*$/, '$1'),
-  );
+  const number = getPullRequestNumberFromEnvironment(env);
 
-  if (Number.isSafeInteger(number)) {
+  if (number !== undefined) {
     return number;
   }
 

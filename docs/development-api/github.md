@@ -68,6 +68,64 @@ if (enabled) {
 
 ---
 
+## getFileUrl
+
+Builds a GitHub permalink to a file and line range.
+
+When `pullRequestNumber` is set, this returns a files-changed URL that anchors
+to the new side of the pull request diff. Otherwise it returns a blob URL at
+`commit`.
+
+Returns `undefined` when a blob URL is requested without a `commit`.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const blobUrl = GitHub.getFileUrl({
+  owner: 'seek-oss',
+  repo: 'skuba',
+  path: 'packages/api/src/git/remote.ts',
+  startLine: 20,
+  commit: 'abc123',
+});
+
+const pullRequestUrl = GitHub.getFileUrl({
+  owner: 'seek-oss',
+  repo: 'skuba',
+  path: 'packages/api/src/git/remote.ts',
+  startLine: 20,
+  endLine: 24,
+  pullRequestNumber: 42,
+});
+```
+
+---
+
+## getFileUrlFromEnvironment
+
+Builds a GitHub permalink from CI environment variables.
+
+This tries `GITHUB_REPOSITORY`, then `BUILDKITE_REPO`, for the owner and
+repository, `BUILDKITE_COMMIT` or `GITHUB_SHA` for the commit, and
+`BUILDKITE_PULL_REQUEST` or `GITHUB_REF` for the pull request.
+
+When a pull request number is available, this returns a files-changed URL that
+anchors to the new side of the pull request diff.
+
+Returns `undefined` when the repository cannot be resolved, or when a blob
+URL is requested without a commit.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const url = GitHub.getFileUrlFromEnvironment({
+  path: 'packages/api/src/git/remote.ts',
+  startLine: 20,
+});
+```
+
+---
+
 ## getPullRequestNumber
 
 Gets the number of the current pull request.

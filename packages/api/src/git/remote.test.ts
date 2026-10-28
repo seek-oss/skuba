@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { getOwnerAndRepo } from './remote.js';
+import { getOwnerAndRepo, getOwnerAndRepoFromUrl } from './remote.js';
 
 vi.mock('isomorphic-git');
 
@@ -11,25 +11,28 @@ afterEach(() => {
   vi.resetAllMocks();
 });
 
+describe('getOwnerAndRepoFromUrl', () => {
+  it.each`
+    description             | url                                                   | expected
+    ${'SSH with .git'}      | ${'git@github.com:seek-oss/skuba.git'}                | ${{ owner: 'seek-oss', repo: 'skuba' }}
+    ${'HTTPS with .git'}    | ${'https://github.com/seek-oss/skuba.git'}            | ${{ owner: 'seek-oss', repo: 'skuba' }}
+    ${'HTTPS without .git'} | ${'https://github.com/seek-oss/skuba'}                | ${{ owner: 'seek-oss', repo: 'skuba' }}
+    ${'owner/repo slug'}    | ${'seek-oss/skuba'}                                   | ${{ owner: 'seek-oss', repo: 'skuba' }}
+    ${'trimmed whitespace'} | ${'  git@github.com:SEEK-Jobs/secret-codebase.git  '} | ${{ owner: 'SEEK-Jobs', repo: 'secret-codebase' }}
+    ${'unrecognised'}       | ${'something-invalid'}                                | ${undefined}
+  `('parses $description', ({ url, expected }) =>
+    expect(getOwnerAndRepoFromUrl(url)).toStrictEqual(expected),
+  );
+});
+
 describe('getOwnerAndRepo', () => {
-  it('short circuits on BUILDKITE_REPO', async () => {
-    await expect(
-      getOwnerAndRepo({
-        dir,
-        env: { BUILDKITE_REPO: 'git@github.com:seek-oss/skuba.git' },
-      }),
-    ).resolves.toStrictEqual({
-      owner: 'seek-oss',
-      repo: 'skuba',
-    });
-
-    expect(git.listRemotes).not.toHaveBeenCalled();
-  });
-
-  it('short circuits on GITHUB_REPOSITORY', async () => {
-    await expect(
-      getOwnerAndRepo({ dir, env: { GITHUB_REPOSITORY: 'seek-oss/skuba' } }),
-    ).resolves.toStrictEqual({
+  it.each`
+    description                               | env
+    ${'BUILDKITE_REPO'}                       | ${{ BUILDKITE_REPO: 'git@github.com:seek-oss/skuba.git' }}
+    ${'BUILDKITE_REPO without a .git suffix'} | ${{ BUILDKITE_REPO: 'https://github.com/seek-oss/skuba' }}
+    ${'GITHUB_REPOSITORY'}                    | ${{ GITHUB_REPOSITORY: 'seek-oss/skuba' }}
+  `('short circuits on $description', async ({ env }) => {
+    await expect(getOwnerAndRepo({ dir, env })).resolves.toStrictEqual({
       owner: 'seek-oss',
       repo: 'skuba',
     });
