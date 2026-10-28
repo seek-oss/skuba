@@ -15,7 +15,7 @@ node_modules*/
 
 .DS_Store
 .eslintcache
-.pnpm-debug.log
+.pnpm-*
 *.tgz
 *.tsbuildinfo
 npm-debug.log
