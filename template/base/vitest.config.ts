@@ -11,6 +11,7 @@ export default defineConfig(
     test: {
       env: {
         DEPLOYMENT: 'test',
+        ENVIRONMENT: 'test',
       },
       coverage: {
         thresholds: {

@@ -67,6 +67,8 @@ describe('lambdaAsset', () => {
     ) as Record<string, unknown>;
 
   beforeEach(async () => {
+    vi.stubEnv('ENVIRONMENT', undefined);
+
     outputDir = await fs.promises.mkdtemp(
       path.join(os.tmpdir(), 'lambda-asset-'),
     );
@@ -76,7 +78,10 @@ describe('lambdaAsset', () => {
     vi.mocked(createExec).mockReturnValue(install as never);
   });
 
-  afterEach(() => fs.remove(outputDir));
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await fs.remove(outputDir);
+  });
 
   it('is named so it can be identified in rolldown output', () =>
     expect(lambdaAsset().name).toBe('skuba:lambda-asset'));
@@ -108,6 +113,34 @@ describe('lambdaAsset', () => {
     await expect(
       writeBundle(lambdaAsset(), { file: 'lib/lambda.js', format: 'es' }),
     ).rejects.toThrow(/requires `output\.dir`/);
+  });
+
+  it('does not install nodeModules when ENVIRONMENT=test', async () => {
+    vi.stubEnv('ENVIRONMENT', 'test');
+
+    const plugin = lambdaAsset({ nodeModules: ['sharp'] });
+
+    await buildStart(plugin, outputDir);
+    await writeBundle(plugin, { dir: outputDir, format: 'es' });
+
+    await expect(fs.promises.readdir(outputDir)).resolves.toEqual([
+      'package.json',
+    ]);
+    await expect(readOutputPackageJson()).resolves.toEqual({
+      type: 'module',
+    });
+    expect(install).not.toHaveBeenCalled();
+  });
+
+  it('does not emit assets when ENVIRONMENT=test', async () => {
+    vi.stubEnv('ENVIRONMENT', 'test');
+
+    await buildStart(
+      lambdaAsset({ assets: [{ from: 'does-not-exist.json' }] }),
+      outputDir,
+    );
+
+    expect(emitFile).not.toHaveBeenCalled();
   });
 
   it('prepares a given output directory only once per build', async () => {
