@@ -1,5 +1,23 @@
 # skuba
 
+## 16.5.0
+
+### Minor Changes
+
+- **GitHub.createCheckRun:** Support `detailsUrl` parameter ([#2655](https://github.com/seek-oss/skuba/pull/2655) [`5428f79`](https://github.com/seek-oss/skuba/commit/5428f797079c0eb10dbd85634a968362494cc050))
+
+- **lint:** Add `.pnpm-*` to managed `.gitignore` ([#2664](https://github.com/seek-oss/skuba/pull/2664) [`1520b3e`](https://github.com/seek-oss/skuba/commit/1520b3efcdb14dacf637c60c8d84c7f92229a330))
+
+- **migrate:** Improve `tsconfig.json#/compilerOptions/lib` handling in Node.js migrations ([#2666](https://github.com/seek-oss/skuba/pull/2666) [`c4f6a65`](https://github.com/seek-oss/skuba/commit/c4f6a65edfe2bc7505280d71589b3b72f10ce15c))
+
+### Patch Changes
+
+- **deps:** oxfmt ~0.74.0 ([#2658](https://github.com/seek-oss/skuba/pull/2658) [`6e65d65`](https://github.com/seek-oss/skuba/commit/6e65d6537eacb765cf9f5e148089bbbbae11fa4b))
+
+- **deps:** @ast-grep/napi ~0.51.0 ([#2651](https://github.com/seek-oss/skuba/pull/2651) [`41b926c`](https://github.com/seek-oss/skuba/commit/41b926c21b8bc8f8ccb57979796603ab943af6f4))
+- Updated dependencies:
+  - @skuba-lib/api@3.1.0
+
 ## 16.4.2
 
 ### Patch Changes
