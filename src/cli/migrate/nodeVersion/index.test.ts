@@ -20,6 +20,9 @@ vi.mock('../../../utils/logging');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
+const tsconfigWithLib = (lib: string) =>
+  `{\n  "compilerOptions": {\n    "lib": ${lib}\n  }\n}\n`;
+
 beforeEach(() => vol.reset());
 
 afterEach(() => vi.clearAllMocks());
@@ -177,18 +180,74 @@ describe('nodeVersionMigration', () => {
     {
       scenario: 'tsconfig lib',
       filesBefore: {
-        'tsconfig.json': '"lib": ["ES2020"]',
-        '1/tsconfig.json': '"lib": ["es2014"]',
-        '2/tsconfig.json': '"lib": ["ESNext"]',
-        '3/tsconfig.json': '"lib": ["ESNext",\n"dom",\n"ES2020", "webworker"]',
-        '4/tsconfig.base.json': '"lib": ["ES2020"]',
+        'tsconfig.json': tsconfigWithLib('["ES2020"]'),
+        '1/tsconfig.json': tsconfigWithLib('["es2014"]'),
+        '2/tsconfig.json': tsconfigWithLib('["ESNext"]'),
+        '3/tsconfig.json': tsconfigWithLib(
+          '["ESNext",\n"dom",\n"ES2020", "webworker"]',
+        ),
+        '4/tsconfig.base.json': tsconfigWithLib('["ES2020"]'),
+        '5/tsconfig.json': tsconfigWithLib(
+          '["ES2022", "ES2023.Array", "ESNext.Iterator"]',
+        ),
       },
       filesAfter: {
-        'tsconfig.json': '"lib": ["ES2024"]',
-        '1/tsconfig.json': '"lib": ["ES2024"]',
-        '2/tsconfig.json': '"lib": ["ESNext"]',
-        '3/tsconfig.json': '"lib": ["ESNext",\n"dom",\n"ES2024", "webworker"]',
-        '4/tsconfig.base.json': '"lib": ["ES2024"]',
+        'tsconfig.json': tsconfigWithLib(
+          '["ES2024", "ES2025.Iterator", "ESNext.Disposable"]',
+        ),
+        '1/tsconfig.json': tsconfigWithLib(
+          '["ES2024", "ES2025.Iterator", "ESNext.Disposable"]',
+        ),
+        '2/tsconfig.json': tsconfigWithLib('["ESNext"]'),
+        '3/tsconfig.json': tsconfigWithLib(
+          '["ESNext",\n"dom",\n"ES2024",\n"webworker"]',
+        ),
+        '4/tsconfig.base.json': tsconfigWithLib(
+          '["ES2024", "ES2025.Iterator", "ESNext.Disposable"]',
+        ),
+        '5/tsconfig.json': tsconfigWithLib(
+          '["ES2024", "ES2025.Iterator", "ESNext.Disposable"]',
+        ),
+      },
+    },
+    {
+      scenario: 'tsconfig lib already on the target ECMAScript version',
+      filesBefore: {
+        'tsconfig.json': tsconfigWithLib('["ES2024"]'),
+      },
+      filesAfter: {
+        'tsconfig.json': tsconfigWithLib(
+          '["ES2024", "ES2025.Iterator", "ESNext.Disposable"]',
+        ),
+      },
+    },
+    {
+      scenario: 'tsconfig lib in an application and a package',
+      filesBefore: {
+        'packages/api/package.json': JSON.stringify({
+          skuba: { type: 'application' },
+        }),
+        'packages/api/tsconfig.json': tsconfigWithLib('["ES2020"]'),
+        'packages/package/package.json': JSON.stringify({
+          skuba: { type: 'package' },
+        }),
+        'packages/package/tsconfig.json': tsconfigWithLib(
+          '["ES2020", "ESNext.Iterator"]',
+        ),
+      },
+      filesAfter: {
+        'packages/api/package.json': JSON.stringify({
+          skuba: { type: 'application' },
+        }),
+        'packages/api/tsconfig.json': tsconfigWithLib(
+          '["ES2024", "ES2025.Iterator", "ESNext.Disposable"]',
+        ),
+        'packages/package/package.json': JSON.stringify({
+          skuba: { type: 'package' },
+        }),
+        'packages/package/tsconfig.json': tsconfigWithLib(
+          '["ES2023", "ESNext.Iterator"]',
+        ),
       },
     },
     {
@@ -278,6 +337,12 @@ describe('nodeVersionMigration', () => {
         ECMAScriptVersion: 'ES2024',
         packageNodeVersion: '20',
         packageECMAScriptVersion: 'ES2023',
+        tsconfigLib: {
+          default: {
+            add: ['ES2025.Iterator', 'ESNext.Disposable'],
+            remove: ['ESNext.Iterator'],
+          },
+        },
         infraPackages: [],
       });
 

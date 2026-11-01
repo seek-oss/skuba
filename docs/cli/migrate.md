@@ -64,6 +64,12 @@ The migration will attempt to proceed if your project:
   For example, including `ES2024` allows you to use the [`Object.groupBy()` static method].
   The features available in each new ECMAScript version are summarised on [node.green](https://node.green/).
 
+  Alongside upgrading the base ECMAScript lib,
+  **skuba** removes `ES20xx.*` libs that the base lib already covers,
+  and adds newer libs for language features that the target Node.js runtime supports.
+  For example, `skuba migrate node24` adds `ESNext.Disposable` for [`using` declarations].
+  Projects that include `ESNext` in `lib` do not receive these additions.
+
 - `target` configures the transpilation behaviour of the TypeScript compiler.
 
   Back-end applications typically synchronise `lib` with their Node.js runtime.
@@ -120,6 +126,7 @@ The following fields are modified for npm packages:
 As of **skuba** 14, `skuba migrate` attempts to upgrade underlying infrastructure packages for compatibility with the new Node.js version. These include `aws-cdk-lib`, `datadog-cdk-constructs-v2`, `osls`, `serverless`, `serverless-plugin-datadog` and `@types/node`.
 
 [`Object.groupBy()` static method]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
+[`using` declarations]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/using
 [active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
 [Node Target Mapping]: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
 [patches]: ./lint.md#patches

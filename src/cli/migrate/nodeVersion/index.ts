@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { inspect } from 'util';
 
 import fs from 'fs-extra';
@@ -8,6 +9,7 @@ import { log } from '../../../utils/logging.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
 
 import { isLikelyPackage } from './checks.js';
+import { type LibChanges, patchTsconfigLib } from './tsconfigLib.js';
 import { tryUpgradeInfraPackages } from './upgrade.js';
 
 type FileSelector =
@@ -211,23 +213,6 @@ const subPatches = ({
       },
     },
   },
-  {
-    type: 'ecmascript',
-    files: '**/tsconfig*.json',
-    regex: () => /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
-    replace: {
-      package: {
-        string: `$1$2${packageECMAScriptVersion}$4$5`,
-        version: packageECMAScriptVersion,
-        captureGroup: 3,
-      },
-      default: {
-        string: `$1$2${ECMAScriptVersion}$4$5`,
-        version: ECMAScriptVersion,
-        captureGroup: 3,
-      },
-    },
-  },
 ];
 
 type Versions = {
@@ -235,6 +220,10 @@ type Versions = {
   ECMAScriptVersion: string;
   packageNodeVersion: string;
   packageECMAScriptVersion: string;
+  tsconfigLib?: {
+    default?: LibChanges;
+    package?: LibChanges;
+  };
 };
 
 const getTemplatedReplace = async (
@@ -329,10 +318,47 @@ const writePatchedContents = async ({
   await fs.promises.writeFile(path, modified);
 };
 
+const runTsconfigLibPatch = async (
+  dir: string,
+  { ECMAScriptVersion, packageECMAScriptVersion, tsconfigLib }: Versions,
+) => {
+  const readFile = createDestinationFileReader(dir);
+  const paths = await globFiles('**/tsconfig*.json', {
+    cwd: dir,
+    exclude: ['**/node_modules/**'],
+  });
+
+  await Promise.all(
+    paths.map(async (filePath) => {
+      const contents = await readFile(filePath);
+      if (!contents) {
+        return;
+      }
+
+      const fullPath = join(dir, filePath);
+
+      const options = (await isLikelyPackage(fullPath))
+        ? {
+            ...tsconfigLib?.package,
+            ECMAScriptVersion: packageECMAScriptVersion,
+          }
+        : { ...tsconfigLib?.default, ECMAScriptVersion };
+
+      const patched = await patchTsconfigLib(contents, options);
+
+      if (patched !== contents) {
+        await fs.promises.writeFile(fullPath, patched);
+      }
+    }),
+  );
+};
+
 const upgrade = async (versions: Versions, dir: string) => {
   for (const subPatch of subPatches(versions)) {
     await runSubPatch(dir, subPatch);
   }
+
+  await runTsconfigLibPatch(dir, versions);
 };
 
 export const nodeVersionMigration = async (
@@ -341,12 +367,9 @@ export const nodeVersionMigration = async (
     ECMAScriptVersion,
     packageNodeVersion,
     packageECMAScriptVersion,
+    tsconfigLib,
     infraPackages,
-  }: {
-    nodeVersion: string;
-    ECMAScriptVersion: string;
-    packageNodeVersion: string;
-    packageECMAScriptVersion: string;
+  }: Versions & {
     infraPackages: Array<{ name: string; version: string }>;
   },
   dir = process.cwd(),
@@ -363,6 +386,7 @@ export const nodeVersionMigration = async (
         ECMAScriptVersion,
         packageNodeVersion,
         packageECMAScriptVersion,
+        tsconfigLib,
       },
       dir,
     );
