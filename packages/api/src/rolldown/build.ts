@@ -20,7 +20,7 @@ export interface BuildOptions {
  * writes it to each of its outputs, as the rolldown CLI does, so a config file
  * can be passed straight through without a cast.
  *
- * Configs are built in parallel. Function configs are not supported.
+ * Configs are built sequentially. Function configs are not supported.
  *
  * @example
  * ```ts
@@ -39,20 +39,20 @@ export const build = async (
   // importing `@skuba-lib/api` does not require it.
   const { rolldown } = await import('rolldown');
 
-  await Promise.all(
-    [config].flat().map(async ({ output, ...input }) => {
-      const bundle = await rolldown({ ...input, ...(cwd && { cwd }) });
+  // Build configs one at a time, as the rolldown CLI does. Plugins such as
+  // `lambdaAsset` keep per-build state on the plugin instance, and a config
+  // array may reuse one instance across entries. Building in parallel would let
+  // those builds clobber each other's state.
+  for (const { output, ...input } of [config].flat()) {
+    const bundle = await rolldown({ ...input, ...(cwd && { cwd }) });
 
-      try {
-        // Write outputs one at a time from a single bundle. Plugins such as
-        // `lambdaAsset` keep per-build state that parallel builds sharing the
-        // same plugin instance would clobber.
-        for (const outputOptions of [output ?? {}].flat()) {
-          await bundle.write(outputOptions);
-        }
-      } finally {
-        await bundle.close();
+    try {
+      // Likewise, write outputs one at a time from a single bundle.
+      for (const outputOptions of [output ?? {}].flat()) {
+        await bundle.write(outputOptions);
       }
-    }),
-  );
+    } finally {
+      await bundle.close();
+    }
+  }
 };
