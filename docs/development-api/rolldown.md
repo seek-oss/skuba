@@ -307,12 +307,11 @@ Then build your real rolldown config from the stack test before synthesising:
 ```ts
 // infra/appStack.test.ts
 import { Template } from 'aws-cdk-lib/assertions';
-import { build } from 'rolldown';
-import { Cdk } from 'skuba';
+import { Cdk, Rolldown } from 'skuba';
 
 import config from '../rolldown.config.js';
 
-beforeAll(() => build(config));
+beforeAll(() => Rolldown.build(config));
 
 test('stack', () => {
   // ...
@@ -321,6 +320,24 @@ test('stack', () => {
 
   expect(Cdk.normaliseTemplate(template.toJSON())).toMatchSnapshot();
 });
+```
+
+If you have [multiple bundles](#multiple-bundles), pass every config at once and they are built in parallel:
+
+```ts
+import hirerHydrator from '../rolldown.hirerHydrator.config.js';
+import partnerOffboarder from '../rolldown.partnerOffboarder.config.js';
+
+beforeAll(() => Rolldown.build([hirerHydrator, partnerOffboarder]));
+```
+
+Relative paths in your configs, such as `input` and `output.dir`, resolve against `process.cwd()`.
+If your tests do not run from the package directory, e.g. from a monorepo root, pass `cwd`:
+
+```ts
+beforeAll(() =>
+  Rolldown.build(config, { cwd: path.join(import.meta.dirname, '..') }),
+);
 ```
 
 When `ENVIRONMENT=test`, the plugin:
@@ -333,3 +350,30 @@ When `ENVIRONMENT=test`, the plugin:
 The check happens when each build starts, so it does not matter whether `ENVIRONMENT` is set before or after your config is imported.
 The stub is identical on every run, so the CDK asset hash does not churn as your handler code changes.
 It overwrites any real bundle in `output.dir`, so make sure `ENVIRONMENT=test` never reaches your deployment build, and rebuild before deploying if you run tests and deployments from the same checkout.
+
+---
+
+## build
+
+Builds and writes one or more rolldown configs, as exported from a `rolldown.config.ts`.
+
+```ts
+import { Rolldown } from 'skuba';
+
+import config from '../rolldown.config.js';
+
+await Rolldown.build(config);
+```
+
+rolldown's own `build` function accepts a single `output` per config,
+while `defineConfig` types `output` as one or many, so passing a config file to it needs a cast.
+`Rolldown.build` accepts what `defineConfig` returns:
+a config or an array of configs, each with one or more outputs.
+Each config is bundled once and written to each of its outputs, as the rolldown CLI does, and separate configs are built in parallel.
+Function configs are not supported.
+
+| Option | Required | Description                                                                                                                       |
+| ------ | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `cwd`  | No       | Directory to resolve relative paths in the configs against, such as `input` and `output.dir`. Overrides any `cwd` in the configs. |
+
+`rolldown` is loaded only when `Rolldown.build` is called, so `@skuba-lib/api` consumers that do not use it do not need it installed.

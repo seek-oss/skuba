@@ -21,9 +21,9 @@ export default defineConfig(
 
 ```typescript
 // infra/appStack.test.ts
-import { build } from 'rolldown';
+import { Rolldown } from 'skuba';
 
 import config from '../rolldown.config.js';
 
-beforeAll(() => build(config as BuildOptions));
+beforeAll(() => Rolldown.build(config));
 ```
