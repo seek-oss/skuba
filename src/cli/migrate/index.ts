@@ -26,9 +26,20 @@ export const migrations = {
   node24: () =>
     nodeVersionMigration({
       nodeVersion: '24',
-      ECMAScriptVersion: 'ES2024',
+      ECMAScriptVersion: 'ES2025',
       packageNodeVersion: '22.14.0',
       packageECMAScriptVersion: 'ES2023',
+      tsconfigLib: {
+        default: {
+          add: ['ESNext.Array', 'ESNext.Disposable', 'ESNext.Error'],
+          remove: [
+            'ESNext.Collection',
+            'ESNext.Float16',
+            'ESNext.Iterator',
+            'ESNext.Promise',
+          ],
+        },
+      },
       infraPackages: [
         {
           name: 'aws-cdk-lib',
