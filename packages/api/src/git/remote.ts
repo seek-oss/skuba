@@ -9,6 +9,8 @@ import git from 'isomorphic-git';
  * ```console
  * git@github.com:seek-oss/skuba.git
  * https://github.com/seek-oss/skuba.git
+ * https://github.com/seek-oss/skuba
+ * seek-oss/skuba
  * ```
  *
  * This pattern will produce the following matches:
@@ -17,15 +19,31 @@ import git from 'isomorphic-git';
  * 2. skuba
  */
 const ownerRepoRegex =
-  /github\.com(?::|\/)([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+)\.git$/;
+  /(?:github\.com[:\/]|^)([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+?)(?:\.git)?$/;
 
-const ownerAndRepoFromUrl = (url: string) => {
-  const match = ownerRepoRegex.exec(url);
+/**
+ * Parses a GitHub repository URL or `owner/repo` slug into its owner and
+ * repository names.
+ *
+ * Currently, only GitHub repository URLs and slugs are supported:
+ *
+ * ```console
+ * git@github.com:seek-oss/skuba.git
+ * https://github.com/seek-oss/skuba.git
+ * https://github.com/seek-oss/skuba
+ * seek-oss/skuba
+ * ```
+ *
+ * Returns `undefined` when the input is not a recognised GitHub repository.
+ * Leading and trailing whitespace is ignored.
+ */
+export const getOwnerAndRepoFromUrl = (url: string) => {
+  const match = ownerRepoRegex.exec(url.trim());
 
   const owner = match?.[1];
   const repo = match?.[2];
 
-  return { owner, repo };
+  return owner && repo ? { owner, repo } : undefined;
 };
 
 interface GetOwnerAndRepoParameters {
@@ -37,31 +55,25 @@ interface GetOwnerAndRepoParameters {
  * Extracts the owner and repository names from CI environment variables,
  * falling back to local Git remotes.
  *
- * Currently, only GitHub repository URLs are supported:
+ * Currently, only GitHub repository URLs and slugs are supported:
  *
  * ```console
  * git@github.com:seek-oss/skuba.git
  * https://github.com/seek-oss/skuba.git
+ * https://github.com/seek-oss/skuba
+ * seek-oss/skuba
  * ```
  */
 export const getOwnerAndRepo = async ({
   dir,
   env = process.env,
 }: GetOwnerAndRepoParameters): Promise<{ owner: string; repo: string }> => {
-  if (env.GITHUB_REPOSITORY) {
-    const [owner, repo] = env.GITHUB_REPOSITORY.split('/');
+  const fromEnvironment =
+    getOwnerAndRepoFromUrl(env.GITHUB_REPOSITORY ?? '') ??
+    getOwnerAndRepoFromUrl(env.BUILDKITE_REPO ?? '');
 
-    if (owner && repo) {
-      return { owner, repo };
-    }
-  }
-
-  if (env.BUILDKITE_REPO) {
-    const { owner, repo } = ownerAndRepoFromUrl(env.BUILDKITE_REPO);
-
-    if (owner && repo) {
-      return { owner, repo };
-    }
+  if (fromEnvironment) {
+    return fromEnvironment;
   }
 
   const gitRoot = await git.findRoot({ filepath: dir, fs });
@@ -69,10 +81,10 @@ export const getOwnerAndRepo = async ({
   const remotes = await git.listRemotes({ dir: gitRoot, fs });
 
   for (const { url } of remotes) {
-    const { owner, repo } = ownerAndRepoFromUrl(url);
+    const fromRemote = getOwnerAndRepoFromUrl(url);
 
-    if (owner && repo) {
-      return { owner, repo };
+    if (fromRemote) {
+      return fromRemote;
     }
   }
 
