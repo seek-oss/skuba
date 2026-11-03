@@ -5,8 +5,8 @@
   "type": "module",
   "imports": {
     "#src/*": {
-      "@seek/<%- repoName %>/source": "./src/*",
-      "default": "./lib/*"
+      "@seek/<%- repoName %>/source": "./src/*.ts",
+      "default": "./lib/*.js"
     }
   },
   "scripts": {
