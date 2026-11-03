@@ -1,5 +1,17 @@
 # @skuba-lib/api
 
+## 3.1.0
+
+### Minor Changes
+
+- **GitHub.createCheckRun:** Support `detailsUrl` parameter ([#2655](https://github.com/seek-oss/skuba/pull/2655) [`5428f79`](https://github.com/seek-oss/skuba/commit/5428f797079c0eb10dbd85634a968362494cc050))
+
+- **Git.getOwnerAndRepo:** Handle GitHub HTTPS remotes without a `.git` suffix ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
+- **GitHub:** Add `getFileUrl` and `getFileUrlFromEnvironment` ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
+- **Git:** Add `getOwnerAndRepoFromUrl` ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
 ## 3.0.1
 
 ### Patch Changes
