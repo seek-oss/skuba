@@ -5,7 +5,7 @@ export { findRoot } from './findRoot.js';
 export type { ChangedFile } from './getChangedFiles.js';
 export { getChangedFiles } from './getChangedFiles.js';
 export { getHeadCommitId, getHeadCommitMessage } from './log.js';
-export { getOwnerAndRepo } from './remote.js';
+export { getOwnerAndRepo, getOwnerAndRepoFromUrl } from './remote.js';
 export { push } from './push.js';
 export { fastForwardBranch } from './pull.js';
 export { reset } from './reset.js';

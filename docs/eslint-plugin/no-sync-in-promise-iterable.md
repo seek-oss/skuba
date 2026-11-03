@@ -57,7 +57,7 @@ For example, you could equally construct the following:
 
 ```typescript
 const [promiseX, y] = [
-  asyncX(), // Queues up work to throws an error
+  asyncX(), // Queues up work that throws an error
   syncY(), // Immediately throws an error
 ];
 
@@ -67,7 +67,7 @@ const x = await promiseX; // Never reached, so `promiseX` rejection is unhandled
 The above can be expanded to the following:
 
 ```typescript
-const first = asyncX(); // Queues up work to throws an error
+const first = asyncX(); // Queues up work that throws an error
 const second = syncY(); // Immediately throws an error
 
 const [promiseX, y] = [first, second];
