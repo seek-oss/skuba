@@ -6,6 +6,8 @@ template: Set `ENVIRONMENT: 'test'` in `vitest.config.ts`
 
 This lets your code tell when it is running under test. For example, `Rolldown.lambdaAsset` checks it to emit a stub asset, so CDK stack tests can synthesise `Code.fromAsset` without building the real bundles first.
 
+This is separate from the existing `DEPLOYMENT: 'test'` entry, which `Rolldown.lambdaAsset` does not check.
+
 Existing projects can opt in by adding it to their own config:
 
 ```typescript

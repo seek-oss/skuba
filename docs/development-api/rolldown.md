@@ -284,7 +284,8 @@ This means each install re-links from your local pnpm store rather than short-ci
 
 `aws_lambda.Code.fromAsset` requires its directory to exist at synth time, so CDK stack tests would otherwise need a full build first.
 When `ENVIRONMENT` is `test`, the plugin emits a stub asset instead.
-Set it in your Vitest config if you have not already:
+Set it in your Vitest config if you have not already.
+New skuba projects set it alongside `DEPLOYMENT: 'test'`; the plugin only checks `ENVIRONMENT`:
 
 ```ts
 // vitest.config.ts
@@ -322,7 +323,7 @@ test('stack', () => {
 });
 ```
 
-If you have [multiple bundles](#multiple-bundles), pass every config at once and they are built in parallel:
+If you have [multiple bundles](#multiple-bundles), pass every config at once and they are built one after another:
 
 ```ts
 import hirerHydrator from '../rolldown.hirerHydrator.config.js';
@@ -342,7 +343,7 @@ beforeAll(() =>
 
 When `ENVIRONMENT=test`, the plugin:
 
-- Replaces each entry module with a placeholder handler, so your source is never read or bundled and the build is near-instant.
+- Replaces each entry module with a placeholder handler that throws if invoked, so your source is never read or bundled and the build is near-instant.
   Chunk names still follow your `input`, so `lib/index.js` and the `index.handler` string line up with a real build.
 - Skips the `nodeModules` install and `assets` copy.
 - Still writes the output directory and its `package.json`.
@@ -350,6 +351,7 @@ When `ENVIRONMENT=test`, the plugin:
 The check happens when each build starts, so it does not matter whether `ENVIRONMENT` is set before or after your config is imported.
 The stub is identical on every run, so the CDK asset hash does not churn as your handler code changes.
 It overwrites any real bundle in `output.dir`, so make sure `ENVIRONMENT=test` never reaches your deployment build, and rebuild before deploying if you run tests and deployments from the same checkout.
+If a stub does slip through, its handler throws on every invocation rather than silently succeeding.
 
 ---
 
@@ -369,7 +371,8 @@ rolldown's own `build` function accepts a single `output` per config,
 while `defineConfig` types `output` as one or many, so passing a config file to it needs a cast.
 `Rolldown.build` accepts what `defineConfig` returns:
 a config or an array of configs, each with one or more outputs.
-Each config is bundled once and written to each of its outputs, as the rolldown CLI does, and separate configs are built in parallel.
+Each config is bundled once and written to each of its outputs, as the rolldown CLI does.
+Separate configs are built sequentially, so plugin instances shared between them do not clobber each other's state.
 Function configs are not supported.
 
 | Option | Required | Description                                                                                                                       |

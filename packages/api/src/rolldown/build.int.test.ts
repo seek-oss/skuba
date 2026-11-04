@@ -1,5 +1,6 @@
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import fs from 'fs-extra';
 import { defineConfig } from 'rolldown';
@@ -103,9 +104,18 @@ describe('build', () => {
     );
 
     for (const dir of ['dist/one', 'dist/two']) {
-      const stub = await readFile(`${dir}/index.js`);
-      expect(stub).toContain('handler');
-      expect(stub).not.toContain('from-a');
+      const stubPath = path.join(workingDir, dir, 'index.js');
+
+      await expect(readFile(`${dir}/index.js`)).resolves.not.toContain(
+        'from-a',
+      );
+
+      const { handler } = (await import(pathToFileURL(stubPath).href)) as {
+        handler: () => unknown;
+      };
+      expect(handler).toThrow(
+        'This is a placeholder emitted by skuba:lambda-asset when ENVIRONMENT=test.',
+      );
     }
   });
 

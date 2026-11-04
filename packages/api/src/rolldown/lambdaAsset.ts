@@ -91,9 +91,14 @@ export interface LambdaAssetOptions {
  */
 const isTestMode = (): boolean => process.env.ENVIRONMENT === 'test';
 
+const TEST_MODE_STUB_ERROR = `This is a placeholder emitted by ${PLUGIN_NAME} when ENVIRONMENT=test. Rebuild without ENVIRONMENT=test before deploying.`;
+
+// Throw rather than no-op so that a stub that reaches a deployment fails loudly.
 const TEST_MODE_STUB = [
   `// Placeholder emitted by ${PLUGIN_NAME} when ENVIRONMENT=test.`,
-  'export const handler = () => {};',
+  'export const handler = () => {',
+  `  throw new Error(${JSON.stringify(TEST_MODE_STUB_ERROR)});`,
+  '};',
   '',
 ].join('\n');
 
@@ -250,8 +255,8 @@ const stripInstallFiles = async (
  * The result can be handed to CDK as `aws_lambda.Code.fromAsset(outputDir)`.
  *
  * When `ENVIRONMENT=test`, the plugin emits a
- * stub asset instead: each entry module is replaced with a placeholder handler,
- * and `nodeModules` and `assets` are skipped. This lets CDK stack tests build
+ * stub asset instead: each entry module is replaced with a placeholder handler
+ * that throws if invoked, and `nodeModules` and `assets` are skipped. This lets CDK stack tests build
  * the rolldown config cheaply and deterministically before synthesising.
  *
  * @example

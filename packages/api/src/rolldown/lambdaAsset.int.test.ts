@@ -1,5 +1,6 @@
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import fs from 'fs-extra';
 import { rolldown } from 'rolldown';
@@ -141,13 +142,18 @@ describe('lambdaAsset', () => {
         type: 'module',
       });
 
-      const stub = await fs.promises.readFile(
-        path.join(outputDir, 'lambda.js'),
-        'utf-8',
+      const stubPath = path.join(outputDir, 'lambda.js');
+
+      await expect(
+        fs.promises.readFile(stubPath, 'utf-8'),
+      ).resolves.not.toContain(NODE_MODULE);
+
+      const { handler } = (await import(pathToFileURL(stubPath).href)) as {
+        handler: () => unknown;
+      };
+      expect(handler).toThrow(
+        'This is a placeholder emitted by skuba:lambda-asset when ENVIRONMENT=test.',
       );
-      expect(stub).toContain('export');
-      expect(stub).toContain('handler');
-      expect(stub).not.toContain(NODE_MODULE);
     });
 
     it('emits identical stubs regardless of source', async () => {

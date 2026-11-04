@@ -143,6 +143,48 @@ describe('lambdaAsset', () => {
     expect(emitFile).not.toHaveBeenCalled();
   });
 
+  it('loads a throwing stub for entry modules when ENVIRONMENT=test', async () => {
+    vi.stubEnv('ENVIRONMENT', 'test');
+
+    const plugin = lambdaAsset();
+    const entry = path.join(outputDir, 'lambda.ts');
+
+    await buildStart(plugin, outputDir);
+
+    const { resolveId, load } = plugin;
+
+    if (
+      typeof resolveId !== 'object' ||
+      typeof load !== 'object' ||
+      !resolveId ||
+      !load
+    ) {
+      throw new Error('Expected `resolveId` and `load` to be object hooks');
+    }
+
+    await expect(
+      resolveId.handler.call(
+        {
+          resolve: () => Promise.resolve({ id: entry, external: false }),
+        } as never,
+        './lambda.ts',
+        undefined,
+        { isEntry: true } as never,
+      ),
+    ).resolves.toEqual({ id: entry });
+
+    expect(load.handler.call({} as never, entry)).toMatchInlineSnapshot(`
+      {
+        "code": "// Placeholder emitted by skuba:lambda-asset when ENVIRONMENT=test.
+      export const handler = () => {
+        throw new Error("This is a placeholder emitted by skuba:lambda-asset when ENVIRONMENT=test. Rebuild without ENVIRONMENT=test before deploying.");
+      };
+      ",
+        "moduleType": "js",
+      }
+    `);
+  });
+
   it('prepares a given output directory only once per build', async () => {
     const plugin = lambdaAsset();
     const packageJson = path.join(outputDir, 'package.json');
