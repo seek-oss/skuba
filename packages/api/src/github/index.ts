@@ -4,6 +4,7 @@ export {
   buildNameFromEnvironment,
 } from './environment.js';
 export { createCheckRun } from './checkRun.js';
+export { getFileUrl, getFileUrlFromEnvironment } from './fileUrl.js';
 export { enabledFromEnvironment } from './environment.js';
 export { getPullRequestNumber } from './pullRequest.js';
 export { putIssueComment } from './issueComment.js';
