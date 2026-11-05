@@ -2,22 +2,9 @@
 '@skuba-lib/api': minor
 ---
 
-api: Rolldown.lambdaAsset: Emit a stub asset when `ENVIRONMENT=test`
+api: Emit a stub `Rolldown.lambdaAsset` under Vitest
 
-When `ENVIRONMENT` is `test`, the plugin replaces each entry module with a placeholder handler that throws if invoked, and skips installing `nodeModules` and copying `assets`. This lets CDK stack tests build your rolldown config and synthesise `Code.fromAsset` without first building the real bundles.
-
-```typescript
-// vitest.config.ts
-export default defineConfig(
-  Vitest.mergePreset({
-    test: {
-      env: {
-        ENVIRONMENT: 'test',
-      },
-    },
-  }),
-);
-```
+When `VITEST` is `true`, the plugin replaces each entry module with a placeholder handler that throws if invoked, and skips installing `nodeModules` and copying `assets`. This lets CDK stack tests build your rolldown config and synthesise `Code.fromAsset` without first building the real bundles.
 
 ```typescript
 // infra/appStack.test.ts

@@ -283,27 +283,9 @@ This means each install re-links from your local pnpm store rather than short-ci
 ### Testing with CDK
 
 `aws_lambda.Code.fromAsset` requires its directory to exist at synth time, so CDK stack tests would otherwise need a full build first.
-When `ENVIRONMENT` is `test`, the plugin emits a stub asset instead.
-Set it in your Vitest config if you have not already.
-New skuba projects set it alongside `DEPLOYMENT: 'test'`; the plugin only checks `ENVIRONMENT`:
+When running under Vitest, which sets `VITEST=true`, the plugin emits a stub asset instead.
 
-```ts
-// vitest.config.ts
-import { Vitest } from 'skuba';
-import { defineConfig } from 'vitest/config';
-
-export default defineConfig(
-  Vitest.mergePreset({
-    test: {
-      env: {
-        ENVIRONMENT: 'test',
-      },
-    },
-  }),
-);
-```
-
-Then build your real rolldown config from the stack test before synthesising:
+Build your real rolldown config from the stack test before synthesising:
 
 ```ts
 // infra/appStack.test.ts
@@ -341,16 +323,15 @@ beforeAll(() =>
 );
 ```
 
-When `ENVIRONMENT=test`, the plugin:
+Under Vitest, the plugin:
 
 - Replaces each entry module with a placeholder handler that throws if invoked, so your source is never read or bundled and the build is near-instant.
   Chunk names still follow your `input`, so `lib/index.js` and the `index.handler` string line up with a real build.
 - Skips the `nodeModules` install and `assets` copy.
 - Still writes the output directory and its `package.json`.
 
-The check happens when each build starts, so it does not matter whether `ENVIRONMENT` is set before or after your config is imported.
 The stub is identical on every run, so the CDK asset hash does not churn as your handler code changes.
-It overwrites any real bundle in `output.dir`, so make sure `ENVIRONMENT=test` never reaches your deployment build, and rebuild before deploying if you run tests and deployments from the same checkout.
+It overwrites any real bundle in `output.dir`, so rebuild before deploying if you run tests and deployments from the same checkout.
 If a stub does slip through, its handler throws on every invocation rather than silently succeeding.
 
 ---

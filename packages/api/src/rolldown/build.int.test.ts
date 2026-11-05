@@ -19,7 +19,7 @@ describe('build', () => {
     fs.promises.readFile(path.join(workingDir, file), 'utf-8');
 
   beforeEach(async () => {
-    vi.stubEnv('ENVIRONMENT', undefined);
+    vi.stubEnv('VITEST', undefined);
 
     workingDir = await fs.promises.mkdtemp(
       path.join(os.tmpdir(), 'rolldown-build-int-'),
@@ -88,8 +88,8 @@ describe('build', () => {
     }
   });
 
-  it('stubs every output of a config sharing one plugin when ENVIRONMENT=test', async () => {
-    vi.stubEnv('ENVIRONMENT', 'test');
+  it('stubs every output of a config sharing one plugin under Vitest', async () => {
+    vi.stubEnv('VITEST', 'true');
 
     await build(
       defineConfig({
@@ -114,7 +114,7 @@ describe('build', () => {
         handler: () => unknown;
       };
       expect(handler).toThrow(
-        'This is a placeholder emitted by skuba:lambda-asset when ENVIRONMENT=test.',
+        'This is a placeholder emitted by skuba:lambda-asset under Vitest.',
       );
     }
   });

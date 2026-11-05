@@ -46,7 +46,7 @@ describe('lambdaAsset', () => {
     ) as Record<string, unknown>;
 
   beforeEach(async () => {
-    vi.stubEnv('ENVIRONMENT', undefined);
+    vi.stubEnv('VITEST', undefined);
 
     workingDir = await fs.promises.mkdtemp(
       path.join(os.tmpdir(), 'lambda-asset-int-'),
@@ -120,9 +120,9 @@ describe('lambdaAsset', () => {
     ).resolves.toBe('<p>hi</p>');
   });
 
-  describe('when ENVIRONMENT=test', () => {
+  describe('under Vitest', () => {
     beforeEach(() => {
-      vi.stubEnv('ENVIRONMENT', 'test');
+      vi.stubEnv('VITEST', 'true');
     });
 
     it('emits a stub bundle without installing or copying assets', async () => {
@@ -152,7 +152,7 @@ describe('lambdaAsset', () => {
         handler: () => unknown;
       };
       expect(handler).toThrow(
-        'This is a placeholder emitted by skuba:lambda-asset when ENVIRONMENT=test.',
+        'This is a placeholder emitted by skuba:lambda-asset under Vitest.',
       );
     });
 

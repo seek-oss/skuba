@@ -67,7 +67,7 @@ describe('lambdaAsset', () => {
     ) as Record<string, unknown>;
 
   beforeEach(async () => {
-    vi.stubEnv('ENVIRONMENT', undefined);
+    vi.stubEnv('VITEST', undefined);
 
     outputDir = await fs.promises.mkdtemp(
       path.join(os.tmpdir(), 'lambda-asset-'),
@@ -115,8 +115,8 @@ describe('lambdaAsset', () => {
     ).rejects.toThrow(/requires `output\.dir`/);
   });
 
-  it('does not install nodeModules when ENVIRONMENT=test', async () => {
-    vi.stubEnv('ENVIRONMENT', 'test');
+  it('does not install nodeModules under Vitest', async () => {
+    vi.stubEnv('VITEST', 'true');
 
     const plugin = lambdaAsset({ nodeModules: ['sharp'] });
 
@@ -132,8 +132,8 @@ describe('lambdaAsset', () => {
     expect(install).not.toHaveBeenCalled();
   });
 
-  it('does not emit assets when ENVIRONMENT=test', async () => {
-    vi.stubEnv('ENVIRONMENT', 'test');
+  it('does not emit assets under Vitest', async () => {
+    vi.stubEnv('VITEST', 'true');
 
     await buildStart(
       lambdaAsset({ assets: [{ from: 'does-not-exist.json' }] }),
@@ -143,8 +143,8 @@ describe('lambdaAsset', () => {
     expect(emitFile).not.toHaveBeenCalled();
   });
 
-  it('loads a throwing stub for entry modules when ENVIRONMENT=test', async () => {
-    vi.stubEnv('ENVIRONMENT', 'test');
+  it('loads a throwing stub for entry modules under Vitest', async () => {
+    vi.stubEnv('VITEST', 'true');
 
     const plugin = lambdaAsset();
     const entry = path.join(outputDir, 'lambda.ts');
@@ -175,9 +175,9 @@ describe('lambdaAsset', () => {
 
     expect(load.handler.call({} as never, entry)).toMatchInlineSnapshot(`
       {
-        "code": "// Placeholder emitted by skuba:lambda-asset when ENVIRONMENT=test.
+        "code": "// Placeholder emitted by skuba:lambda-asset under Vitest.
       export const handler = () => {
-        throw new Error("This is a placeholder emitted by skuba:lambda-asset when ENVIRONMENT=test. Rebuild without ENVIRONMENT=test before deploying.");
+        throw new Error("This is a placeholder emitted by skuba:lambda-asset under Vitest. Rebuild outside of Vitest before deploying.");
       };
       ",
         "moduleType": "js",
