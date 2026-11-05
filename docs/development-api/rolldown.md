@@ -279,3 +279,85 @@ Set [`output.cleanDir: true`](https://rolldown.rs/reference/OutputOptions.cleanD
 
 The plugin removes pnpm's `node_modules` metadata after each install, as it records machine-local paths and timestamps that would otherwise change your CDK asset hash on every build.
 This means each install re-links from your local pnpm store rather than short-circuiting, which costs a little time but keeps the asset reproducible.
+
+### Testing with CDK
+
+`aws_lambda.Code.fromAsset` requires its directory to exist at synth time, so CDK stack tests would otherwise need a full build first.
+When running under Vitest, which sets `VITEST=true`, the plugin emits a stub asset instead.
+
+Build your real rolldown config from the stack test before synthesising:
+
+```ts
+// infra/appStack.test.ts
+import { Template } from 'aws-cdk-lib/assertions';
+import { Cdk, Rolldown } from 'skuba';
+
+import config from '../rolldown.config.js';
+
+beforeAll(() => Rolldown.build(config));
+
+test('stack', () => {
+  // ...
+
+  const template = Template.fromStack(stack);
+
+  expect(Cdk.normaliseTemplate(template.toJSON())).toMatchSnapshot();
+});
+```
+
+If you have [multiple bundles](#multiple-bundles), pass every config at once and they are built one after another:
+
+```ts
+import hirerHydrator from '../rolldown.hirerHydrator.config.js';
+import partnerOffboarder from '../rolldown.partnerOffboarder.config.js';
+
+beforeAll(() => Rolldown.build([hirerHydrator, partnerOffboarder]));
+```
+
+Relative paths in your configs, such as `input` and `output.dir`, resolve against `process.cwd()`.
+If your tests do not run from the package directory, e.g. from a monorepo root, pass `cwd`:
+
+```ts
+beforeAll(() =>
+  Rolldown.build(config, { cwd: path.join(import.meta.dirname, '..') }),
+);
+```
+
+Under Vitest, the plugin:
+
+- Replaces each entry module with a placeholder handler that throws if invoked, so your source is never read or bundled and the build is near-instant.
+  Chunk names still follow your `input`, so `lib/index.js` and the `index.handler` string line up with a real build.
+- Skips the `nodeModules` install and `assets` copy.
+- Still writes the output directory and its `package.json`.
+
+The stub is identical on every run, so the CDK asset hash does not churn as your handler code changes.
+It overwrites any real bundle in `output.dir`, so rebuild before deploying if you run tests and deployments from the same checkout.
+If a stub does slip through, its handler throws on every invocation rather than silently succeeding.
+
+---
+
+## build
+
+Builds and writes one or more rolldown configs, as exported from a `rolldown.config.ts`.
+
+```ts
+import { Rolldown } from 'skuba';
+
+import config from '../rolldown.config.js';
+
+await Rolldown.build(config);
+```
+
+rolldown's own `build` function accepts a single `output` per config,
+while `defineConfig` types `output` as one or many, so passing a config file to it needs a cast.
+`Rolldown.build` accepts what `defineConfig` returns:
+a config or an array of configs, each with one or more outputs.
+Each config is bundled once and written to each of its outputs, as the rolldown CLI does.
+Separate configs are built sequentially, so plugin instances shared between them do not clobber each other's state.
+Function configs are not supported.
+
+| Option | Required | Description                                                                                                                       |
+| ------ | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `cwd`  | No       | Directory to resolve relative paths in the configs against, such as `input` and `output.dir`. Overrides any `cwd` in the configs. |
+
+`rolldown` is loaded only when `Rolldown.build` is called, so `@skuba-lib/api` consumers that do not use it do not need it installed.

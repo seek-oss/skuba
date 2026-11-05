@@ -1,9 +1,10 @@
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import fs from 'fs-extra';
 import { rolldown } from 'rolldown';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { pathExists } from '../../../../src/utils/fs.js';
 
@@ -45,6 +46,8 @@ describe('lambdaAsset', () => {
     ) as Record<string, unknown>;
 
   beforeEach(async () => {
+    vi.stubEnv('VITEST', undefined);
+
     workingDir = await fs.promises.mkdtemp(
       path.join(os.tmpdir(), 'lambda-asset-int-'),
     );
@@ -63,7 +66,10 @@ describe('lambdaAsset', () => {
     );
   });
 
-  afterEach(() => fs.remove(workingDir));
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await fs.remove(workingDir);
+  });
 
   it('writes only a package.json alongside the bundle when nodeModules is unset', async () => {
     await bundle(lambdaAsset());
@@ -112,6 +118,77 @@ describe('lambdaAsset', () => {
         'utf-8',
       ),
     ).resolves.toBe('<p>hi</p>');
+  });
+
+  describe('under Vitest', () => {
+    beforeEach(() => {
+      vi.stubEnv('VITEST', 'true');
+    });
+
+    it('emits a stub bundle without installing or copying assets', async () => {
+      await bundle(
+        lambdaAsset({
+          nodeModules: [NODE_MODULE],
+          assets: [{ from: 'does-not-exist.json' }],
+          projectRoot: path.join(workingDir, 'missing'),
+          depsLockFilePath: path.join(workingDir, 'missing', 'pnpm-lock.yaml'),
+        }),
+      );
+
+      await expect(
+        fs.promises.readdir(outputDir).then((files) => files.sort()),
+      ).resolves.toEqual(['lambda.js', 'package.json']);
+      await expect(readOutputPackageJson()).resolves.toEqual({
+        type: 'module',
+      });
+
+      const stubPath = path.join(outputDir, 'lambda.js');
+
+      await expect(
+        fs.promises.readFile(stubPath, 'utf-8'),
+      ).resolves.not.toContain(NODE_MODULE);
+
+      const { handler } = (await import(pathToFileURL(stubPath).href)) as {
+        handler: () => unknown;
+      };
+      expect(handler).toThrow(
+        'This is a placeholder emitted by skuba:lambda-asset under Vitest.',
+      );
+    });
+
+    it('emits identical stubs regardless of source', async () => {
+      await bundle(lambdaAsset());
+      const first = await fs.promises.readFile(
+        path.join(outputDir, 'lambda.js'),
+        'utf-8',
+      );
+
+      await fs.remove(outputDir);
+      await fs.promises.writeFile(entry, 'export const handler = () => 42;\n');
+
+      await bundle(lambdaAsset());
+      await expect(
+        fs.promises.readFile(path.join(outputDir, 'lambda.js'), 'utf-8'),
+      ).resolves.toBe(first);
+    });
+
+    it('names stub chunks after their input keys and tolerates missing sources', async () => {
+      const build = await rolldown({
+        input: { index: path.join(workingDir, 'src', 'missing.ts') },
+        plugins: [lambdaAsset()],
+        logLevel: 'silent',
+      });
+
+      try {
+        await build.write({ dir: outputDir, format: 'es' });
+      } finally {
+        await build.close();
+      }
+
+      await expect(
+        fs.promises.readdir(outputDir).then((files) => files.sort()),
+      ).resolves.toEqual(['index.js', 'package.json']);
+    });
   });
 
   it('installs nodeModules and strips the install-only files', async () => {
