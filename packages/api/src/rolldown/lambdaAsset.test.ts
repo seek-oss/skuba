@@ -67,6 +67,8 @@ describe('lambdaAsset', () => {
     ) as Record<string, unknown>;
 
   beforeEach(async () => {
+    vi.stubEnv('VITEST', undefined);
+
     outputDir = await fs.promises.mkdtemp(
       path.join(os.tmpdir(), 'lambda-asset-'),
     );
@@ -76,7 +78,10 @@ describe('lambdaAsset', () => {
     vi.mocked(createExec).mockReturnValue(install as never);
   });
 
-  afterEach(() => fs.remove(outputDir));
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await fs.remove(outputDir);
+  });
 
   it('is named so it can be identified in rolldown output', () =>
     expect(lambdaAsset().name).toBe('skuba:lambda-asset'));
@@ -108,6 +113,76 @@ describe('lambdaAsset', () => {
     await expect(
       writeBundle(lambdaAsset(), { file: 'lib/lambda.js', format: 'es' }),
     ).rejects.toThrow(/requires `output\.dir`/);
+  });
+
+  it('does not install nodeModules under Vitest', async () => {
+    vi.stubEnv('VITEST', 'true');
+
+    const plugin = lambdaAsset({ nodeModules: ['sharp'] });
+
+    await buildStart(plugin, outputDir);
+    await writeBundle(plugin, { dir: outputDir, format: 'es' });
+
+    await expect(fs.promises.readdir(outputDir)).resolves.toEqual([
+      'package.json',
+    ]);
+    await expect(readOutputPackageJson()).resolves.toEqual({
+      type: 'module',
+    });
+    expect(install).not.toHaveBeenCalled();
+  });
+
+  it('does not emit assets under Vitest', async () => {
+    vi.stubEnv('VITEST', 'true');
+
+    await buildStart(
+      lambdaAsset({ assets: [{ from: 'does-not-exist.json' }] }),
+      outputDir,
+    );
+
+    expect(emitFile).not.toHaveBeenCalled();
+  });
+
+  it('loads a throwing stub for entry modules under Vitest', async () => {
+    vi.stubEnv('VITEST', 'true');
+
+    const plugin = lambdaAsset();
+    const entry = path.join(outputDir, 'lambda.ts');
+
+    await buildStart(plugin, outputDir);
+
+    const { resolveId, load } = plugin;
+
+    if (
+      typeof resolveId !== 'object' ||
+      typeof load !== 'object' ||
+      !resolveId ||
+      !load
+    ) {
+      throw new Error('Expected `resolveId` and `load` to be object hooks');
+    }
+
+    await expect(
+      resolveId.handler.call(
+        {
+          resolve: () => Promise.resolve({ id: entry, external: false }),
+        } as never,
+        './lambda.ts',
+        undefined,
+        { isEntry: true } as never,
+      ),
+    ).resolves.toEqual({ id: entry });
+
+    expect(load.handler.call({} as never, entry)).toMatchInlineSnapshot(`
+      {
+        "code": "// Placeholder emitted by skuba:lambda-asset under Vitest.
+      export const handler = () => {
+        throw new Error("This is a placeholder emitted by skuba:lambda-asset under Vitest. Rebuild outside of Vitest before deploying.");
+      };
+      ",
+        "moduleType": "js",
+      }
+    `);
   });
 
   it('prepares a given output directory only once per build', async () => {
