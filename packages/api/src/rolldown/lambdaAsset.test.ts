@@ -173,7 +173,9 @@ describe('lambdaAsset', () => {
       ),
     ).resolves.toEqual({ id: entry });
 
-    expect(load.handler.call({} as never, entry)).toMatchInlineSnapshot(`
+    expect(
+      load.handler.call({} as never, entry, { attributes: {}, rawId: entry }),
+    ).toMatchInlineSnapshot(`
       {
         "code": "// Placeholder emitted by skuba:lambda-asset under Vitest.
       export const handler = () => {
