@@ -70,8 +70,11 @@ interface GetFileUrlFromEnvironmentParameters {
    *
    * Defaults to `BUILDKITE_PULL_REQUEST` or the number in `GITHUB_REF`.
    * When set, the URL points at the new side of the pull request diff.
+   *
+   * Set to `null` to skip the pull request and return a blob URL at the
+   * commit, for example for a file that is not changed in the pull request.
    */
-  pullRequestNumber?: number;
+  pullRequestNumber?: number | null;
 
   /**
    * Environment variables used to resolve the repository and commit.
@@ -131,7 +134,8 @@ export const getFileUrl = ({
  * `BUILDKITE_PULL_REQUEST` or `GITHUB_REF` for the pull request.
  *
  * When a pull request number is available, this returns a files-changed URL
- * that anchors to the new side of the pull request diff.
+ * that anchors to the new side of the pull request diff. Set
+ * `pullRequestNumber` to `null` to return a blob URL instead.
  *
  * Returns `undefined` when the repository cannot be resolved, or when a blob
  * URL is requested without a commit.
@@ -157,7 +161,9 @@ export const getFileUrlFromEnvironment = ({
     startLine,
     endLine,
     pullRequestNumber:
-      pullRequestNumber ?? getPullRequestNumberFromEnvironment(env),
+      pullRequestNumber === null
+        ? undefined
+        : (pullRequestNumber ?? getPullRequestNumberFromEnvironment(env)),
     commit: env.BUILDKITE_COMMIT ?? env.GITHUB_SHA,
   });
 };
