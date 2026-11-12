@@ -52,6 +52,8 @@ describe('getFileUrlFromEnvironment', () => {
     ${'a Buildkite pull request from the environment'}      | ${{ BUILDKITE_REPO: buildkiteRepo, BUILDKITE_PULL_REQUEST: '42' }}                                 | ${4}      | ${6}         | ${undefined}      | ${pullRequestUrl(42, 'R4-R6')}
     ${'a GitHub Actions pull request from the environment'} | ${{ GITHUB_REPOSITORY: 'seek-oss/skuba', GITHUB_REF: 'refs/pull/42/merge', GITHUB_SHA: 'def456' }} | ${4}      | ${undefined} | ${undefined}      | ${pullRequestUrl(42, 'R4')}
     ${'a blob URL when BUILDKITE_PULL_REQUEST is false'}    | ${{ BUILDKITE_REPO: buildkiteRepo, BUILDKITE_COMMIT: 'abc123', BUILDKITE_PULL_REQUEST: 'false' }}  | ${4}      | ${undefined} | ${undefined}      | ${blobUrl('abc123', remoteTsPath, 'L4')}
+    ${'the provided pull request over the environment'}     | ${{ BUILDKITE_REPO: buildkiteRepo, BUILDKITE_PULL_REQUEST: '42' }}                                 | ${4}      | ${undefined} | ${7}              | ${pullRequestUrl(7, 'R4')}
+    ${'a blob URL when the pull request is null'}           | ${{ BUILDKITE_REPO: buildkiteRepo, BUILDKITE_COMMIT: 'abc123', BUILDKITE_PULL_REQUEST: '42' }}     | ${4}      | ${undefined} | ${null}           | ${blobUrl('abc123', remoteTsPath, 'L4')}
   `(
     'returns $description',
     ({ env, startLine, endLine, pullRequestNumber, expected }) =>
