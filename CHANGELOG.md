@@ -1,5 +1,71 @@
 # skuba
 
+## 16.5.0
+
+### Minor Changes
+
+- **Buildkite.getJobUrl:** Add a helper for the current job URL ([#2680](https://github.com/seek-oss/skuba/pull/2680) [`63057f2`](https://github.com/seek-oss/skuba/commit/63057f20ca6ecdba77cc7deaa20a68776e2be05e))
+
+- **api:** Add `Rolldown.build` ([#2668](https://github.com/seek-oss/skuba/pull/2668) [`8122f4b`](https://github.com/seek-oss/skuba/commit/8122f4bbe689d912d3eed45da5b7e3d570ea3986))
+
+  This builds and writes one or more rolldown configs, as exported from a `rolldown.config.ts`. It accepts what `defineConfig` returns, including configs with multiple outputs.
+
+  ```typescript
+  import { Rolldown } from 'skuba';
+
+  import worker1 from '../rolldown.worker1.config.js';
+  import worker2 from '../rolldown.worker2.config.js';
+
+  beforeAll(() => Rolldown.build([worker1, worker2]));
+  ```
+
+  Pass `cwd` to resolve relative paths in your configs from somewhere other than `process.cwd()`:
+
+  ```typescript
+  Rolldown.build(config, { cwd: path.join(import.meta.dirname, '..') });
+  ```
+
+- **GitHub.createCheckRun:** Support `detailsUrl` parameter ([#2655](https://github.com/seek-oss/skuba/pull/2655) [`5428f79`](https://github.com/seek-oss/skuba/commit/5428f797079c0eb10dbd85634a968362494cc050))
+
+- **Git.getOwnerAndRepo:** Handle GitHub HTTPS remotes without a `.git` suffix ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
+- **lint:** Add `.pnpm-*` to managed `.gitignore` ([#2664](https://github.com/seek-oss/skuba/pull/2664) [`1520b3e`](https://github.com/seek-oss/skuba/commit/1520b3efcdb14dacf637c60c8d84c7f92229a330))
+
+- **GitHub:** Add `getFileUrl` and `getFileUrlFromEnvironment` ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
+- **GitHub:** Accept `pullRequestNumber: null` in `getFileUrlFromEnvironment` to return a blob URL at the commit ([#2679](https://github.com/seek-oss/skuba/pull/2679) [`c854730`](https://github.com/seek-oss/skuba/commit/c854730458713fb73123721215768032f3d7dad3))
+
+- **migrate:** Improve `tsconfig.json#/compilerOptions/lib` handling in Node.js migrations ([#2666](https://github.com/seek-oss/skuba/pull/2666) [`c4f6a65`](https://github.com/seek-oss/skuba/commit/c4f6a65edfe2bc7505280d71589b3b72f10ce15c))
+
+- **Git:** Add `getOwnerAndRepoFromUrl` ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
+- **api:** Emit a stub `Rolldown.lambdaAsset` under Vitest ([#2668](https://github.com/seek-oss/skuba/pull/2668) [`8122f4b`](https://github.com/seek-oss/skuba/commit/8122f4bbe689d912d3eed45da5b7e3d570ea3986))
+
+  When `VITEST` is `true`, the plugin replaces each entry module with a placeholder handler that throws if invoked, and skips installing `nodeModules` and copying `assets`. This lets CDK stack tests build your rolldown config and synthesise `Code.fromAsset` without first building the real bundles.
+
+  ```typescript
+  // infra/appStack.test.ts
+  import { Rolldown } from 'skuba';
+
+  import config from '../rolldown.config.js';
+
+  beforeAll(() => Rolldown.build(config));
+  ```
+
+### Patch Changes
+
+- **deps:** oxfmt ~0.77.0 ([#2677](https://github.com/seek-oss/skuba/pull/2677) [`04ccf62`](https://github.com/seek-oss/skuba/commit/04ccf6281d41ec377308cbf7b80e3b8143432f77))
+
+- **deps:** oxfmt ~0.76.0 ([#2674](https://github.com/seek-oss/skuba/pull/2674) [`7a52b42`](https://github.com/seek-oss/skuba/commit/7a52b4203cb242d82971339596b2114a1f6df85c))
+
+- **deps:** oxfmt ~0.75.0 ([#2669](https://github.com/seek-oss/skuba/pull/2669) [`d81d97d`](https://github.com/seek-oss/skuba/commit/d81d97dc1eb8af403242f467c6abcb899e5c9730))
+
+- **deps:** oxfmt ~0.74.0 ([#2658](https://github.com/seek-oss/skuba/pull/2658) [`6e65d65`](https://github.com/seek-oss/skuba/commit/6e65d6537eacb765cf9f5e148089bbbbae11fa4b))
+
+- **deps:** @ast-grep/napi ~0.51.0 ([#2651](https://github.com/seek-oss/skuba/pull/2651) [`41b926c`](https://github.com/seek-oss/skuba/commit/41b926c21b8bc8f8ccb57979796603ab943af6f4))
+- Updated dependencies:
+  - @skuba-lib/api@3.1.0
+
 ## 16.4.2
 
 ### Patch Changes
