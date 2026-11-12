@@ -1,5 +1,6 @@
 ---
 '@skuba-lib/api': minor
+'skuba': minor
 ---
 
 api: Emit a stub `Rolldown.lambdaAsset` under Vitest
