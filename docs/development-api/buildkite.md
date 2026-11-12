@@ -33,4 +33,18 @@ const main = async () => {
 
 See our [Buildkite guide] for more information.
 
+---
+
+## getJobUrl
+
+Returns the URL of the current Buildkite job.
+
+This reads `BUILDKITE_BUILD_URL` and, when `BUILDKITE_JOB_ID` is set, anchors the URL to that job. Returns `undefined` when `BUILDKITE_BUILD_URL` is not set.
+
+```typescript
+import { Buildkite } from 'skuba';
+
+const jobUrl = Buildkite.getJobUrl();
+```
+
 [buildkite guide]: ../deep-dives/buildkite.md
