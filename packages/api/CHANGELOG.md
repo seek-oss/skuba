@@ -1,5 +1,53 @@
 # @skuba-lib/api
 
+## 3.1.0
+
+### Minor Changes
+
+- **Buildkite.getJobUrl:** Add a helper for the current job URL ([#2680](https://github.com/seek-oss/skuba/pull/2680) [`63057f2`](https://github.com/seek-oss/skuba/commit/63057f20ca6ecdba77cc7deaa20a68776e2be05e))
+
+- **api:** Add `Rolldown.build` ([#2668](https://github.com/seek-oss/skuba/pull/2668) [`8122f4b`](https://github.com/seek-oss/skuba/commit/8122f4bbe689d912d3eed45da5b7e3d570ea3986))
+
+  This builds and writes one or more rolldown configs, as exported from a `rolldown.config.ts`. It accepts what `defineConfig` returns, including configs with multiple outputs.
+
+  ```typescript
+  import { Rolldown } from 'skuba';
+
+  import worker1 from '../rolldown.worker1.config.js';
+  import worker2 from '../rolldown.worker2.config.js';
+
+  beforeAll(() => Rolldown.build([worker1, worker2]));
+  ```
+
+  Pass `cwd` to resolve relative paths in your configs from somewhere other than `process.cwd()`:
+
+  ```typescript
+  Rolldown.build(config, { cwd: path.join(import.meta.dirname, '..') });
+  ```
+
+- **GitHub.createCheckRun:** Support `detailsUrl` parameter ([#2655](https://github.com/seek-oss/skuba/pull/2655) [`5428f79`](https://github.com/seek-oss/skuba/commit/5428f797079c0eb10dbd85634a968362494cc050))
+
+- **Git.getOwnerAndRepo:** Handle GitHub HTTPS remotes without a `.git` suffix ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
+- **GitHub:** Add `getFileUrl` and `getFileUrlFromEnvironment` ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
+- **GitHub:** Accept `pullRequestNumber: null` in `getFileUrlFromEnvironment` to return a blob URL at the commit ([#2679](https://github.com/seek-oss/skuba/pull/2679) [`c854730`](https://github.com/seek-oss/skuba/commit/c854730458713fb73123721215768032f3d7dad3))
+
+- **Git:** Add `getOwnerAndRepoFromUrl` ([#2667](https://github.com/seek-oss/skuba/pull/2667) [`886f485`](https://github.com/seek-oss/skuba/commit/886f485066477e3555e595690dc062b76adfcbb6))
+
+- **api:** Emit a stub `Rolldown.lambdaAsset` under Vitest ([#2668](https://github.com/seek-oss/skuba/pull/2668) [`8122f4b`](https://github.com/seek-oss/skuba/commit/8122f4bbe689d912d3eed45da5b7e3d570ea3986))
+
+  When `VITEST` is `true`, the plugin replaces each entry module with a placeholder handler that throws if invoked, and skips installing `nodeModules` and copying `assets`. This lets CDK stack tests build your rolldown config and synthesise `Code.fromAsset` without first building the real bundles.
+
+  ```typescript
+  // infra/appStack.test.ts
+  import { Rolldown } from 'skuba';
+
+  import config from '../rolldown.config.js';
+
+  beforeAll(() => Rolldown.build(config));
+  ```
+
 ## 3.0.1
 
 ### Patch Changes
