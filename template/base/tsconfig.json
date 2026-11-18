@@ -2,7 +2,18 @@
   "compilerOptions": {
     "customConditions": ["@seek/<%- repoName %>/source"],
     "rootDir": ".",
-    "lib": ["ES2025"],
+    "lib": [
+      "ES2025",
+      "ESNext.Array",
+      "ESNext.Collection",
+      "ESNext.Date",
+      "ESNext.Disposable",
+      "ESNext.Error",
+      "ESNext.Intl",
+      "ESNext.SharedMemory",
+      "ESNext.Temporal",
+      "ESNext.TypedArrays"
+    ],
     "outDir": "lib",
     "target": "ES2025"
   },
