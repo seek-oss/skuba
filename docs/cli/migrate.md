@@ -133,6 +133,19 @@ As of **skuba** 14, `skuba migrate` attempts to upgrade underlying infrastructur
 [semantic versioning]: https://semver.org/
 [template]: ../templates/index.md
 
+### skuba migrate node26
+
+Attempts to automatically upgrade your project to Node.js 26 and your package targets to Node.js 24.11.0+.
+
+```shell
+skuba migrate node26
+```
+
+Node.js 26 includes breaking changes.
+For more information on the upgrade, refer to the Node.js [release notes][node-26].
+
+[node-26]: https://nodejs.org/en/blog/release/v26.0.0
+
 ### skuba migrate node24
 
 Attempts to automatically upgrade your project to Node.js 24 and your package targets to Node.js 22.14.0+.
