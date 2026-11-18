@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../testing/memfs.js';
 
+import { lookupImageDigest } from './imageDigest.js';
+
 import { nodeVersionMigration } from './index.js';
 
 vi.mock('fs-extra', () => ({
@@ -17,6 +19,12 @@ vi.mock('node:fs/promises', () => ({
   ...memfs.promises,
 }));
 vi.mock('../../../utils/logging');
+
+const NEW_DIGEST = `sha256:${'f'.repeat(64)}`;
+
+vi.mock('./imageDigest.js', () => ({
+  lookupImageDigest: vi.fn(() => Promise.resolve(NEW_DIGEST)),
+}));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -128,12 +136,88 @@ describe('nodeVersionMigration', () => {
           'FROM gcr.io/distroless/nodejs24-debian12\nRUN echo "hello"',
         'Dockerfile.10':
           'FROM --platform=linux/amd64 gcr.io/distroless/nodejs24-debian12 AS dev-deps\nRUN echo "hello"',
-        'Dockerfile.11':
-          'FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs24-debian12 AS runtime',
-        'Dockerfile.12':
-          '# syntax=docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5\nFROM --platform=arm64 node:24 AS dev-deps',
-        'Dockerfile.13':
-          'FROM public.ecr.aws/docker/library/node:24-alpine AS runtime',
+        'Dockerfile.11': `FROM --platform=\${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs24-debian12@${NEW_DIGEST} AS runtime`,
+        'Dockerfile.12': `# syntax=docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5\nFROM --platform=arm64 node:24@${NEW_DIGEST} AS dev-deps`,
+        'Dockerfile.13': `FROM public.ecr.aws/docker/library/node:24-alpine@${NEW_DIGEST} AS runtime`,
+      },
+    },
+    {
+      scenario: 'Granite golden images',
+      filesBefore: {
+        Dockerfile:
+          'FROM public.ecr.aws/seek-hirer-granite/node-22-alpine:latest AS build\nRUN echo "hello"\nFROM public.ecr.aws/seek-hirer-granite/distroless-node-22:42@sha256:9f43117c3e33c3ed49d689e51287a246edef3af0afed51a54dc0a9095b2b3ef9 AS runtime',
+        'Dockerfile.dev-deps':
+          'FROM --platform=linux/arm64 public.ecr.aws/seek-hirer-granite/node-22:a1b2c3d\nRUN echo "hello"',
+        'Dockerfile.arg':
+          'ARG BASE_IMAGE=public.ecr.aws/i3c7m4r8/node-22\nFROM ${BASE_IMAGE}',
+        'Dockerfile.other':
+          'FROM public.ecr.aws/some-other-team/node-22:latest\nRUN echo "hello"',
+        'docker-compose.yml':
+          'services:\n  app:\n    image: public.ecr.aws/seek-hirer-granite/node-22-alpine:1.2.3\n',
+        '.buildkite/pipeline.yml':
+          'plugins:\n  - docker#v3.0.0:\n      image: public.ecr.aws/seek-hirer-granite/node-22:latest\n',
+      },
+      filesAfter: {
+        Dockerfile: `FROM public.ecr.aws/seek-hirer-granite/node-24-alpine:latest AS build\nRUN echo "hello"\nFROM public.ecr.aws/seek-hirer-granite/distroless-node-24:latest@${NEW_DIGEST} AS runtime`,
+        'Dockerfile.dev-deps':
+          'FROM --platform=linux/arm64 public.ecr.aws/seek-hirer-granite/node-24:latest\nRUN echo "hello"',
+        'Dockerfile.arg':
+          'ARG BASE_IMAGE=public.ecr.aws/i3c7m4r8/node-24:latest\nFROM ${BASE_IMAGE}',
+        'Dockerfile.other':
+          'FROM public.ecr.aws/some-other-team/node-22:latest\nRUN echo "hello"',
+        'docker-compose.yml':
+          'services:\n  app:\n    image: public.ecr.aws/seek-hirer-granite/node-24-alpine:latest\n',
+        '.buildkite/pipeline.yml':
+          'plugins:\n  - docker#v3.0.0:\n      image: public.ecr.aws/seek-hirer-granite/node-24:latest\n',
+      },
+    },
+    {
+      scenario: 'images in Docker Compose files and Buildkite pipelines',
+      filesBefore: {
+        'docker-compose.yml': `services:\n  app:\n    image: "node:22-alpine3.20" # pinned\n  runtime:\n    image: gcr.io/distroless/nodejs22-debian12:nonroot@sha256:${'a'.repeat(64)}\n`,
+        '.buildkite/pipeline.yml': `steps:\n  - plugins:\n      - docker#v5.12.0:\n          image: 'public.ecr.aws/docker/library/node:22-bookworm-slim@sha256:${'b'.repeat(64)}'\n      - docker#v5.12.0:\n          image: node:22\n`,
+      },
+      filesAfter: {
+        'docker-compose.yml': `services:\n  app:\n    image: "node:24-alpine3.20" # pinned\n  runtime:\n    image: gcr.io/distroless/nodejs24-debian12:nonroot@${NEW_DIGEST}\n`,
+        '.buildkite/pipeline.yml': `steps:\n  - plugins:\n      - docker#v5.12.0:\n          image: 'public.ecr.aws/docker/library/node:24-bookworm-slim@${NEW_DIGEST}'\n      - docker#v5.12.0:\n          image: node:24\n`,
+      },
+    },
+    {
+      scenario: 'images in .Dockerfile and .dockerfile files',
+      filesBefore: {
+        'api.Dockerfile': 'FROM node:22-alpine AS build\n',
+        'docker/worker.Dockerfile': 'FROM node:20\n',
+        'docker/jobs.dockerfile': 'FROM node:22-slim\n',
+      },
+      filesAfter: {
+        'api.Dockerfile': 'FROM node:24-alpine AS build\n',
+        'docker/worker.Dockerfile': 'FROM node:24\n',
+        'docker/jobs.dockerfile': 'FROM node:24-slim\n',
+      },
+    },
+    {
+      scenario: 'node references that are not images',
+      filesBefore: {
+        Dockerfile:
+          'FROM node:24\nUSER node:1000\nCOPY --chown=node:node . .\nRUN echo "image: node:22"',
+      },
+    },
+    {
+      scenario: 'mixed node versions in one file',
+      filesBefore: {
+        Dockerfile: 'FROM node:26 AS build\nFROM node:22-slim AS runtime',
+      },
+      filesAfter: {
+        Dockerfile: 'FROM node:26 AS build\nFROM node:24-slim AS runtime',
+      },
+    },
+    {
+      scenario: 'Granite golden images already on node 24 or later',
+      filesBefore: {
+        Dockerfile:
+          'FROM public.ecr.aws/seek-hirer-granite/node-24-alpine:42@sha256:9f43117c3e33c3ed49d689e51287a246edef3af0afed51a54dc0a9095b2b3ef9\nRUN echo "hello"',
+        'Dockerfile.26':
+          'FROM public.ecr.aws/seek-hirer-granite/distroless-node-26:latest',
       },
     },
     {
@@ -349,4 +433,44 @@ describe('nodeVersionMigration', () => {
       expect(volToJson()).toEqual(filesAfter ?? filesBefore);
     },
   );
+
+  const migrate = () =>
+    nodeVersionMigration({
+      nodeVersion: '24',
+      ECMAScriptVersion: 'ES2024',
+      packageNodeVersion: '20',
+      packageECMAScriptVersion: 'ES2023',
+      infraPackages: [],
+    });
+
+  it('looks up digests for the upgraded images once', async () => {
+    vol.fromJSON(
+      {
+        'Dockerfile.1': `FROM node:22-alpine@sha256:${'a'.repeat(64)}`,
+        'Dockerfile.2': `FROM node:20-alpine@sha256:${'b'.repeat(64)}`,
+        'Dockerfile.3': 'FROM node:22-slim',
+      },
+      process.cwd(),
+    );
+
+    await migrate();
+
+    expect(lookupImageDigest).toHaveBeenCalledTimes(1);
+    expect(lookupImageDigest).toHaveBeenCalledWith('node:24-alpine');
+  });
+
+  it('removes digests that cannot be looked up', async () => {
+    vi.mocked(lookupImageDigest).mockResolvedValueOnce(undefined);
+
+    vol.fromJSON(
+      { Dockerfile: `FROM node:22-alpine@sha256:${'a'.repeat(64)} AS build` },
+      process.cwd(),
+    );
+
+    await migrate();
+
+    expect(volToJson()).toEqual({
+      Dockerfile: 'FROM node:24-alpine AS build',
+    });
+  });
 });
