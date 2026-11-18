@@ -9,6 +9,7 @@ import { log } from '../../../utils/logging.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
 
 import { isLikelyPackage } from './checks.js';
+import { upgradeContainerImages } from './containerImages.js';
 import { type LibChanges, patchTsconfigLib } from './tsconfigLib.js';
 import { tryUpgradeInfraPackages } from './upgrade.js';
 
@@ -49,34 +50,6 @@ const subPatches = ({
       },
     },
   },
-  {
-    type: 'nodejs',
-    files: '**/Dockerfile*',
-
-    regex: () =>
-      /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:([0-9]+(?:\.[0-9]+(?:\.[0-9]+)?)?)(-[a-z0-9]+)?(@sha256:[a-f0-9]{64})?( .*)?$/gm,
-    replace: {
-      default: {
-        captureGroup: 3,
-        string: `FROM$1 $2node:${nodeVersion}$4$6`,
-        version: nodeVersion,
-      },
-    },
-  },
-  {
-    type: 'nodejs',
-    files: '**/Dockerfile*',
-    regex: () =>
-      /^FROM(.*) gcr.io\/distroless\/nodejs(\d+)-debian(\d+)(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
-    replace: {
-      default: {
-        captureGroup: 2,
-        string: `FROM$1 gcr.io/distroless/nodejs${nodeVersion}-debian$3$6$7`,
-        version: nodeVersion,
-      },
-    },
-  },
-
   {
     type: 'nodejs',
     files: '**/serverless*.y*ml',
@@ -140,19 +113,6 @@ const subPatches = ({
 
   {
     type: 'nodejs',
-    files: '**/.buildkite/*',
-    regex: () =>
-      /(image: )(public.ecr.aws\/docker\/library\/)?(node:)([0-9.]+)(\.[^- \n]+)?(-[^ \n]+)?$/gm,
-    replace: {
-      default: {
-        captureGroup: 4,
-        string: `$1$2$3${nodeVersion}$5$6`,
-        version: nodeVersion,
-      },
-    },
-  },
-  {
-    type: 'nodejs',
     files: '.node-version*',
     regex: () => /(\d+(?:\.\d+)*)/g,
     replace: {
@@ -179,20 +139,6 @@ const subPatches = ({
         string: `$1${nodeVersion}$3`,
         version: nodeVersion,
         captureGroup: 2,
-      },
-    },
-  },
-  {
-    type: 'nodejs',
-    files: '**/docker-compose*.y*ml',
-    regex: () =>
-      /(image: )(public.ecr.aws\/docker\/library\/)?(node:)([0-9.]+)(\.[^- \n]+)?(-[^ \n]+)?$/gm,
-
-    replace: {
-      default: {
-        captureGroup: 4,
-        string: `$1$2$3${nodeVersion}$5$6`,
-        version: nodeVersion,
       },
     },
   },
@@ -357,6 +303,8 @@ const upgrade = async (versions: Versions, dir: string) => {
   for (const subPatch of subPatches(versions)) {
     await runSubPatch(dir, subPatch);
   }
+
+  await upgradeContainerImages(dir, versions.nodeVersion);
 
   await runTsconfigLibPatch(dir, versions);
 };
