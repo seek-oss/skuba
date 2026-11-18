@@ -3,7 +3,7 @@
     "customConditions": ["@seek/skuba/source"],
     "rootDir": ".",
     "declaration": true,
-    "lib": ["ES2025"],
+    "lib": ["ES2025", "ESNext.Array", "ESNext.Disposable", "ESNext.Error"],
     "outDir": "lib",
     "target": "ES2025",
     "skipLibCheck": true
