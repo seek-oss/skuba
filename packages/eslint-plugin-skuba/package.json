@@ -61,7 +61,7 @@
     "typescript-eslint": ">=8.59.2"
   },
   "engines": {
-    "node": ">=22.14.0"
+    "node": ">=24.11.0"
   },
   "packageManager": "pnpm@12.22.0",
   "skuba": {

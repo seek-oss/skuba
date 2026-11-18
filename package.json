@@ -131,7 +131,7 @@
     "type-fest": "5.10.0"
   },
   "engines": {
-    "node": ">=22.18.0"
+    "node": ">=24.11.0"
   },
   "packageManager": "pnpm@12.22.0",
   "skuba": {

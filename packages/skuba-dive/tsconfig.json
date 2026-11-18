@@ -3,10 +3,10 @@
     "skipLibCheck": true, // tsdown has optional peer deps
     "rootDir": ".",
     "declaration": true,
-    "lib": ["ES2023"],
+    "lib": ["ES2025"],
     "outDir": "lib",
     "removeComments": false,
-    "target": "ES2023"
+    "target": "ES2025"
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json"
