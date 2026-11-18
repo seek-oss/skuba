@@ -3,9 +3,9 @@
     "customConditions": ["@seek/skuba/source"],
     "rootDir": ".",
     "declaration": true,
-    "lib": ["ES2023"],
+    "lib": ["ES2025"],
     "outDir": "lib",
-    "target": "ES2023",
+    "target": "ES2025",
     "skipLibCheck": true
   },
   "exclude": ["lib*/**/*"],

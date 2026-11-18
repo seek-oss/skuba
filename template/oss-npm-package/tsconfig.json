@@ -2,10 +2,10 @@
   "compilerOptions": {
     "customConditions": ["@seek/<%- repoName %>/source"],
     "rootDir": ".",
-    "lib": ["ES2023"],
+    "lib": ["ES2025"],
     "outDir": "lib",
     "removeComments": false,
-    "target": "ES2023",
+    "target": "ES2025",
     "skipLibCheck": true // tsdown has optional peer deps
   },
   "exclude": ["lib*/**/*"],
