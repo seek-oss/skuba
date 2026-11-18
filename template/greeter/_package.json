@@ -23,11 +23,11 @@
     "skuba-dive": "^4.1.0"
   },
   "devDependencies": {
-    "@types/node": "^24.10.2",
+    "@types/node": "^26.6.6",
     "skuba": "*"
   },
   "packageManager": "pnpm@12.20.0",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   }
 }

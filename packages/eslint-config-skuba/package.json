@@ -55,7 +55,7 @@
     "typescript": ">=5.5.4"
   },
   "engines": {
-    "node": ">=22.14.0"
+    "node": ">=24.11.0"
   },
   "packageManager": "pnpm@12.20.0",
   "skuba": {
