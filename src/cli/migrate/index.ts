@@ -3,6 +3,7 @@ import { log } from '../../utils/logging.js';
 
 import { addFileExtensions } from './esm/addFileExtensions.js';
 import { migrateToESM } from './esm/index.js';
+import { upgradeDockerfileCorepack } from './nodeVersion/corepack.js';
 import { nodeVersionMigration } from './nodeVersion/index.js';
 import { migrateOxfmtVscode } from './oxfmtVscode/index.js';
 
@@ -99,6 +100,7 @@ export const migrations = {
         },
       },
       datadogNodeLayerVersion: 144,
+      patches: [(dir) => upgradeDockerfileCorepack(dir, '0.36.0')],
       infraPackages: [
         {
           name: 'aws-cdk-lib',

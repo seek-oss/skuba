@@ -10,6 +10,7 @@ lint/migrate: Introduce `skuba migrate node26`
 - Package targets to Node.js 24.11.0+
 - `aws-cdk-lib`, `datadog-cdk-constructs-v2`, `osls`, `serverless`, `serverless-plugin-datadog`, and `@types/node` dependencies to versions that support Node.js 26
 - Pinned Datadog Node.js Lambda layer versions in CDK code to a version that supports Node.js 26
+- Dockerfiles to install Corepack from npm, as Node.js 26 no longer bundles it
 
 Changes must be manually reviewed by an engineer before committing the migration output. If you have an npm package that previously supported Node.js ≤22 and was upgraded to target Node.js 24.11.0+, follow semantic versioning and publish the change as a new major version. See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
 

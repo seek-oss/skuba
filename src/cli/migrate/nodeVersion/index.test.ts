@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../testing/memfs.js';
 
+import { upgradeDockerfileCorepack } from './corepack.js';
 import { lookupImageDigest } from './imageDigest.js';
 
 import { nodeVersionMigration } from './index.js';
@@ -482,6 +483,55 @@ describe('nodeVersionMigration', () => {
       'infra/appStack.ts':
         'const DATADOG_EXTENSION_LAYER_VERSION = 90;\nconst DATADOG_NODE_LAYER_VERSION = 144;\n',
       'src/config.ts': 'export const config = { nodeLayerVersion: 144 };\n',
+    });
+  });
+
+  it('runs additional patches after the upgrade', async () => {
+    vol.fromJSON({ '.nvmrc': '24\n' }, process.cwd());
+
+    const patch = vi.fn((dir: string) => {
+      expect(volToJson()).toEqual({ '.nvmrc': '26\n' });
+      expect(dir).toBe(process.cwd());
+      return Promise.resolve();
+    });
+
+    await nodeVersionMigration({
+      nodeVersion: '26',
+      ECMAScriptVersion: 'ES2025',
+      packageNodeVersion: '24.11.0',
+      packageECMAScriptVersion: 'ES2025',
+      infraPackages: [],
+      patches: [patch],
+    });
+
+    expect(patch).toHaveBeenCalledTimes(1);
+  });
+
+  it('installs Corepack from npm in Dockerfiles', async () => {
+    vol.fromJSON(
+      {
+        Dockerfile:
+          'FROM node:26-alpine AS dev-deps\n\nRUN --mount=type=bind,source=package.json,target=package.json \\\n    corepack enable pnpm && corepack install\n',
+        'packages/api/Dockerfile.dev-deps':
+          'FROM node:26-alpine\nRUN corepack enable pnpm && corepack install\n',
+      },
+      process.cwd(),
+    );
+
+    await nodeVersionMigration({
+      nodeVersion: '26',
+      ECMAScriptVersion: 'ES2025',
+      packageNodeVersion: '24.11.0',
+      packageECMAScriptVersion: 'ES2025',
+      infraPackages: [],
+      patches: [(dir) => upgradeDockerfileCorepack(dir, '0.36.0')],
+    });
+
+    expect(volToJson()).toEqual({
+      Dockerfile:
+        'FROM node:26-alpine AS dev-deps\n\nRUN npm i -g corepack@0.36.0\n',
+      'packages/api/Dockerfile.dev-deps':
+        'FROM node:26-alpine\nRUN npm i -g corepack@0.36.0\n',
     });
   });
 

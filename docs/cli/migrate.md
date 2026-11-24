@@ -141,6 +141,15 @@ Attempts to automatically upgrade your project to Node.js 26 and your package ta
 skuba migrate node26
 ```
 
+Node.js 26 no longer bundles Corepack,
+so the migration replaces Dockerfile instructions that enable pnpm via the bundled Corepack:
+
+```diff
+- RUN --mount=type=bind,source=package.json,target=package.json \
+-     corepack enable pnpm && corepack install
++ RUN npm i -g corepack@0.36.0
+```
+
 Node.js 26 includes breaking changes.
 For more information on the upgrade, refer to the Node.js [release notes][node-26].
 
