@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../testing/memfs.js';
 
-import { upgradeDockerfileCorepack } from './corepack.js';
+import { migrateDockerfileCorepack } from './corepack.js';
 import { lookupImageDigest } from './imageDigest.js';
 
 import { nodeVersionMigration } from './index.js';
@@ -524,7 +524,7 @@ describe('nodeVersionMigration', () => {
       packageNodeVersion: '24.11.0',
       packageECMAScriptVersion: 'ES2025',
       infraPackages: [],
-      patches: [(dir) => upgradeDockerfileCorepack(dir, '0.36.0')],
+      patches: [(dir) => migrateDockerfileCorepack(dir, '0.36.0')],
     });
 
     expect(volToJson()).toEqual({
