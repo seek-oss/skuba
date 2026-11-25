@@ -583,6 +583,9 @@ describe('nodeVersionMigration', () => {
         }),
         '.buildkite/pipeline.yml':
           'cache-on:\n  - package.json#.packageManager\n  - pnpm-lock.yaml\n',
+        '.buildkite/pipeline.sh':
+          'echo "      - package.json#.packageManager"\n',
+        'scripts/pipeline.sh': 'echo "      - package.json#.packageManager"\n',
       },
       process.cwd(),
     );
@@ -606,6 +609,12 @@ describe('nodeVersionMigration', () => {
     });
     expect(files['.buildkite/pipeline.yml']).toBe(
       'cache-on:\n  - package.json#.devEngines.packageManager\n  - pnpm-lock.yaml\n',
+    );
+    expect(files['.buildkite/pipeline.sh']).toBe(
+      'echo "      - package.json#.devEngines.packageManager"\n',
+    );
+    expect(files['scripts/pipeline.sh']).toBe(
+      'echo "      - package.json#.devEngines.packageManager"\n',
     );
   });
 

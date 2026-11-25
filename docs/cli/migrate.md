@@ -179,7 +179,7 @@ The migration also moves `package.json#/packageManager` to `package.json#/devEng
 + },
 ```
 
-Buildkite pipelines that cache on the field are updated to match:
+Buildkite pipelines and shell scripts that cache on the field are updated to match:
 
 ```diff
   cache-on:

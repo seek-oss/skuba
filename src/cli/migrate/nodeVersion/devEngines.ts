@@ -50,16 +50,18 @@ export const patchBuildkiteDevEngines = (contents: string) =>
 
 const patchFiles = async (
   dir: string,
-  pattern: string,
+  patterns: string[],
   patch: (contents: string) => string | Promise<string>,
 ) => {
-  const paths = await globFiles(pattern, {
-    cwd: dir,
-    exclude: ['**/node_modules/**'],
-  });
+  const paths = new Set(
+    await globFiles(patterns, {
+      cwd: dir,
+      exclude: ['**/node_modules/**'],
+    }),
+  );
 
   await Promise.all(
-    paths.map(async (filePath) => {
+    [...paths].map(async (filePath) => {
       const fullPath = join(dir, filePath);
       const contents = await fs.promises.readFile(fullPath, 'utf8');
 
@@ -73,6 +75,10 @@ const patchFiles = async (
 };
 
 export const migratePackageManagerToDevEngines = async (dir: string) => {
-  await patchFiles(dir, '**/package.json', patchPackageJsonDevEngines);
-  await patchFiles(dir, '**/.buildkite/*', patchBuildkiteDevEngines);
+  await patchFiles(dir, ['**/package.json'], patchPackageJsonDevEngines);
+  await patchFiles(
+    dir,
+    ['**/.buildkite/*', '**/*.sh'],
+    patchBuildkiteDevEngines,
+  );
 };
