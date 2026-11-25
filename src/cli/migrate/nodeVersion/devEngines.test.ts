@@ -5,9 +5,6 @@ import {
   patchPackageJsonDevEngines,
 } from './devEngines.js';
 
-const stringify = (packageJson: Record<string, unknown>) =>
-  `${JSON.stringify(packageJson, null, 2)}\n`;
-
 describe('patchPackageJsonDevEngines', () => {
   it.each([
     [
@@ -50,7 +47,9 @@ describe('patchPackageJsonDevEngines', () => {
       },
     ],
   ])('migrates %s', async (_, before, after) => {
-    const result = await patchPackageJsonDevEngines(stringify(before));
+    const result = await patchPackageJsonDevEngines(
+      `${JSON.stringify(before, null, 2)}\n`,
+    );
 
     expect(JSON.parse(result)).toEqual(after);
   });
@@ -70,7 +69,7 @@ describe('patchPackageJsonDevEngines', () => {
       { name: 'my-app', packageManager: 'pnpm' },
     ],
   ])('leaves %s alone', async (_, packageJson) => {
-    const contents = stringify(packageJson);
+    const contents = `${JSON.stringify(packageJson, null, 2)}\n`;
 
     await expect(patchPackageJsonDevEngines(contents)).resolves.toBe(contents);
   });
