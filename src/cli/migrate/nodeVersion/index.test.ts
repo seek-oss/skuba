@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import memfs, { vol } from '../../../testing/memfs.js';
 
 import { migrateDockerfileCorepack } from './corepack.js';
+import { migratePackageManagerToDevEngines } from './devEngines.js';
 import { lookupImageDigest } from './imageDigest.js';
 
 import { nodeVersionMigration } from './index.js';
@@ -571,6 +572,39 @@ describe('nodeVersionMigration', () => {
     });
 
     expect(volToJson()).toEqual(files);
+  });
+
+  it('migrates packageManager to devEngines', async () => {
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify({
+          name: 'my-app',
+          packageManager: 'pnpm@12.20.0',
+        }),
+        '.buildkite/pipeline.yml':
+          'cache-on:\n  - package.json#.packageManager\n  - pnpm-lock.yaml\n',
+      },
+      process.cwd(),
+    );
+
+    await nodeVersionMigration({
+      nodeVersion: '26',
+      ECMAScriptVersion: 'ES2025',
+      packageNodeVersion: '24.11.0',
+      packageECMAScriptVersion: 'ES2025',
+      infraPackages: [],
+      patches: [migratePackageManagerToDevEngines],
+    });
+
+    const files = volToJson();
+
+    expect(JSON.parse(files['package.json'] ?? '')).toEqual({
+      name: 'my-app',
+      devEngines: { packageManager: { name: 'pnpm', version: '12.20.0' } },
+    });
+    expect(files['.buildkite/pipeline.yml']).toBe(
+      'cache-on:\n  - package.json#.devEngines.packageManager\n  - pnpm-lock.yaml\n',
+    );
   });
 
   it('removes digests that cannot be looked up', async () => {

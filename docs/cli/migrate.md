@@ -166,6 +166,26 @@ Global Corepack installs and `ENV COREPACK_DEFAULT_TO_LATEST=0` workarounds are 
 Dockerfiles are left as is if an exact pnpm version cannot be found.
 Keep the pinned version in sync with your `package.json` when you upgrade pnpm.
 
+The migration also moves `package.json#/packageManager` to `package.json#/devEngines/packageManager`:
+
+```diff
+- "packageManager": "pnpm@12.20.0",
++ "devEngines": {
++   "packageManager": {
++     "name": "pnpm",
++     "version": "12.20.0"
++   }
++ },
+```
+
+Buildkite pipelines that cache on the field are updated to match:
+
+```diff
+  cache-on:
+-   - package.json#.packageManager
++   - package.json#.devEngines.packageManager
+```
+
 Node.js 26 includes breaking changes.
 For more information on the upgrade, refer to the Node.js [release notes][node-26].
 
