@@ -26,9 +26,7 @@ const COREPACK_DEFAULT_TO_LATEST_REGEX =
   /^[ \t]*ENV[ \t]+COREPACK_DEFAULT_TO_LATEST(?:=|[ \t]+)0[ \t]*\r?$/;
 
 const NPM_INSTALL_COREPACK_REGEX =
-  /^(?<indent>[ \t]*)RUN[ \t]+npm[ \t]+(?:i|install)(?=.*[ \t](?:-g|--global)\b)(?:[ \t]+(?:-g|--global|corepack(?:@\S+)?))+[ \t]*(?<eol>\r?)$/;
-
-const FROM_REGEX = /^[ \t]*FROM[ \t]/;
+  /^[ \t]*RUN[ \t]+npm[ \t]+(?:i|install)(?=.*[ \t](?:-g|--global)\b)(?:[ \t]+(?:-g|--global|corepack(?:@\S+)?))+[ \t]*\r?$/;
 
 const isBlank = (line: string | undefined) => !line?.trim();
 
@@ -38,50 +36,34 @@ export const patchDockerfileCorepack = (
 ) => {
   const install = `RUN npm i -g corepack@${corepackVersion}`;
 
-  const lines = contents
-    .replace(
-      corepackInstallRegex(),
-      (_match, indent: string) => `${indent}${install}`,
-    )
-    .split('\n');
+  const isRemovable = (line: string) =>
+    COREPACK_DEFAULT_TO_LATEST_REGEX.test(line) ||
+    (NPM_INSTALL_COREPACK_REGEX.test(line) && line.trim() !== install);
 
   const result: string[] = [];
-  let installed = false;
   let skipBlank = false;
 
-  for (const line of lines) {
+  for (const line of contents.split('\n')) {
     if (skipBlank && isBlank(line)) {
       skipBlank = false;
       continue;
     }
     skipBlank = false;
 
-    if (FROM_REGEX.test(line)) {
-      installed = false;
-    }
-
-    const isInstall = NPM_INSTALL_COREPACK_REGEX.test(line);
-
-    if (
-      COREPACK_DEFAULT_TO_LATEST_REGEX.test(line) ||
-      (isInstall && installed)
-    ) {
+    if (isRemovable(line)) {
       skipBlank = isBlank(result.at(-1));
-      continue;
-    }
-
-    if (isInstall) {
-      installed = true;
-      result.push(
-        line.replace(NPM_INSTALL_COREPACK_REGEX, `$<indent>${install}$<eol>`),
-      );
       continue;
     }
 
     result.push(line);
   }
 
-  return result.join('\n');
+  return result
+    .join('\n')
+    .replace(
+      corepackInstallRegex(),
+      (_match, indent: string) => `${indent}${install}`,
+    );
 };
 
 export const migrateDockerfileCorepack = async (

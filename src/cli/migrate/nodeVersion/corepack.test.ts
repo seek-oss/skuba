@@ -51,20 +51,25 @@ describe('patchDockerfileCorepack', () => {
     ],
     [
       'a standalone Corepack install',
-      'FROM node:26\nRUN npm install corepack@0.31.0 --global\nRUN pnpm fetch\n',
-      'FROM node:26\nRUN npm i -g corepack@0.36.0\nRUN pnpm fetch\n',
+      'FROM node:26\n\nRUN npm install corepack@0.31.0 --global\n\nRUN pnpm fetch\n',
+      'FROM node:26\n\nRUN pnpm fetch\n',
     ],
     [
       'Corepack installs across stages',
-      'FROM node:26 AS a\nRUN npm install -g corepack@0.31.0\nRUN corepack enable pnpm && corepack install\nFROM node:26 AS b\nRUN npm install -g corepack\n',
-      'FROM node:26 AS a\nRUN npm i -g corepack@0.36.0\nFROM node:26 AS b\nRUN npm i -g corepack@0.36.0\n',
+      'FROM node:26 AS a\nRUN npm install -g corepack@0.31.0\nRUN corepack enable pnpm && corepack install\nFROM node:26 AS b\nRUN npm install -g corepack\nRUN pnpm fetch\n',
+      'FROM node:26 AS a\nRUN npm i -g corepack@0.36.0\nFROM node:26 AS b\nRUN pnpm fetch\n',
+    ],
+    [
+      'a Corepack install for another version',
+      'RUN npm i -g corepack@0.35.0\n',
+      '',
     ],
     [
       'CRLF line endings with a pinned Corepack install',
       'RUN npm install --global corepack@0.31.0\r\nENV COREPACK_DEFAULT_TO_LATEST=0\r\nRUN corepack enable pnpm && corepack install\r\n',
       'RUN npm i -g corepack@0.36.0\r\n',
     ],
-  ])('replaces %s', (_, before, after) => {
+  ])('migrates %s', (_, before, after) => {
     expect(patchDockerfileCorepack(before, '0.36.0')).toBe(after);
   });
 

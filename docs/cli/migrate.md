@@ -150,8 +150,7 @@ so the migration replaces Dockerfile instructions that enable pnpm via the bundl
 + RUN npm i -g corepack@0.36.0
 ```
 
-Existing global Corepack installs are upgraded to the same version,
-and `ENV COREPACK_DEFAULT_TO_LATEST=0` workarounds are removed:
+Existing global Corepack installs and `ENV COREPACK_DEFAULT_TO_LATEST=0` workarounds are removed:
 
 ```diff
 - RUN npm install --global corepack@0.31.0
