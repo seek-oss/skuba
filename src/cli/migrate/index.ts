@@ -100,7 +100,7 @@ export const migrations = {
         },
       },
       datadogNodeLayerVersion: 144,
-      patches: [(dir) => migrateDockerfileCorepack(dir, '0.36.0')],
+      patches: [migrateDockerfileCorepack],
       infraPackages: [
         {
           name: 'aws-cdk-lib',
