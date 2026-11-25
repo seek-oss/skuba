@@ -8,7 +8,7 @@ configs:
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v3.0.0:
         cache-on:
-          - package.json#.packageManager
+          - package.json#.devEngines.packageManager
           - pnpm-lock.yaml
           - pnpm-workspace.yaml
         secrets:

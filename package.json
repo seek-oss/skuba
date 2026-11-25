@@ -130,10 +130,16 @@
     "supertest": "7.3.1",
     "type-fest": "5.10.0"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.22.0",
+      "onFail": "error"
+    }
+  },
   "engines": {
     "node": ">=24.11.0"
   },
-  "packageManager": "pnpm@12.22.0",
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",

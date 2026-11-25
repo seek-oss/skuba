@@ -26,7 +26,13 @@
     "@types/node": "^26.6.6",
     "skuba": "*"
   },
-  "packageManager": "pnpm@12.22.0",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.22.0",
+      "onFail": "error"
+    }
+  },
   "engines": {
     "node": ">=26"
   }
