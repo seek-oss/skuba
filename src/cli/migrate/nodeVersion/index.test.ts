@@ -600,7 +600,9 @@ describe('nodeVersionMigration', () => {
 
     expect(JSON.parse(files['package.json'] ?? '')).toEqual({
       name: 'my-app',
-      devEngines: { packageManager: { name: 'pnpm', version: '12.20.0' } },
+      devEngines: {
+        packageManager: { name: 'pnpm', version: '12.20.0', onFail: 'error' },
+      },
     });
     expect(files['.buildkite/pipeline.yml']).toBe(
       'cache-on:\n  - package.json#.devEngines.packageManager\n  - pnpm-lock.yaml\n',

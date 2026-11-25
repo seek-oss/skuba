@@ -15,7 +15,9 @@ describe('patchPackageJsonDevEngines', () => {
       { name: 'my-app', packageManager: 'pnpm@12.20.0' },
       {
         name: 'my-app',
-        devEngines: { packageManager: { name: 'pnpm', version: '12.20.0' } },
+        devEngines: {
+          packageManager: { name: 'pnpm', version: '12.20.0', onFail: 'error' },
+        },
       },
     ],
     [
@@ -24,7 +26,11 @@ describe('patchPackageJsonDevEngines', () => {
       {
         name: 'my-app',
         devEngines: {
-          packageManager: { name: 'pnpm', version: '10.34.5+sha512-abc123' },
+          packageManager: {
+            name: 'pnpm',
+            version: '10.34.5+sha512-abc123',
+            onFail: 'error',
+          },
         },
       },
     ],
@@ -39,7 +45,7 @@ describe('patchPackageJsonDevEngines', () => {
         name: 'my-app',
         devEngines: {
           runtime: { name: 'node', version: '>=26' },
-          packageManager: { name: 'pnpm', version: '12.20.0' },
+          packageManager: { name: 'pnpm', version: '12.20.0', onFail: 'error' },
         },
       },
     ],

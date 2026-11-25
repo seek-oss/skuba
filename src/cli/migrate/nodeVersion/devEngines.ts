@@ -36,7 +36,7 @@ export const patchPackageJsonDevEngines = async (contents: string) => {
   delete packageJson.packageManager;
   packageJson.devEngines = {
     ...devEngines,
-    packageManager: { name, version },
+    packageManager: { name, version, onFail: 'error' },
   };
 
   return formatPackage(packageJson);

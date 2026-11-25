@@ -173,7 +173,8 @@ The migration also moves `package.json#/packageManager` to `package.json#/devEng
 + "devEngines": {
 +   "packageManager": {
 +     "name": "pnpm",
-+     "version": "12.20.0"
++     "version": "12.20.0",
++     "onFail": "error"
 +   }
 + },
 ```
