@@ -141,6 +141,31 @@ Attempts to automatically upgrade your project to Node.js 26 and your package ta
 skuba migrate node26
 ```
 
+Node.js 26 no longer bundles Corepack,
+so the migration removes Corepack from your Dockerfiles and installs pnpm directly instead.
+The pnpm version is pinned to the exact version in the nearest `package.json`:
+
+```diff
+- RUN --mount=type=bind,source=package.json,target=package.json \
+-     corepack enable pnpm && corepack install
++ RUN npm install --global pnpm@12.20.0
+```
+
+Global Corepack installs and `ENV COREPACK_DEFAULT_TO_LATEST=0` workarounds are removed:
+
+```diff
+- RUN npm install --global corepack@0.31.0
+-
+- ENV COREPACK_DEFAULT_TO_LATEST=0
+-
+- RUN --mount=type=bind,source=package.json,target=package.json \
+-     corepack enable pnpm && corepack install
++ RUN npm install --global pnpm@12.20.0
+```
+
+Dockerfiles are left as is if an exact pnpm version cannot be found.
+Keep the pinned version in sync with your `package.json` when you upgrade pnpm.
+
 Node.js 26 includes breaking changes.
 For more information on the upgrade, refer to the Node.js [release notes][node-26].
 

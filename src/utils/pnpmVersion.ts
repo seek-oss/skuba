@@ -19,6 +19,25 @@ const pinSchema = z.object({
     .optional(),
 });
 
+export const getPnpmVersions = (packageJson: unknown): string[] => {
+  const pin = pinSchema.safeParse(packageJson);
+
+  if (!pin.success) {
+    return [];
+  }
+
+  const { packageManager, devEngines } = pin.data;
+
+  return [
+    packageManager?.startsWith('pnpm@')
+      ? packageManager.slice('pnpm@'.length)
+      : undefined,
+    ...[devEngines?.packageManager ?? []]
+      .flat()
+      .flatMap(({ name, version }) => (name === 'pnpm' ? [version] : [])),
+  ].filter((version) => version !== undefined);
+};
+
 export const detectPnpmMajorVersion = async (
   cwd?: string,
 ): Promise<number | undefined> => {
@@ -28,24 +47,7 @@ export const detectPnpmMajorVersion = async (
     return undefined;
   }
 
-  const pin = pinSchema.safeParse(manifest.packageJson);
-
-  if (!pin.success) {
-    return undefined;
-  }
-
-  const { packageManager, devEngines } = pin.data;
-
-  const versions = [
-    packageManager?.startsWith('pnpm@')
-      ? packageManager.slice('pnpm@'.length)
-      : undefined,
-    ...[devEngines?.packageManager ?? []]
-      .flat()
-      .flatMap(({ name, version }) => (name === 'pnpm' ? [version] : [])),
-  ];
-
-  for (const version of versions) {
+  for (const version of getPnpmVersions(manifest.packageJson)) {
     const coerced = coerce(version);
 
     if (coerced) {

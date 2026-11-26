@@ -174,6 +174,8 @@ type Versions = {
   datadogNodeLayerVersion?: number;
 };
 
+export type NodeVersionPatch = (dir: string) => Promise<unknown>;
+
 const getTemplatedReplace = async (
   path: string,
   replace: SubPatch['replace'],
@@ -324,8 +326,10 @@ export const nodeVersionMigration = async (
     tsconfigLib,
     datadogNodeLayerVersion,
     infraPackages,
+    patches = [],
   }: Versions & {
     infraPackages: Array<{ name: string; version: string }>;
+    patches?: NodeVersionPatch[];
   },
   dir = process.cwd(),
 ) => {
@@ -346,6 +350,10 @@ export const nodeVersionMigration = async (
       },
       dir,
     );
+
+    for (const patch of patches) {
+      await patch(dir);
+    }
 
     log.ok(
       `Upgraded project to Node.js ${nodeVersion} and package targets to Node.js ${packageNodeVersion}`,

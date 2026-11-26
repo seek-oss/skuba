@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../testing/memfs.js';
 
+import { migrateDockerfileCorepack } from './corepack.js';
 import { lookupImageDigest } from './imageDigest.js';
 
 import { nodeVersionMigration } from './index.js';
@@ -483,6 +484,93 @@ describe('nodeVersionMigration', () => {
         'const DATADOG_EXTENSION_LAYER_VERSION = 90;\nconst DATADOG_NODE_LAYER_VERSION = 144;\n',
       'src/config.ts': 'export const config = { nodeLayerVersion: 144 };\n',
     });
+  });
+
+  it('runs additional patches after the upgrade', async () => {
+    vol.fromJSON({ '.nvmrc': '24\n' }, process.cwd());
+
+    const patch = vi.fn((dir: string) => {
+      expect(volToJson()).toEqual({ '.nvmrc': '26\n' });
+      expect(dir).toBe(process.cwd());
+      return Promise.resolve();
+    });
+
+    await nodeVersionMigration({
+      nodeVersion: '26',
+      ECMAScriptVersion: 'ES2025',
+      packageNodeVersion: '24.11.0',
+      packageECMAScriptVersion: 'ES2025',
+      infraPackages: [],
+      patches: [patch],
+    });
+
+    expect(patch).toHaveBeenCalledTimes(1);
+  });
+
+  it('replaces Corepack with a pinned pnpm install in Dockerfiles', async () => {
+    const rootPackageJson = JSON.stringify({
+      packageManager: 'pnpm@12.20.0+sha512-abc123',
+    });
+    const apiPackageJson = JSON.stringify({
+      devEngines: { packageManager: { name: 'pnpm', version: '11.8.0' } },
+    });
+
+    vol.fromJSON(
+      {
+        'package.json': rootPackageJson,
+        Dockerfile:
+          'FROM node:26-alpine AS dev-deps\n\nRUN npm install --global corepack@0.31.0\n\nENV COREPACK_DEFAULT_TO_LATEST=0\n\nRUN --mount=type=bind,source=package.json,target=package.json \\\n    corepack enable pnpm && corepack install\n',
+        'packages/api/package.json': apiPackageJson,
+        'packages/api/Dockerfile.dev-deps':
+          'FROM node:26-alpine\nRUN corepack enable pnpm && corepack install\n',
+        'packages/web/Dockerfile':
+          'FROM node:26-alpine\nRUN corepack enable pnpm\n',
+      },
+      process.cwd(),
+    );
+
+    await nodeVersionMigration({
+      nodeVersion: '26',
+      ECMAScriptVersion: 'ES2025',
+      packageNodeVersion: '24.11.0',
+      packageECMAScriptVersion: 'ES2025',
+      infraPackages: [],
+      patches: [migrateDockerfileCorepack],
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': rootPackageJson,
+      Dockerfile:
+        'FROM node:26-alpine AS dev-deps\n\nRUN npm install --global pnpm@12.20.0\n',
+      'packages/api/package.json': apiPackageJson,
+      'packages/api/Dockerfile.dev-deps':
+        'FROM node:26-alpine\nRUN npm install --global pnpm@11.8.0\n',
+      'packages/web/Dockerfile':
+        'FROM node:26-alpine\nRUN npm install --global pnpm@12.20.0\n',
+    });
+  });
+
+  it('leaves Corepack usage alone without an exact pnpm version', async () => {
+    const files = {
+      'package.json': JSON.stringify({
+        devEngines: { packageManager: { name: 'pnpm', version: '^12.0.0' } },
+      }),
+      Dockerfile:
+        'FROM node:26-alpine\nRUN corepack enable pnpm && corepack install\n',
+    };
+
+    vol.fromJSON(files, process.cwd());
+
+    await nodeVersionMigration({
+      nodeVersion: '26',
+      ECMAScriptVersion: 'ES2025',
+      packageNodeVersion: '24.11.0',
+      packageECMAScriptVersion: 'ES2025',
+      infraPackages: [],
+      patches: [migrateDockerfileCorepack],
+    });
+
+    expect(volToJson()).toEqual(files);
   });
 
   it('removes digests that cannot be looked up', async () => {
