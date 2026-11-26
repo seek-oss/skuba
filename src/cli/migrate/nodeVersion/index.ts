@@ -10,6 +10,7 @@ import { createDestinationFileReader } from '../../configure/analysis/project.js
 
 import { isLikelyPackage } from './checks.js';
 import { upgradeContainerImages } from './containerImages.js';
+import { upgradeDatadogNodeLayerVersion } from './datadogLayer.js';
 import { type LibChanges, patchTsconfigLib } from './tsconfigLib.js';
 import { tryUpgradeInfraPackages } from './upgrade.js';
 
@@ -170,6 +171,7 @@ type Versions = {
     default?: LibChanges;
     package?: LibChanges;
   };
+  datadogNodeLayerVersion?: number;
 };
 
 const getTemplatedReplace = async (
@@ -307,6 +309,10 @@ const upgrade = async (versions: Versions, dir: string) => {
   await upgradeContainerImages(dir, versions.nodeVersion);
 
   await runTsconfigLibPatch(dir, versions);
+
+  if (versions.datadogNodeLayerVersion) {
+    await upgradeDatadogNodeLayerVersion(dir, versions.datadogNodeLayerVersion);
+  }
 };
 
 export const nodeVersionMigration = async (
@@ -316,6 +322,7 @@ export const nodeVersionMigration = async (
     packageNodeVersion,
     packageECMAScriptVersion,
     tsconfigLib,
+    datadogNodeLayerVersion,
     infraPackages,
   }: Versions & {
     infraPackages: Array<{ name: string; version: string }>;
@@ -335,6 +342,7 @@ export const nodeVersionMigration = async (
         packageNodeVersion,
         packageECMAScriptVersion,
         tsconfigLib,
+        datadogNodeLayerVersion,
       },
       dir,
     );

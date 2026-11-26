@@ -459,6 +459,32 @@ describe('nodeVersionMigration', () => {
     expect(lookupImageDigest).toHaveBeenCalledWith('node:24-alpine');
   });
 
+  it('upgrades pinned Datadog Node layer versions', async () => {
+    vol.fromJSON(
+      {
+        'infra/appStack.ts':
+          'const DATADOG_EXTENSION_LAYER_VERSION = 90;\nconst DATADOG_NODE_LAYER_VERSION = 126;\n',
+        'src/config.ts': 'export const config = { nodeLayerVersion: 130 };\n',
+      },
+      process.cwd(),
+    );
+
+    await nodeVersionMigration({
+      nodeVersion: '26',
+      ECMAScriptVersion: 'ES2025',
+      packageNodeVersion: '24.11.0',
+      packageECMAScriptVersion: 'ES2025',
+      datadogNodeLayerVersion: 144,
+      infraPackages: [],
+    });
+
+    expect(volToJson()).toEqual({
+      'infra/appStack.ts':
+        'const DATADOG_EXTENSION_LAYER_VERSION = 90;\nconst DATADOG_NODE_LAYER_VERSION = 144;\n',
+      'src/config.ts': 'export const config = { nodeLayerVersion: 144 };\n',
+    });
+  });
+
   it('removes digests that cannot be looked up', async () => {
     vi.mocked(lookupImageDigest).mockResolvedValueOnce(undefined);
 
