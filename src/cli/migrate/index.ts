@@ -67,6 +67,65 @@ export const migrations = {
         },
       ],
     }),
+  node26: () =>
+    nodeVersionMigration({
+      nodeVersion: '26',
+      ECMAScriptVersion: 'ES2025',
+      packageNodeVersion: '24.11.0',
+      packageECMAScriptVersion: 'ES2025',
+      tsconfigLib: {
+        default: {
+          add: [
+            'ESNext.Array',
+            'ESNext.Collection',
+            'ESNext.Date',
+            'ESNext.Disposable',
+            'ESNext.Error',
+            'ESNext.Intl',
+            'ESNext.SharedMemory',
+            'ESNext.Temporal',
+            'ESNext.TypedArrays',
+          ],
+          remove: ['ESNext.Float16', 'ESNext.Iterator', 'ESNext.Promise'],
+        },
+        package: {
+          add: ['ESNext.Array', 'ESNext.Disposable', 'ESNext.Error'],
+          remove: [
+            'ESNext.Collection',
+            'ESNext.Float16',
+            'ESNext.Iterator',
+            'ESNext.Promise',
+          ],
+        },
+      },
+      datadogNodeLayerVersion: 144,
+      infraPackages: [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.277.0',
+        },
+        {
+          name: 'datadog-cdk-constructs-v2',
+          version: '5.2.0',
+        },
+        {
+          name: 'osls',
+          version: '4.5.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.42.0',
+        },
+        {
+          name: 'serverless-plugin-datadog',
+          version: '5.135.0',
+        },
+        {
+          name: '@types/node',
+          version: '26.6.6',
+        },
+      ],
+    }),
   esm: () => migrateToESM({ mode: 'format' }),
   'file-extensions': () => addFileExtensions({ mode: 'format' }),
   'oxfmt-vscode': () => migrateOxfmtVscode(),
