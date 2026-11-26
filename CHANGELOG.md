@@ -1,5 +1,11 @@
 # skuba
 
+## 16.5.1
+
+### Patch Changes
+
+- **deps:** oxfmt ~0.80.0 ([#2695](https://github.com/seek-oss/skuba/pull/2695) [`95e101c`](https://github.com/seek-oss/skuba/commit/95e101cdb7016ed88e64b7b515206cf58b626881))
+
 ## 16.5.0
 
 ### Minor Changes
