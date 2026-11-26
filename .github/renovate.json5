@@ -119,6 +119,7 @@
       managerFilePatterns: ['/pnpm.md$/', '/(^|/)_package\\.json$/'],
       matchStrings: [
         '"packageManager": "(?<depName>.*?)@(?<currentValue>.*?)",',
+        '"name": "(?<depName>pnpm)",\\s*"version": "(?<currentValue>[^"]+)"',
       ],
       datasourceTemplate: 'npm',
     },

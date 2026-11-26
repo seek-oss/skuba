@@ -42,7 +42,13 @@
     "@types/node": "^24.10.2",
     "skuba": "*"
   },
-  "packageManager": "pnpm@12.22.0",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.22.0",
+      "onFail": "error"
+    }
+  },
   "engines": {
     "node": ">=24.11.0"
   },

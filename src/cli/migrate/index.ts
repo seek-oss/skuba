@@ -4,6 +4,7 @@ import { log } from '../../utils/logging.js';
 import { addFileExtensions } from './esm/addFileExtensions.js';
 import { migrateToESM } from './esm/index.js';
 import { migrateDockerfileCorepack } from './nodeVersion/corepack.js';
+import { migratePackageManagerToDevEngines } from './nodeVersion/devEngines.js';
 import { nodeVersionMigration } from './nodeVersion/index.js';
 import { migrateOxfmtVscode } from './oxfmtVscode/index.js';
 
@@ -100,7 +101,7 @@ export const migrations = {
         },
       },
       datadogNodeLayerVersion: 144,
-      patches: [migrateDockerfileCorepack],
+      patches: [migrateDockerfileCorepack, migratePackageManagerToDevEngines],
       infraPackages: [
         {
           name: 'aws-cdk-lib',
