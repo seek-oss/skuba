@@ -1,29 +1,35 @@
 # Modelled on https://github.com/backstage/backstage/blob/5083c8024deffbdf454983900f02780d14b55a0b/.github/workflows/sync_renovate-changesets.yml#L6
 
 name: Sync Renovate changeset
-permissions:
-  contents: write
+
 on:
   pull_request_target:
     paths:
       - '.github/workflows/renovate-changeset.yml'
       - 'pnpm-lock.yaml'
 
+permissions: {}
+
 jobs:
   generate-changeset:
-    runs-on: ubuntu-latest
     if: github.actor == 'renovate[bot]' && github.repository == 'seek-oss/skuba'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 2
           ref: ${{ github.head_ref }}
+          # Allow autofixes to automatically trigger workflow runs
+          # https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow#triggering-a-workflow-from-a-workflow
+          # https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes
+          persist-credentials: true
           token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
       - name: Configure Git
         run: |
           git config --global user.email 34733141+seek-oss-ci@users.noreply.github.com
-          git config --global user.name 'Github changeset workflow'
+          git config --global user.name 'GitHub changeset workflow'
       - name: Generate changeset
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:

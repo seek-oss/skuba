@@ -31,11 +31,12 @@
     "build": "skuba build-package",
     "format": "skuba format",
     "lint": "skuba lint",
+    "pre-publish": "pnpm --filter @skuba-lib/changesets-changelog inject && pnpm format",
     "release": "changeset publish",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch",
-    "version": "changeset version"
+    "version": "changeset version && pnpm pre-publish"
   },
   "dependencies": {},
   "devDependencies": {

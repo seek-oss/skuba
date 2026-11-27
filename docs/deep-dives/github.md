@@ -112,21 +112,31 @@ The following sample is tailored to [seek-oss] projects:
 ```yaml
 jobs:
   validate:
+    permissions:
+      contents: read
+      checks: write
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN || github.com }}
+          persist-credentials: false
 
       - name: Set Git user
         run: |
           git config user.name seek-oss-ci
           git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
-      # Set up Node.js, install dependencies, run tests...
+      # Set up Node.js, install dependencies...
+
+      - name: Test
+        run: pnpm test:ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN || github.token }}
 
       - name: Lint
         run: pnpm lint
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN || github.token }}
 ```
 
 <!-- {% endraw %} -->
