@@ -27,6 +27,44 @@ const RENOVATE_DEFAULT_PREFIX = 'renovate';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
+const isStaleAutofixPush = (error: unknown): boolean => {
+  // simple-git includes Git's porcelain push output in its error message.
+  if (error instanceof Error) {
+    const failures = error.message
+      .split(/\r?\n/)
+      .filter((line) => /^\s*!/.test(line));
+    if (
+      failures.length > 0 &&
+      failures.every((line) =>
+        /^\s*![^\n]*\[rejected\][^\n]*\((?:non-fast-forward|fetch first)\)\s*$/.test(
+          line,
+        ),
+      )
+    ) {
+      return true;
+    }
+  }
+
+  // GitHub's expectedHeadOid guard rejects an outdated build atomically.
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'errors' in error &&
+    Array.isArray(error.errors) &&
+    error.errors.length > 0 &&
+    error.errors.every(
+      (problem: unknown) =>
+        typeof problem === 'object' &&
+        problem !== null &&
+        'type' in problem &&
+        problem.type === 'STALE_DATA' &&
+        'path' in problem &&
+        Array.isArray(problem.path) &&
+        problem.path[0] === 'createCommitOnBranch',
+    )
+  );
+};
+
 export const AUTOFIX_IGNORE_FILES_BASE: Git.ChangedFile[] = [
   {
     path: 'Dockerfile-incunabulum',
@@ -363,6 +401,13 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
     log.warn(`Pushed fix commit ${ref}.`);
   } catch (err) {
+    if (isStaleAutofixPush(err)) {
+      log.warn(
+        'The remote branch has newer commits. This autofix was skipped.',
+      );
+      log.warn('Run lint on the latest commit to generate a new autofix.');
+      return;
+    }
     log.warn(log.bold('Failed to push fix commit.'));
     log.warn(
       log.bold(
